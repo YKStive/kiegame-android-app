@@ -1,0 +1,8 @@
+<resources>
+    <!-- 网络请求失败提示信息 -->
+    <string name="toast_error_http">无法连接到网络</string>
+    <string name="toast_error_connect">请求服务器失败</string>
+    <string name="toast_error_time_out">请求超时</string>
+    <string name="toast_error_data">数据异常</string>
+    <string name="toast_error_unknown">未知错误</string>
+</resources>
