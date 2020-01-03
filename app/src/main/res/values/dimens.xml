@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Toast 最小宽度 -->
     <dimen name="toast_min_width">200dp</dimen>
+    <!-- Toast 内边距 -->
     <dimen name="toast_padding">15dp</dimen>
+    <!-- Toast 文本大小 -->
     <dimen name="toast_text_size">16sp</dimen>
+    <!-- Toast 背景圆角 -->
+    <dimen name="toast_background_radius">25dp</dimen>
+
+    <!-- 登录-输入框-背景圆角 -->
+    <dimen name="login_input_background_radius">5dp</dimen>
+    <!-- 登录-输入框-边框宽度 -->
+    <dimen name="login_input_border_width">1dp</dimen>
+
+    <!-- 登录 -->
+    <dimen name="login_input_margin">48dp</dimen>
+    <dimen name="login_input_icon_padding">16dp</dimen>
+    <dimen name="login_input_text">14sp</dimen>
+    <dimen name="login_input_username_margin_bottom">24dp</dimen>
+    <dimen name="login_logo_margin_bottom">40dp</dimen>
+    <dimen name="login_keep_password_switch_margin_top">32dp</dimen>
+    <dimen name="login_switch_thumb_size">15dp</dimen>
+    <dimen name="login_switch_thumb_stroke">5dp</dimen>
+    <dimen name="login_switch_thumb_radius">25dp</dimen>
+    <dimen name="login_switch_trace_stroke">10dp</dimen>
+    <dimen name="login_keep_password">12sp</dimen>
+    <dimen name="login_btn_radius">25dp</dimen>
+    <dimen name="login_btn_margin_top">32dp</dimen>
+    <dimen name="login_btn_padding_left_right">48dp</dimen>
+    <dimen name="login_btn_padding_top_bottom">12dp</dimen>
+    <dimen name="login_btn">18sp</dimen>
 </resources>

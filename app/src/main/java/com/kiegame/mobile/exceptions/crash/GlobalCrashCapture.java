@@ -105,7 +105,7 @@ public class GlobalCrashCapture implements Thread.UncaughtExceptionHandler {
             if (BuildConfig.DEBUG) {
                 ex.printStackTrace();
                 Toast.makeText(context, ex.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                this.dumpException(ex);
+//                this.dumpException(ex);
                 this.delay();
                 Game.ins().exit();
             }

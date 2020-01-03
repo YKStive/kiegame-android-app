@@ -5,4 +5,9 @@
     <string name="toast_error_time_out">请求超时</string>
     <string name="toast_error_data">数据异常</string>
     <string name="toast_error_unknown">未知错误</string>
+
+    <string name="login_input_password_hint">请输入密码</string>
+    <string name="login_input_account_hint">请输入账号/用户名/手机号</string>
+    <string name="login_keep_password">记住密码</string>
+    <string name="login_btn">登&#160;录</string>
 </resources>

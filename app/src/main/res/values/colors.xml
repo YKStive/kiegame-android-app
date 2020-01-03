@@ -2,19 +2,37 @@
 <resources>
     <color name="colorPrimary">@color/black</color>
     <color name="colorPrimaryDark">@color/black</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">@color/black</color>
 
     <!-- 透明 -->
     <color name="translucent">#00000000</color>
     <!-- 白色 -->
     <color name="white">#ffffff</color>
+    <!-- 灰色 -->
+    <color name="gray">#888888</color>
     <!-- 黑色 -->
     <color name="black">#000000</color>
     <!-- 黑色半透 -->
     <color name="translucent_black_50">#88000000</color>
+    <!-- 黄色 -->
+    <color name="yellow">#FFE100</color>
 
-    <!-- Toast背景 -->
+    <!-- Toast 背景 -->
     <color name="toast_background">@color/translucent_black_50</color>
-    <!-- Toast文字 -->
+    <!-- Toast 文字 -->
     <color name="toast_text">@color/white</color>
+
+    <!-- 登录-输入框-背景 -->
+    <color name="login_input_background">#2A2A2A</color>
+    <!-- 登录-输入框-边框 -->
+    <color name="login_input_border">@color/white</color>
+
+    <!-- 登录 -->
+    <color name="login_input_hint">#949494</color>
+    <color name="login_switch_off">@color/gray</color>
+    <color name="login_switch_on">@color/yellow</color>
+    <color name="login_switch_stroke">@color/translucent</color>
+    <color name="login_switch_trace">@color/white</color>
+    <color name="login_keep_password">@color/white</color>
+    <color name="login_btn_background">@color/yellow</color>
 </resources>

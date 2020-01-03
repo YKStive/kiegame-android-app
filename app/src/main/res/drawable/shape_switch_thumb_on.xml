@@ -1,0 +1,10 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/login_switch_on" />
+    <size
+        android:width="@dimen/login_switch_thumb_size"
+        android:height="@dimen/login_switch_thumb_size" />
+    <stroke
+        android:width="@dimen/login_switch_thumb_stroke"
+        android:color="@color/login_switch_stroke" />
+    <corners android:radius="@dimen/login_switch_thumb_radius" />
+</shape>
