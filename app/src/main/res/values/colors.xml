@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">@color/black</color>
     <color name="colorPrimaryDark">@color/black</color>
-    <color name="colorAccent">@color/black</color>
+    <color name="colorAccent">@color/white</color>
 
     <!-- 透明 -->
     <color name="translucent">#00000000</color>
@@ -35,4 +35,9 @@
     <color name="login_switch_trace">@color/white</color>
     <color name="login_keep_password">@color/white</color>
     <color name="login_btn_background">@color/yellow</color>
+    <color name="login_btn">#1A1A1B</color>
+
+    <!-- 主界面-导航按钮 -->
+    <color name="main_nav_btn_press">#1A1A1B</color>
+    <color name="main_nav_btn_none">#666666</color>
 </resources>

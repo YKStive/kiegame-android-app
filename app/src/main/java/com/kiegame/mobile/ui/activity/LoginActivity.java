@@ -1,5 +1,7 @@
 package com.kiegame.mobile.ui.activity;
 
+import android.content.Intent;
+
 import androidx.lifecycle.ViewModelProviders;
 
 import com.kiegame.mobile.R;
@@ -42,6 +44,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
      * 登录事件处理
      */
     public void login() {
-        model.login();
+        startActivity(new Intent(this, MainActivity.class));
+//        model.login();
     }
 }

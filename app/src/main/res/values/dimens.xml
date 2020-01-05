@@ -31,4 +31,8 @@
     <dimen name="login_btn_padding_left_right">48dp</dimen>
     <dimen name="login_btn_padding_top_bottom">12dp</dimen>
     <dimen name="login_btn">18sp</dimen>
+
+    <!-- 主界面-导航按钮 -->
+    <dimen name="main_nav_btn_padding_top_bottom">8dp</dimen>
+    <dimen name="main_nav_btn">10sp</dimen>
 </resources>

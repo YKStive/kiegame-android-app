@@ -43,6 +43,7 @@ public abstract class BaseActivity<T extends ViewDataBinding> extends AppCompatA
         onSystemUIVisibility(config);
         setSystemUIVisibility();
         binding = DataBindingUtil.setContentView(this, onLayout());
+        binding.setLifecycleOwner(this);
         onObject();
         onView();
         onData();

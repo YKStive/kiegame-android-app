@@ -146,6 +146,7 @@
             android:paddingRight="@dimen/login_btn_padding_left_right"
             android:paddingBottom="@dimen/login_btn_padding_top_bottom"
             android:text="@string/login_btn"
+            android:textColor="@color/login_btn"
             android:textSize="@dimen/login_btn"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

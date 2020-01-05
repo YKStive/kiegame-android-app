@@ -36,6 +36,7 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, onLayout(), container, false);
+        binding.setLifecycleOwner(this);
         onObject();
         onView();
         onData();
