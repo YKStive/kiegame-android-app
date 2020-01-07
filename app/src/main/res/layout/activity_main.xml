@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="activity"
+            type="com.kiegame.mobile.ui.activity.MainActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,6 +14,7 @@
         android:layout_height="match_parent">
 
         <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vp_views"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/cl_nav_bar"
@@ -30,9 +34,11 @@
                 android:id="@+id/tv_btn_net_fee"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:background="@drawable/shape_ripple_background"
                 android:drawableTop="@drawable/ic_net_fee_press"
                 android:drawablePadding="@dimen/main_nav_btn_padding_top_bottom"
                 android:gravity="center"
+                android:onClick="@{()->activity.setCurrentPage(0)}"
                 android:paddingTop="@dimen/main_nav_btn_padding_top_bottom"
                 android:paddingBottom="@dimen/main_nav_btn_padding_top_bottom"
                 android:text="@string/main_nav_btn_net_fee_recharge"
@@ -47,9 +53,11 @@
                 android:id="@+id/tv_btn_commodity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:background="@drawable/shape_ripple_background"
                 android:drawableTop="@drawable/ic_commodity_none"
                 android:drawablePadding="@dimen/main_nav_btn_padding_top_bottom"
                 android:gravity="center"
+                android:onClick="@{()->activity.setCurrentPage(1)}"
                 android:paddingTop="@dimen/main_nav_btn_padding_top_bottom"
                 android:paddingBottom="@dimen/main_nav_btn_padding_top_bottom"
                 android:text="@string/main_nav_btn_commodity"
@@ -64,9 +72,11 @@
                 android:id="@+id/tv_btn_order"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:background="@drawable/shape_ripple_background"
                 android:drawableTop="@drawable/ic_order_none"
                 android:drawablePadding="@dimen/main_nav_btn_padding_top_bottom"
                 android:gravity="center"
+                android:onClick="@{()->activity.setCurrentPage(2)}"
                 android:paddingTop="@dimen/main_nav_btn_padding_top_bottom"
                 android:paddingBottom="@dimen/main_nav_btn_padding_top_bottom"
                 android:text="@string/main_nav_btn_order"

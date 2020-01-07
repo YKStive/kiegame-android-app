@@ -35,4 +35,44 @@
     <!-- 主界面-导航按钮 -->
     <dimen name="main_nav_btn_padding_top_bottom">8dp</dimen>
     <dimen name="main_nav_btn">10sp</dimen>
+
+    <!-- 主界面-网费充值 -->
+    <dimen name="net_fee_page_title_margin_start">16dp</dimen>
+    <dimen name="net_fee_page_title_margin_top">30dp</dimen>
+    <dimen name="net_fee_page_title">26sp</dimen>
+    <dimen name="net_fee_address_margin_end">16dp</dimen>
+    <dimen name="net_fee_address_margin_bottom">4dp</dimen>
+    <dimen name="net_fee_address">12sp</dimen>
+    <dimen name="net_fee_search_margin">16dp</dimen>
+    <dimen name="net_fee_search_padding">12dp</dimen>
+    <dimen name="net_fee_search_input_margin_end">16dp</dimen>
+    <dimen name="net_fee_search_input">14sp</dimen>
+    <dimen name="net_fee_banner_height">90dp</dimen>
+    <dimen name="net_fee_banner_margin_top">10dp</dimen>
+    <dimen name="net_fee_banner_card_radius">5dp</dimen>
+    <dimen name="net_fee_vip_info_margin_top">10dp</dimen>
+    <dimen name="net_fee_vip_info_text_margin">10dp</dimen>
+    <dimen name="net_fee_vip_info_drawable_padding">5dp</dimen>
+    <dimen name="net_fee_vip_info_text">13sp</dimen>
+    <dimen name="net_fee_vip_info_margin">10dp</dimen>
+    <dimen name="net_fee_vip_info_padding">5dp</dimen>
+    <dimen name="net_fee_vip_info">14sp</dimen>
+    <dimen name="net_fee_vip_info_delete_padding_left_right">10dp</dimen>
+    <dimen name="net_fee_vip_info_delete_padding_top_bottom">5dp</dimen>
+    <dimen name="net_fee_vip_info_btn_delete">12sp</dimen>
+    <dimen name="net_fee_vip_balance_layout_margin_top_bottom">10dp</dimen>
+    <dimen name="net_fee_principal_balance_padding_top_bottom">5dp</dimen>
+    <dimen name="net_fee_balance_text">12sp</dimen>
+    <dimen name="net_fee_balance">18sp</dimen>
+    <dimen name="net_fee_actual_payment_amount_margin_start">16dp</dimen>
+    <dimen name="net_fee_actual_payment_amount_margin_top">25dp</dimen>
+    <dimen name="net_fee_actual_payment_amount">14sp</dimen>
+    <dimen name="net_fee_payment_amount_margin_end">16dp</dimen>
+    <dimen name="net_fee_payment_amount">18sp</dimen>
+    <dimen name="net_fee_divider_line_margin_start">16dp</dimen>
+    <dimen name="net_fee_divider_line_margin_top">12dp</dimen>
+    <dimen name="net_fee_amount_margin_top">15sp</dimen>
+    <dimen name="net_fee_amount_padding_left_right">20dp</dimen>
+    <dimen name="net_fee_amount_padding_top_bottom">10dp</dimen>
+    <dimen name="net_fee_amount">15sp</dimen>
 </resources>

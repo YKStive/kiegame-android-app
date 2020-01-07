@@ -12,10 +12,13 @@
     <color name="gray">#888888</color>
     <!-- 黑色 -->
     <color name="black">#000000</color>
+    <!-- 黑色文字 -->
+    <color name="black_text">#1A1A1B</color>
     <!-- 黑色半透 -->
     <color name="translucent_black_50">#88000000</color>
     <!-- 黄色 -->
     <color name="yellow">#FFE100</color>
+
 
     <!-- Toast 背景 -->
     <color name="toast_background">@color/translucent_black_50</color>
@@ -38,6 +41,14 @@
     <color name="login_btn">#1A1A1B</color>
 
     <!-- 主界面-导航按钮 -->
-    <color name="main_nav_btn_press">#1A1A1B</color>
+    <color name="main_nav_btn_press">@color/black_text</color>
     <color name="main_nav_btn_none">#666666</color>
+
+    <!-- 主界面-网费充值 -->
+    <color name="net_fee_search_input_hint">#959595</color>
+    <color name="net_fee_vip_info_text">#7A6225</color>
+    <color name="net_fee_vip_info">#7A6225</color>
+    <color name="net_fee_balance_text">#5D4F2B</color>
+    <color name="net_fee_balance">#372C11</color>
+    <color name="net_fee_divider_line">#DADADA</color>
 </resources>

@@ -16,4 +16,24 @@
     <string name="main_nav_btn_net_fee_recharge">网费充值</string>
     <string name="main_nav_btn_commodity">商品</string>
     <string name="main_nav_btn_order">订单</string>
+
+    <!-- 主界面-网费充值 -->
+    <string name="net_fee_vip_principal_balance">本金余额</string>
+    <string name="net_fee_vip_award_amount">奖励金额</string>
+    <string name="net_fee_vip_gabon">加本金</string>
+    <string name="net_fee_vip_bonus">加奖励金</string>
+    <string name="net_fee_vip_actual_payment_amount">实际付款金额</string>
+    <string name="net_fee_total">合计</string>
+    <string name="net_fee_rmb">¥</string>
+    <string name="net_fee_btn_go_shopping">去购物</string>
+    <string name="net_fee_btn_total">结算</string>
+    <string name="net_fee_btn_place_an_order">下订单</string>
+    <string name="net_fee_use_coupon">使用优惠券</string>
+    <string name="net_fee_payment_type">支付方式</string>
+    <string name="net_fee_payment_type_online">在线</string>
+    <string name="net_fee_payment_type_offline">客维</string>
+    <string name="net_fee_search_input_hint">输入机位号/身份证/姓名进行搜索</string>
+    <string name="net_fee_vip_info">会员信息</string>
+    <string name="net_fee_vip_info_delete">删除</string>
+    <string name="net_fee_use_coupon_format" formatted="true">￥%1$s</string>
 </resources>
