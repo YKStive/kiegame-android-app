@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="com.kiegame.mobile.model.LoginViewModel" />
+            type="com.kiegame.mobile.model.LoginModel" />
 
         <variable
             name="activity"

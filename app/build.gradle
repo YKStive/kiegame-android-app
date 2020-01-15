@@ -39,11 +39,11 @@ android {
     productFlavors {
         dev {
             resValue('string', 'app_name', '游易电竞-开发版')
-            buildConfigField "String", "SERVER_BASE", '"http://192.168.0.102/"'
+            buildConfigField "String", "SERVER_BASE", '"http://10.168.1.200:9000/"'
         }
         beta {
             resValue('string', 'app_name', '游易电竞-测试版')
-            buildConfigField "String", "SERVER_BASE", '"http://47.92.231.107/"'
+            buildConfigField "String", "SERVER_BASE", '"http://www.kiegame.com:9000/"'
         }
         pre {
             resValue('string', 'app_name', '游易电竞')
@@ -92,4 +92,8 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
     // banner
     implementation 'com.youth.banner:banner:1.4.10'
+    // RecyclerViewAdapter
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+    // 小红点
+    implementation 'q.rorbin:badgeview:1.1.3'
 }

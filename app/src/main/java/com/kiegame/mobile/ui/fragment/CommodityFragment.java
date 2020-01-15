@@ -4,6 +4,8 @@ import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentCommodityBinding;
 import com.kiegame.mobile.ui.base.BaseFragment;
 
+import q.rorbin.badgeview.QBadgeView;
+
 /**
  * Created by: var_rain.
  * Created date: 2020/1/7.
@@ -23,7 +25,9 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
 
     @Override
     protected void onView() {
-
+        new QBadgeView(getContext())
+                .bindTarget(binding.tvBadgeNum)
+                .setBadgeNumber(20);
     }
 
     @Override

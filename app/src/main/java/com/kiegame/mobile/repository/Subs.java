@@ -3,6 +3,7 @@ package com.kiegame.mobile.repository;
 import com.google.gson.JsonParseException;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.repository.entity.result.Result;
+import com.kiegame.mobile.utils.Loading;
 import com.kiegame.mobile.utils.Toast;
 
 import org.json.JSONException;
@@ -23,35 +24,62 @@ import retrofit2.HttpException;
  */
 public abstract class Subs<T> implements Observer<Result<T>> {
 
+    // 是否显示对话框,提示信息
+    private boolean isShowMsg;
+
+    /**
+     * 构造方法,默认显示对话框,提示信息
+     */
+    protected Subs() {
+        this.isShowMsg = true;
+    }
+
+    /**
+     * 构造方法
+     *
+     * @param isShowMsg 是否显示提示消息,加载框等
+     */
+    protected Subs(boolean isShowMsg) {
+        this.isShowMsg = isShowMsg;
+    }
+
     @Override
     public void onSubscribe(Disposable d) {
-
+        if (!d.isDisposed() && this.isShowMsg) {
+            Loading.show();
+        }
     }
 
     @Override
     public void onNext(Result<T> data) {
-        onCompleted();
-        if (data.getCode() == 200) {
-            onSuccess(data.getData());
+        if (this.isShowMsg) {
+            Loading.hide();
+        }
+        if (data.getCode() == 200 && data.isSuccess()) {
+            this.onSuccess(data.getData(), data.getTotal(), data.getLength());
         } else {
-            Toast.show(data.getMessage());
-            onFail();
+            if (this.isShowMsg) {
+                Toast.show(data.getMessage());
+            }
+            this.onFail();
         }
     }
 
     @Override
     public void onError(Throwable e) {
-        onCompleted();
-        if (e instanceof HttpException) {
-            Toast.show(R.string.toast_error_http);
-        } else if (e instanceof ConnectException || e instanceof UnknownHostException) {
-            Toast.show(R.string.toast_error_connect);
-        } else if (e instanceof InterruptedIOException) {
-            Toast.show(R.string.toast_error_time_out);
-        } else if (e instanceof JsonParseException || e instanceof JSONException || e instanceof ParseException) {
-            Toast.show(R.string.toast_error_data);
-        } else {
-            Toast.show(R.string.toast_error_unknown);
+        if (this.isShowMsg) {
+            Loading.hide();
+            if (e instanceof HttpException) {
+                Toast.show(R.string.toast_error_http);
+            } else if (e instanceof ConnectException || e instanceof UnknownHostException) {
+                Toast.show(R.string.toast_error_connect);
+            } else if (e instanceof InterruptedIOException) {
+                Toast.show(R.string.toast_error_time_out);
+            } else if (e instanceof JsonParseException || e instanceof JSONException || e instanceof ParseException) {
+                Toast.show(R.string.toast_error_data);
+            } else {
+                Toast.show(R.string.toast_error_unknown);
+            }
         }
         onFail();
     }
@@ -62,18 +90,11 @@ public abstract class Subs<T> implements Observer<Result<T>> {
     }
 
     /**
-     * 无论成功或失败都会调用此方法,用于处理加载动画和加载框等
-     */
-    public void onCompleted() {
-
-    }
-
-    /**
      * 请求成功
      *
      * @param data 返回数据
      */
-    public abstract void onSuccess(T data);
+    public abstract void onSuccess(T data, int total, int length);
 
     /**
      * 请求失败,需要时重写

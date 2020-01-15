@@ -4,8 +4,11 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
+import androidx.lifecycle.ViewModelProviders;
+
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentNetFeeBinding;
+import com.kiegame.mobile.model.NetFeeModel;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.youth.banner.loader.ImageLoader;
 
@@ -19,6 +22,8 @@ import java.util.List;
  */
 public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
 
+    private NetFeeModel model;
+
     @Override
     protected int onLayout() {
         return R.layout.fragment_net_fee;
@@ -26,7 +31,8 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
 
     @Override
     protected void onObject() {
-
+        model = ViewModelProviders.of(this).get(NetFeeModel.class);
+        binding.setModel(model);
     }
 
     @Override

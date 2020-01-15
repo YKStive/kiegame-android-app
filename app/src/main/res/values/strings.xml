@@ -6,6 +6,9 @@
     <string name="toast_error_data">数据异常</string>
     <string name="toast_error_unknown">未知错误</string>
 
+    <!-- 加载框 -->
+    <string name="app_loading">加载中......</string>
+
     <!-- 登录 -->
     <string name="login_input_password_hint">请输入密码</string>
     <string name="login_input_account_hint">请输入账号/用户名/手机号</string>
@@ -36,4 +39,13 @@
     <string name="net_fee_vip_info">会员信息</string>
     <string name="net_fee_vip_info_delete">删除</string>
     <string name="net_fee_use_coupon_format" formatted="true">￥%1$s</string>
+
+    <!-- 主界面-选择商品 -->
+    <string name="commodity_search_hint">搜索商品</string>
+    <string name="commodity_title">选择商品</string>
+
+    <!-- 主界面-订单列表 -->
+    <string name="order_list">订单列表</string>
+    <string name="order_wait_payment">待支付</string>
+    <string name="order_all">全部</string>
 </resources>

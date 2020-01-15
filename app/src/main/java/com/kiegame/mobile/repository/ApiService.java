@@ -1,6 +1,17 @@
 package com.kiegame.mobile.repository;
 
 import com.kiegame.mobile.BuildConfig;
+import com.kiegame.mobile.repository.entity.receive.UserLogin;
+import com.kiegame.mobile.repository.entity.result.Result;
+import com.kiegame.mobile.repository.entity.submit.SUserLogin;
+
+import java.util.List;
+
+import io.reactivex.Observable;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Created by: var_rain.
@@ -13,4 +24,19 @@ public interface ApiService {
     String BASE_URL = BuildConfig.SERVER_BASE;
     // 超时 (秒)
     int TIME_OUT = 15;
+
+    /**
+     * 用户登录
+     */
+    @POST("/app/login/userLogin")
+    Observable<Result<List<UserLogin>>> userLogin(@Body SUserLogin body);
+
+    /**
+     * 查询会员信息
+     */
+    @GET("app/buyOrder/listCustomerBase")
+    Observable<Result<List<Object>>> queryUserInfos(
+            // 机位号/身份证后4位/姓名
+            @Query("param") String param
+    );
 }

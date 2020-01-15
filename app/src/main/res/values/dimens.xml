@@ -44,6 +44,7 @@
     <dimen name="net_fee_address_margin_bottom">4dp</dimen>
     <dimen name="net_fee_address">12sp</dimen>
     <dimen name="net_fee_search_margin">16dp</dimen>
+    <dimen name="net_fee_search_margin_top">10dp</dimen>
     <dimen name="net_fee_search_padding">12dp</dimen>
     <dimen name="net_fee_search_input_margin_end">16dp</dimen>
     <dimen name="net_fee_search_input">14sp</dimen>
@@ -75,4 +76,10 @@
     <dimen name="net_fee_amount_padding_left_right">20dp</dimen>
     <dimen name="net_fee_amount_padding_top_bottom">10dp</dimen>
     <dimen name="net_fee_amount">15sp</dimen>
+    <dimen name="net_fee_divider_line_center_margin_top">16dp</dimen>
+    <dimen name="net_fee_divider_line_center_height">10dp</dimen>
+    <dimen name="net_fee_btn_use_coupon_padding">16dp</dimen>
+    <dimen name="net_fee_use_coupon_text">14sp</dimen>
+    <dimen name="shop_norm">10sp</dimen>
+    <dimen name="shop_name">15sp</dimen>
 </resources>

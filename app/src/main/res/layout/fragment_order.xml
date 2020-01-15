@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -9,5 +11,116 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/tv_title_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_commodity_background"
+            app:layout_constraintBottom_toTopOf="@id/tl_order_tab"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.kiegame.mobile.ui.views.StatusBar
+            android:id="@+id/sb_status_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_page_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/net_fee_page_title_margin_start"
+            android:layout_marginTop="@dimen/net_fee_page_title_margin_top"
+            android:text="@string/order_list"
+            android:textColor="@color/white"
+            android:textSize="@dimen/net_fee_page_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sb_status_bar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/net_fee_address_margin_end"
+            android:layout_marginBottom="@dimen/net_fee_address_margin_bottom"
+            android:textColor="@color/white"
+            android:textSize="@dimen/net_fee_address"
+            app:layout_constraintBottom_toBottomOf="@id/tv_page_title"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:text="奥克斯店铺 / 张某某" />
+
+        <LinearLayout
+            android:id="@+id/ll_search"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="@dimen/net_fee_search_margin"
+            android:layout_marginTop="@dimen/net_fee_search_margin_top"
+            android:layout_marginRight="@dimen/net_fee_search_margin"
+            android:background="@drawable/shape_search_input_background"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_page_title">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/net_fee_search_padding"
+                android:src="@drawable/ic_left_back" />
+
+            <TextView
+                android:id="@+id/tv_order_create_time"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                tools:text="2020-01-12" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/net_fee_search_padding"
+                android:rotation="180"
+                android:src="@drawable/ic_left_back" />
+        </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_order_tab"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_search"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="#FFE100"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorGravity="bottom"
+            app:tabIndicatorHeight="7dp"
+            app:tabMode="fixed"
+            app:tabPaddingTop="10dp"
+            app:tabSelectedTextColor="#111111"
+            app:tabTextColor="#666666">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/order_wait_payment" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/order_all" />
+        </com.google.android.material.tabs.TabLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
