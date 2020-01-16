@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
-import com.kiegame.mobile.repository.entity.receive.UserLogin;
-import com.kiegame.mobile.repository.entity.submit.SUserLogin;
+import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.submit.UserLogin;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.utils.Prefer;
 
@@ -24,7 +24,7 @@ public class SplashModel extends ViewModel {
     public String account;
     public String password;
 
-    private MutableLiveData<UserLogin> login;
+    private MutableLiveData<LoginEntity> login;
 
     public SplashModel() {
         this.account = Prefer.get(Setting.USER_LOGIN_ACCOUNT, "");
@@ -36,16 +36,16 @@ public class SplashModel extends ViewModel {
     /**
      * 登录
      */
-    public LiveData<UserLogin> autoLogin() {
-        SUserLogin bean = new SUserLogin();
+    public LiveData<LoginEntity> autoLogin() {
+        UserLogin bean = new UserLogin();
         bean.setLoginCode(account);
         bean.setLoginPass(password);
         bean.setLoginType(1);
         Network.api().userLogin(bean)
                 .compose(Scheduler.apply())
-                .subscribe(new Subs<List<UserLogin>>(false) {
+                .subscribe(new Subs<List<LoginEntity>>(false) {
                     @Override
-                    public void onSuccess(List<UserLogin> data, int total, int length) {
+                    public void onSuccess(List<LoginEntity> data, int total, int length) {
                         login.postValue(data.get(0));
                     }
 

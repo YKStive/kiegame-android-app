@@ -1,9 +1,10 @@
 package com.kiegame.mobile.repository;
 
 import com.kiegame.mobile.BuildConfig;
-import com.kiegame.mobile.repository.entity.receive.UserLogin;
+import com.kiegame.mobile.repository.entity.receive.BannerEntity;
+import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.result.Result;
-import com.kiegame.mobile.repository.entity.submit.SUserLogin;
+import com.kiegame.mobile.repository.entity.submit.UserLogin;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface ApiService {
      * 用户登录
      */
     @POST("/app/login/userLogin")
-    Observable<Result<List<UserLogin>>> userLogin(@Body SUserLogin body);
+    Observable<Result<List<LoginEntity>>> userLogin(@Body UserLogin body);
 
     /**
      * 查询会员信息
@@ -38,5 +39,14 @@ public interface ApiService {
     Observable<Result<List<Object>>> queryUserInfos(
             // 机位号/身份证后4位/姓名
             @Query("param") String param
+    );
+
+    /**
+     * 查询Banner图
+     */
+    @GET("app/bannerManage/queryBannerList")
+    Observable<Result<List<BannerEntity>>> queryBannerList(
+            // 轮播图位置 1:PC端 2:移动端
+            @Query("bannerType") Integer bannerType
     );
 }

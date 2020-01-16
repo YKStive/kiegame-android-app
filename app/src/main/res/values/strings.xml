@@ -39,6 +39,7 @@
     <string name="net_fee_vip_info">会员信息</string>
     <string name="net_fee_vip_info_delete">删除</string>
     <string name="net_fee_use_coupon_format" formatted="true">￥%1$s</string>
+    <string name="net_fee_pay_shop">购买商品</string>
 
     <!-- 主界面-选择商品 -->
     <string name="commodity_search_hint">搜索商品</string>
@@ -48,4 +49,8 @@
     <string name="order_list">订单列表</string>
     <string name="order_wait_payment">待支付</string>
     <string name="order_all">全部</string>
+    <string name="money_10">10.00</string>
+    <string name="money_20">20.00</string>
+    <string name="money_50">50.00</string>
+    <string name="money_100">100.00</string>
 </resources>

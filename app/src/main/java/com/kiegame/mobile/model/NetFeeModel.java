@@ -1,11 +1,18 @@
 package com.kiegame.mobile.model;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.kiegame.mobile.repository.entity.receive.UserLogin;
+import com.kiegame.mobile.repository.Network;
+import com.kiegame.mobile.repository.Scheduler;
+import com.kiegame.mobile.repository.Subs;
+import com.kiegame.mobile.repository.entity.receive.BannerEntity;
+import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.utils.PreferPlus;
+
+import java.util.List;
 
 /**
  * Created by: var_rain.
@@ -14,21 +21,66 @@ import com.kiegame.mobile.utils.PreferPlus;
  */
 public class NetFeeModel extends ViewModel {
 
-    public MutableLiveData<String> addressName;
-    private UserLogin login;
+    public MutableLiveData<String> userSearch;
+    public MutableLiveData<String> userName;
+    public MutableLiveData<String> amount;
+    public MutableLiveData<String> award;
+    public MutableLiveData<String> gabon;
+    public MutableLiveData<String> bonus;
+    public MutableLiveData<String> recharge;
+    public MutableLiveData<Boolean> showDeleteBtn;
+    public MutableLiveData<Boolean> paymentOnline;
+    public MutableLiveData<Boolean> paymentOffline;
+
+    public LoginEntity login;
+
+    private MutableLiveData<List<BannerEntity>> banner;
 
     public NetFeeModel() {
-        this.login = PreferPlus.get(Setting.USER_LOGIN_OBJECT, UserLogin.class);
+        this.login = PreferPlus.get(Setting.USER_LOGIN_OBJECT, LoginEntity.class);
 
-        this.addressName = new MutableLiveData<>();
+        this.userSearch = new MutableLiveData<>();
+        this.userName = new MutableLiveData<>();
+        this.amount = new MutableLiveData<>();
+        this.award = new MutableLiveData<>();
+        this.gabon = new MutableLiveData<>();
+        this.bonus = new MutableLiveData<>();
+        this.recharge = new MutableLiveData<>();
+        this.showDeleteBtn = new MutableLiveData<>();
+        this.paymentOnline = new MutableLiveData<>();
+        this.paymentOffline = new MutableLiveData<>();
 
-        this.initUserData();
+        this.banner = new MutableLiveData<>();
+
+        this.initData();
     }
 
     /**
      * 初始化用户数据
      */
-    private void initUserData() {
-        addressName.setValue(String.format("%s / %s", login.getServiceName(), login.getEmpName()));
+    private void initData() {
+        this.userName.setValue("没有选择会员");
+        this.showDeleteBtn.setValue(false);
+        this.amount.setValue("0");
+        this.award.setValue("0");
+        this.gabon.setValue("0");
+        this.bonus.setValue("0");
+        this.recharge.setValue("0.00");
+        this.paymentOnline.setValue(true);
+    }
+
+    /**
+     * 查询banner图
+     */
+    public LiveData<List<BannerEntity>> queryBanner() {
+        Network.api().queryBannerList(2)
+                .compose(Scheduler.apply())
+                .subscribe(new Subs<List<BannerEntity>>(false) {
+                    @Override
+                    public void onSuccess(List<BannerEntity> data, int total, int length) {
+                        banner.setValue(data);
+                    }
+                });
+        return this.banner;
     }
 }

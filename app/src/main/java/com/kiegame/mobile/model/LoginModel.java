@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
-import com.kiegame.mobile.repository.entity.receive.UserLogin;
-import com.kiegame.mobile.repository.entity.submit.SUserLogin;
+import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.submit.UserLogin;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class LoginModel extends ViewModel {
     public MutableLiveData<String> password;
     public MutableLiveData<Boolean> keepPassword;
 
-    private MutableLiveData<UserLogin> login;
+    private MutableLiveData<LoginEntity> login;
 
     public LoginModel() {
         this.password = new MediatorLiveData<>();
@@ -37,17 +37,17 @@ public class LoginModel extends ViewModel {
     /**
      * 登录
      */
-    public LiveData<UserLogin> login() {
-        SUserLogin bean = new SUserLogin();
+    public LiveData<LoginEntity> login() {
+        UserLogin bean = new UserLogin();
         bean.setLoginCode(username.getValue());
         bean.setLoginPass(password.getValue());
         bean.setLoginType(1);
         Network.api().userLogin(bean)
                 .compose(Scheduler.apply())
-                .subscribe(new Subs<List<UserLogin>>() {
+                .subscribe(new Subs<List<LoginEntity>>() {
                     @Override
-                    public void onSuccess(List<UserLogin> data, int total, int length) {
-                        login.postValue(data.get(0));
+                    public void onSuccess(List<LoginEntity> data, int total, int length) {
+                        login.setValue(data.get(0));
                     }
                 });
         return this.login;

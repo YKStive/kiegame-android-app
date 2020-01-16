@@ -1,5 +1,7 @@
 package com.kiegame.mobile.repository;
 
+import com.kiegame.mobile.repository.interceptor.TokenInterceptor;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -35,6 +37,7 @@ public class Network {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.level(HttpLoggingInterceptor.Level.BODY);
         return new OkHttpClient.Builder()
+                .addInterceptor(new TokenInterceptor())
                 .addInterceptor(loggingInterceptor)
                 .connectTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS)
                 .readTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS)

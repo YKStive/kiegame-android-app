@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivitySplashBinding;
 import com.kiegame.mobile.model.SplashModel;
-import com.kiegame.mobile.repository.entity.receive.UserLogin;
+import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.Prefer;
@@ -77,7 +77,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
      *
      * @param data 数据对象
      */
-    private void loginResult(UserLogin data) {
+    private void loginResult(LoginEntity data) {
         if (data != null) {
             Prefer.put(Setting.APP_NETWORK_TOKEN, data.getLoginToken());
 

@@ -5,9 +5,19 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="user"
+            type="com.kiegame.mobile.repository.entity.receive.LoginEntity" />
+
         <variable
             name="model"
             type="com.kiegame.mobile.model.NetFeeModel" />
+
+        <variable
+            name="fragment"
+            type="com.kiegame.mobile.ui.fragment.NetFeeFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/net_fee_address_margin_end"
             android:layout_marginBottom="@dimen/net_fee_address_margin_bottom"
-            android:text="@{model.addressName}"
+            android:text='@{String.format("%s / %s", model.login.getServiceName(), model.login.getEmpName())}'
             android:textColor="@color/white"
             android:textSize="@dimen/net_fee_address"
             app:layout_constraintBottom_toBottomOf="@id/tv_page_title"
@@ -90,6 +100,7 @@
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:lines="1"
+                android:text="@={model.userSearch}"
                 android:textColor="@color/white"
                 android:textColorHint="@color/net_fee_search_input_hint"
                 android:textSize="@dimen/net_fee_search_input" />
@@ -158,6 +169,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
+                    android:text="@{model.userName}"
                     android:textColor="@color/net_fee_vip_info"
                     android:textSize="@dimen/net_fee_vip_info"
                     tools:text="B012｜510*************4612｜李某某" />
@@ -166,13 +178,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_vip_btn_background"
+                    android:onClick="@{()->fragment.deleteVipInfo()}"
                     android:paddingLeft="@dimen/net_fee_vip_info_delete_padding_left_right"
                     android:paddingTop="@dimen/net_fee_vip_info_delete_padding_top_bottom"
                     android:paddingRight="@dimen/net_fee_vip_info_delete_padding_left_right"
                     android:paddingBottom="@dimen/net_fee_vip_info_delete_padding_top_bottom"
                     android:text="@string/net_fee_vip_info_delete"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/net_fee_vip_info_btn_delete" />
+                    android:textSize="@dimen/net_fee_vip_info_btn_delete"
+                    android:visibility="@{model.showDeleteBtn ? View.VISIBLE : View.GONE}" />
             </LinearLayout>
 
             <LinearLayout
@@ -208,6 +222,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{model.amount}"
                         android:textColor="@color/net_fee_balance"
                         android:textSize="@dimen/net_fee_balance"
                         tools:text="5.00" />
@@ -232,6 +247,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{model.award}"
                         android:textColor="@color/net_fee_balance"
                         android:textSize="@dimen/net_fee_balance"
                         tools:text="10.00" />
@@ -256,6 +272,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{model.gabon}"
                         android:textColor="@color/net_fee_balance"
                         android:textSize="@dimen/net_fee_balance"
                         tools:text="100.00" />
@@ -280,6 +297,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{model.bonus}"
                         android:textColor="@color/net_fee_balance"
                         android:textSize="@dimen/net_fee_balance"
                         tools:text="30.00" />
@@ -327,6 +345,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/net_fee_payment_amount_margin_end"
+                        android:text="@{model.recharge}"
                         android:textColor="@color/black_text"
                         android:textSize="@dimen/net_fee_payment_amount"
                         app:layout_constraintBottom_toBottomOf="@id/tv_actual_payment_amount"
@@ -350,18 +369,19 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/net_fee_amount_margin_top"
                         android:layout_marginBottom="16dp"
-                        android:background="@drawable/shape_net_fee_press_border"
+                        android:background="@drawable/shape_net_fee_none_border"
+                        android:onClick="@{(view)->fragment.recharge(view,10)}"
                         android:paddingLeft="@dimen/net_fee_amount_padding_left_right"
                         android:paddingTop="@dimen/net_fee_amount_padding_top_bottom"
                         android:paddingRight="@dimen/net_fee_amount_padding_left_right"
                         android:paddingBottom="@dimen/net_fee_amount_padding_top_bottom"
+                        android:text="@string/money_10"
                         android:textColor="@color/black_text"
                         android:textSize="@dimen/net_fee_amount"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toLeftOf="@id/tv_amount_20"
-                        app:layout_constraintTop_toBottomOf="@id/vv_divider_line"
-                        tools:text="10.00" />
+                        app:layout_constraintTop_toBottomOf="@id/vv_divider_line" />
 
                     <TextView
                         android:id="@+id/tv_amount_20"
@@ -370,17 +390,18 @@
                         android:layout_marginTop="@dimen/net_fee_amount_margin_top"
                         android:layout_marginBottom="16dp"
                         android:background="@drawable/shape_net_fee_none_border"
+                        android:onClick="@{(view)->fragment.recharge(view,20)}"
                         android:paddingLeft="@dimen/net_fee_amount_padding_left_right"
                         android:paddingTop="@dimen/net_fee_amount_padding_top_bottom"
                         android:paddingRight="@dimen/net_fee_amount_padding_left_right"
                         android:paddingBottom="@dimen/net_fee_amount_padding_top_bottom"
+                        android:text="@string/money_20"
                         android:textColor="@color/black_text"
                         android:textSize="@dimen/net_fee_amount"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/tv_amount_10"
                         app:layout_constraintRight_toLeftOf="@id/tv_amount_50"
-                        app:layout_constraintTop_toBottomOf="@id/vv_divider_line"
-                        tools:text="20.00" />
+                        app:layout_constraintTop_toBottomOf="@id/vv_divider_line" />
 
                     <TextView
                         android:id="@+id/tv_amount_50"
@@ -389,17 +410,18 @@
                         android:layout_marginTop="@dimen/net_fee_amount_margin_top"
                         android:layout_marginBottom="16dp"
                         android:background="@drawable/shape_net_fee_none_border"
+                        android:onClick="@{(view)->fragment.recharge(view,50)}"
                         android:paddingLeft="@dimen/net_fee_amount_padding_left_right"
                         android:paddingTop="@dimen/net_fee_amount_padding_top_bottom"
                         android:paddingRight="@dimen/net_fee_amount_padding_left_right"
                         android:paddingBottom="@dimen/net_fee_amount_padding_top_bottom"
+                        android:text="@string/money_50"
                         android:textColor="@color/black_text"
                         android:textSize="@dimen/net_fee_amount"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/tv_amount_20"
                         app:layout_constraintRight_toLeftOf="@id/tv_amount_100"
-                        app:layout_constraintTop_toBottomOf="@id/vv_divider_line"
-                        tools:text="50.00" />
+                        app:layout_constraintTop_toBottomOf="@id/vv_divider_line" />
 
                     <TextView
                         android:id="@+id/tv_amount_100"
@@ -408,17 +430,18 @@
                         android:layout_marginTop="@dimen/net_fee_amount_margin_top"
                         android:layout_marginBottom="16dp"
                         android:background="@drawable/shape_net_fee_none_border"
+                        android:onClick="@{(view)->fragment.recharge(view,100)}"
                         android:paddingLeft="@dimen/net_fee_amount_padding_left_right"
                         android:paddingTop="@dimen/net_fee_amount_padding_top_bottom"
                         android:paddingRight="@dimen/net_fee_amount_padding_left_right"
                         android:paddingBottom="@dimen/net_fee_amount_padding_top_bottom"
+                        android:text="@string/money_100"
                         android:textColor="@color/black_text"
                         android:textSize="@dimen/net_fee_amount"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/tv_amount_50"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/vv_divider_line"
-                        tools:text="100.00" />
+                        app:layout_constraintTop_toBottomOf="@id/vv_divider_line" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
@@ -497,6 +520,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="15dp"
                             android:button="@drawable/selector_radio_background"
+                            android:checked="@={model.paymentOnline}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_online"
@@ -509,6 +533,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
                             android:button="@drawable/selector_radio_background"
+                            android:checked="@={model.paymentOffline}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_offline"
@@ -534,7 +559,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/net_fee_use_coupon"
+                        android:text="@string/net_fee_pay_shop"
                         android:textColor="@color/black_text"
                         android:textSize="14sp" />
 

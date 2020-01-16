@@ -5,7 +5,7 @@ package com.kiegame.mobile.repository.entity.receive;
  * Created date: 2020/1/14.
  * Description: 用户登录返回数据对象
  */
-public class UserLogin {
+public class LoginEntity {
 
     /**
      * empId : 80803503964748839937

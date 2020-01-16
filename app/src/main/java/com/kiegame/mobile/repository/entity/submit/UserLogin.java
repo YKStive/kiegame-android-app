@@ -5,7 +5,7 @@ package com.kiegame.mobile.repository.entity.submit;
  * Created date: 2020/1/14.
  * Description:
  */
-public class SUserLogin {
+public class UserLogin {
 
     // *登录名
     private String loginCode;
