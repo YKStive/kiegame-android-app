@@ -3,6 +3,7 @@ package com.kiegame.mobile.repository;
 import com.kiegame.mobile.BuildConfig;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.result.Result;
 import com.kiegame.mobile.repository.entity.submit.UserLogin;
 
@@ -36,7 +37,7 @@ public interface ApiService {
      * 查询会员信息
      */
     @GET("app/buyOrder/listCustomerBase")
-    Observable<Result<List<Object>>> queryUserInfos(
+    Observable<Result<List<UserInfoEntity>>> queryUserInfos(
             // 机位号/身份证后4位/姓名
             @Query("param") String param
     );

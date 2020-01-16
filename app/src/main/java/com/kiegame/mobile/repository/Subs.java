@@ -56,12 +56,12 @@ public abstract class Subs<T> implements Observer<Result<T>> {
             Loading.hide();
         }
         if (data.getCode() == 200 && data.isSuccess()) {
-            this.onSuccess(data.getData(), data.getTotal(), data.getLength());
+            onSuccess(data.getData(), data.getTotal(), data.getLength());
         } else {
             if (this.isShowMsg) {
                 Toast.show(data.getMessage());
             }
-            this.onFail();
+            onFail();
         }
     }
 

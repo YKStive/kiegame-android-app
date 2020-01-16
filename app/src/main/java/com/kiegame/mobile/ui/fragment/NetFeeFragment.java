@@ -1,18 +1,30 @@
 package com.kiegame.mobile.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentNetFeeBinding;
+import com.kiegame.mobile.databinding.ViewSearchAutoFillBinding;
 import com.kiegame.mobile.model.NetFeeModel;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
+import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.ui.base.BaseFragment;
+import com.kiegame.mobile.utils.Text;
+import com.kiegame.mobile.utils.Toast;
 import com.youth.banner.loader.ImageLoader;
 
 import java.util.List;
@@ -26,6 +38,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
 
     private NetFeeModel model;
     private TextView moneyBtn;
+    private PopupWindow pw;
+    private LinearLayout list;
+    private LayoutInflater inflater;
 
     @Override
     protected int onLayout() {
@@ -37,6 +52,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         model = ViewModelProviders.of(this).get(NetFeeModel.class);
         binding.setModel(model);
         binding.setFragment(this);
+        model.userSearch.observe(this, this::searchUserInfoList);
     }
 
     @Override
@@ -55,6 +71,21 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     }
 
     /**
+     * 搜索用户信息列表
+     *
+     * @param keywords 关键字
+     */
+    private void searchUserInfoList(String keywords) {
+        if (Text.empty(keywords) && pw != null) {
+            pw.dismiss();
+            return;
+        }
+        LiveData<List<UserInfoEntity>> data = model.searchUserInfos(keywords);
+        data.removeObservers(this);
+        data.observe(this, this::searchUserInfosResult);
+    }
+
+    /**
      * banner数据处理
      *
      * @param data 数据对象
@@ -62,6 +93,40 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private void queryBannerResult(List<BannerEntity> data) {
         binding.bnBanner.setImages(data);
         binding.bnBanner.start();
+    }
+
+    /**
+     * 查询用户数据返回处理
+     *
+     * @param data 数据对象
+     */
+    @SuppressLint("InflateParams")
+    private void searchUserInfosResult(List<UserInfoEntity> data) {
+        if (pw == null) {
+            inflater = LayoutInflater.from(this.getContext());
+            ViewSearchAutoFillBinding vaf = DataBindingUtil.inflate(inflater, R.layout.view_search_auto_fill, null, false);
+            list = vaf.llSearchList;
+            pw = new PopupWindow(this.getContext());
+            pw.setContentView(vaf.getRoot());
+            pw.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.translucent)));
+            pw.setFocusable(false);
+            pw.setOutsideTouchable(false);
+            pw.setSplitTouchEnabled(true);
+        }
+        list.removeAllViews();
+        for (UserInfoEntity entity : data) {
+            View view = inflater.inflate(R.layout.item_search_user_info, null, false);
+            TextView tv = view.findViewById(R.id.tv_user_item);
+            tv.setText(entity.getCustomerName());
+            tv.setOnClickListener(v -> {
+                model.userSearch.setValue("");
+                Toast.show(entity.getCustomerName());
+            });
+            list.addView(view);
+        }
+        pw.showAsDropDown(binding.llSearch);
     }
 
     /**
