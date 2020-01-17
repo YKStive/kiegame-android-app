@@ -6,19 +6,19 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentNetFeeBinding;
-import com.kiegame.mobile.databinding.ViewSearchAutoFillBinding;
 import com.kiegame.mobile.model.NetFeeModel;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
@@ -76,13 +76,14 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * @param keywords 关键字
      */
     private void searchUserInfoList(String keywords) {
-        if (Text.empty(keywords) && pw != null) {
+        if (Text.empty(keywords) && pw != null && pw.isShowing()) {
             pw.dismiss();
-            return;
+        } else {
+            LiveData<List<UserInfoEntity>> data = model.searchUserInfos(keywords);
+            if (!data.hasObservers()) {
+                data.observe(this, this::searchUserInfosResult);
+            }
         }
-        LiveData<List<UserInfoEntity>> data = model.searchUserInfos(keywords);
-        data.removeObservers(this);
-        data.observe(this, this::searchUserInfosResult);
     }
 
     /**
@@ -104,29 +105,54 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private void searchUserInfosResult(List<UserInfoEntity> data) {
         if (pw == null) {
             inflater = LayoutInflater.from(this.getContext());
-            ViewSearchAutoFillBinding vaf = DataBindingUtil.inflate(inflater, R.layout.view_search_auto_fill, null, false);
-            list = vaf.llSearchList;
+            View view = inflater.inflate(R.layout.view_search_auto_fill, null, false);
+            list = view.findViewById(R.id.ll_search_list);
             pw = new PopupWindow(this.getContext());
-            pw.setContentView(vaf.getRoot());
+            pw.setContentView(view);
             pw.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
             pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
             pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.translucent)));
-            pw.setFocusable(false);
             pw.setOutsideTouchable(false);
             pw.setSplitTouchEnabled(true);
         }
-        list.removeAllViews();
-        for (UserInfoEntity entity : data) {
-            View view = inflater.inflate(R.layout.item_search_user_info, null, false);
-            TextView tv = view.findViewById(R.id.tv_user_item);
-            tv.setText(entity.getCustomerName());
-            tv.setOnClickListener(v -> {
-                model.userSearch.setValue("");
-                Toast.show(entity.getCustomerName());
-            });
-            list.addView(view);
+        if (data != null && !data.isEmpty()) {
+            list.removeAllViews();
+            for (UserInfoEntity entity : data) {
+                View view = inflater.inflate(R.layout.item_search_user_info, null, false);
+                TextView tv = view.findViewById(R.id.tv_user_item);
+                tv.setText(entity.getCustomerName());
+                tv.setOnClickListener(v -> {
+                    model.userSearch.setValue("");
+                    hideInputMethod();
+                    binding.etSearchInput.clearFocus();
+                    Toast.show(entity.getCustomerName());
+                });
+                list.addView(view);
+            }
+            if (!pw.isShowing()) {
+                pw.showAsDropDown(binding.llSearch);
+            }
+        } else {
+            if (pw.isShowing()) {
+                pw.dismiss();
+            }
         }
-        pw.showAsDropDown(binding.llSearch);
+    }
+
+    /**
+     * 隐藏输入法
+     */
+    private void hideInputMethod() {
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+                View focus = activity.getCurrentFocus();
+                if (focus != null) {
+                    inputMethodManager.hideSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+            }
+        }
     }
 
     /**

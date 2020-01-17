@@ -9,14 +9,14 @@ public class UserInfoEntity {
 
     /**
      * customerType : 1
-     * gender : 1
-     * phone : 15928877474
-     * bonusBalance : 10870
-     * idCard : 510722199601056358
-     * customerId : 1
-     * accountBalance : 59670
-     * customerLevel : 1
-     * customerName : 潘贵宝
+     * gender : 2
+     * phone : 18223193517
+     * bonusBalance : 2000
+     * idCard : 51382319961202003X
+     * customerId : 3563317457976320
+     * accountBalance : 10000
+     * customerLevel : 普通会员
+     * customerName : 陈翔宇
      */
 
     private int customerType;
@@ -26,7 +26,7 @@ public class UserInfoEntity {
     private String idCard;
     private String customerId;
     private int accountBalance;
-    private int customerLevel;
+    private String customerLevel;
     private String customerName;
 
     public int getCustomerType() {
@@ -85,11 +85,11 @@ public class UserInfoEntity {
         this.accountBalance = accountBalance;
     }
 
-    public int getCustomerLevel() {
+    public String getCustomerLevel() {
         return customerLevel;
     }
 
-    public void setCustomerLevel(int customerLevel) {
+    public void setCustomerLevel(String customerLevel) {
         this.customerLevel = customerLevel;
     }
 
