@@ -28,6 +28,7 @@ public class UserInfoEntity {
     private int accountBalance;
     private String customerLevel;
     private String customerName;
+    private String seatNumber;
 
     public int getCustomerType() {
         return customerType;
@@ -99,5 +100,13 @@ public class UserInfoEntity {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public String getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(String seatNumber) {
+        this.seatNumber = seatNumber;
     }
 }

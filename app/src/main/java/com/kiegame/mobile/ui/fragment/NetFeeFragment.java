@@ -22,11 +22,13 @@ import com.kiegame.mobile.databinding.FragmentNetFeeBinding;
 import com.kiegame.mobile.model.NetFeeModel;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
+import com.kiegame.mobile.ui.activity.MainActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.utils.Text;
-import com.kiegame.mobile.utils.Toast;
 import com.youth.banner.loader.ImageLoader;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -120,12 +122,20 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             for (UserInfoEntity entity : data) {
                 View view = inflater.inflate(R.layout.item_search_user_info, null, false);
                 TextView tv = view.findViewById(R.id.tv_user_item);
-                tv.setText(entity.getCustomerName());
+                String item;
+                if (Text.empty(entity.getSeatNumber())) {
+                    item = String.format("       %s | %s", entity.getIdCard(), entity.getCustomerName());
+                } else {
+                    item = String.format("%s | %s | %s", entity.getSeatNumber(), entity.getIdCard(), entity.getCustomerName());
+                }
+                tv.setText(item);
                 tv.setOnClickListener(v -> {
                     model.userSearch.setValue("");
                     hideInputMethod();
                     binding.etSearchInput.clearFocus();
-                    Toast.show(entity.getCustomerName());
+                    model.userName.setValue(tv.getText().toString());
+                    model.amount.setValue(cal(entity.getAccountBalance()));
+                    model.award.setValue(cal(entity.getBonusBalance()));
                 });
                 list.addView(view);
             }
@@ -137,6 +147,19 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 pw.dismiss();
             }
         }
+    }
+
+    /**
+     * 计算金额,分转换位元,保留两位
+     *
+     * @param money 金额, 分
+     * @return 转换后的金额, 元
+     */
+    private String cal(int money) {
+        BigDecimal source = new BigDecimal(money);
+        BigDecimal ratio = new BigDecimal(100);
+        BigDecimal divide = source.divide(ratio, 2, RoundingMode.HALF_UP);
+        return divide.toString();
     }
 
     /**
@@ -159,7 +182,11 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 删除会员
      */
     public void deleteVipInfo() {
-
+        if (this.moneyBtn != null) {
+            this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
+        }
+        this.model.recharge.setValue("0.00");
+        model.resetData();
     }
 
     /**
@@ -175,5 +202,30 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         this.moneyBtn = (TextView) view;
         this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_press_border);
         this.model.recharge.setValue(String.format("%s.00", money));
+        this.model.gabon.setValue(String.format("%s.00", money));
+    }
+
+    /**
+     * 去购物
+     */
+    public void goShopping() {
+        MainActivity activity = (MainActivity) getActivity();
+        if (activity != null) {
+            activity.setCurrentPage(1);
+        }
+    }
+
+    /**
+     * 结算
+     */
+    public void totalShop() {
+
+    }
+
+    /**
+     * 下订单
+     */
+    public void createOrder() {
+
     }
 }

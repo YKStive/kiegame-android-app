@@ -29,9 +29,10 @@ public class NetFeeModel extends ViewModel {
     public MutableLiveData<String> gabon;
     public MutableLiveData<String> bonus;
     public MutableLiveData<String> recharge;
-    public MutableLiveData<Boolean> showDeleteBtn;
     public MutableLiveData<Boolean> paymentOnline;
     public MutableLiveData<Boolean> paymentOffline;
+    public MutableLiveData<String> paymentShop;
+    public MutableLiveData<String> paymentTotal;
 
     public LoginEntity login;
 
@@ -48,9 +49,10 @@ public class NetFeeModel extends ViewModel {
         this.gabon = new MutableLiveData<>();
         this.bonus = new MutableLiveData<>();
         this.recharge = new MutableLiveData<>();
-        this.showDeleteBtn = new MutableLiveData<>();
         this.paymentOnline = new MutableLiveData<>();
         this.paymentOffline = new MutableLiveData<>();
+        this.paymentShop = new MutableLiveData<>();
+        this.paymentTotal = new MutableLiveData<>();
 
         this.banner = new MutableLiveData<>();
         this.userInfos = new MutableLiveData<>();
@@ -63,13 +65,22 @@ public class NetFeeModel extends ViewModel {
      */
     private void initData() {
         this.userName.setValue("没有选择会员");
-        this.showDeleteBtn.setValue(false);
         this.amount.setValue("0");
         this.award.setValue("0");
         this.gabon.setValue("0");
         this.bonus.setValue("0");
         this.recharge.setValue("0.00");
         this.paymentOnline.setValue(true);
+        this.paymentOffline.setValue(false);
+        this.paymentShop.setValue("￥0.00");
+        this.paymentTotal.setValue("0.00");
+    }
+
+    /**
+     * 重置数据
+     */
+    public void resetData() {
+        this.initData();
     }
 
     /**
