@@ -53,4 +53,9 @@
     <string name="money_20">20.00</string>
     <string name="money_50">50.00</string>
     <string name="money_100">100.00</string>
+    <string name="zero">0</string>
+    <string name="wait_pay_select_all">全选</string>
+    <string name="wait_pay_order_payment_btn">支&#160;付</string>
+    <string name="wait_payment_to_pay">去支付</string>
+    <string name="wait_payment_cancel_pay">取消订单</string>
 </resources>

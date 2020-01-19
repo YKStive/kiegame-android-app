@@ -13,11 +13,11 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/app_name"
-        android:src="@mipmap/ic_launcher"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="W,1:1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/tv_shop_name"
@@ -83,6 +83,7 @@
         android:gravity="center"
         android:maxLength="4"
         android:maxLines="1"
+        android:text="@string/zero"
         android:textColor="#282828"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@id/iv_shop_image"
@@ -97,6 +98,7 @@
         android:layout_marginEnd="5dp"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_less_btn"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/iv_shop_image"
         app:layout_constraintRight_toLeftOf="@id/tv_shop_num" />
 </androidx.constraintlayout.widget.ConstraintLayout>

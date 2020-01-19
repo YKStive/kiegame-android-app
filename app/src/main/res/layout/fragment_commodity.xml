@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="model"
+            type="com.kiegame.mobile.model.CommodityModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/net_fee_address_margin_end"
             android:layout_marginBottom="@dimen/net_fee_address_margin_bottom"
+            android:text='@{String.format("%s / %s", model.login.getServiceName(), model.login.getEmpName())}'
             android:textColor="@color/white"
             android:textSize="@dimen/net_fee_address"
             app:layout_constraintBottom_toBottomOf="@id/tv_page_title"

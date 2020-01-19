@@ -62,4 +62,5 @@
     <color name="net_fee_total">#DE2F2B</color>
     <color name="net_fee_total_money">#DE2F2B</color>
     <color name="net_fee_option_btn">#272727</color>
+    <color name="wait_pay_state">#DE2F2B</color>
 </resources>

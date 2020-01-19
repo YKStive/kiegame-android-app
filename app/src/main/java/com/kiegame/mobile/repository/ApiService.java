@@ -1,10 +1,15 @@
 package com.kiegame.mobile.repository;
 
 import com.kiegame.mobile.BuildConfig;
+import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
+import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.receive.ShopEntity;
+import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.result.Result;
+import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.UserLogin;
 
 import java.util.List;
@@ -49,5 +54,59 @@ public interface ApiService {
     Observable<Result<List<BannerEntity>>> queryBannerList(
             // 轮播图位置 1:PC端 2:移动端
             @Query("bannerType") Integer bannerType
+    );
+
+    /**
+     * 充值下订单结算
+     */
+    @POST("app/buyOrder/addOrder")
+    Observable<Result<List<AddOrderEntity>>> addOrder(@Body AddOrder body);
+
+    /**
+     * 售卖商品分类查询
+     */
+    @GET("app/tagBase/listTagBase")
+    Observable<Result<List<ShopSortEntity>>> listTag(
+            @Query("tagType") Integer tagType
+    );
+
+    /**
+     * 查询售卖商品
+     */
+    @GET("app/serviceProduct/listServiceBuyProduct")
+    Observable<Result<List<ShopEntity>>> queryShops(
+            // 门店ID
+            @Query("serviceId") String serviceId,
+            // 分类ID
+            @Query("productTypeId") String productTypeId,
+            // 名称
+            @Query("productName") String productName,
+            // 标签ID
+            @Query("productTagId") String productTagId
+    );
+
+    /**
+     * 查询门店订单
+     */
+    @GET("app/buyOrder/listBuyOrder")
+    Observable<Result<List<BuyOrderEntity>>> listBuyOrder(
+            // *门店ID
+            @Query("serviceId") String serviceId,
+            // 支付状态 1待支付 2支付成功 3支付中 4支付失败
+            @Query("payTypeState") Integer payTypeState,
+            // 开始时间 (yyyy-MM-dd HH:mm:ss)
+            @Query("startTime") String startTime,
+            // 结束时间
+            @Query("endTime") String endTime,
+            // *固定 2
+            @Query("payChannel") Integer payChannel,
+            // 支付类型
+            @Query("payType") Integer payType,
+            // 机位号
+            @Query("seatNumber") String seatNumber,
+            // 会员名
+            @Query("customerName") String customerName,
+            // *当前登录员工ID
+            @Query("empId") String empId
     );
 }
