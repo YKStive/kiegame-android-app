@@ -30,12 +30,12 @@ public class BuyShopEntity {
     private String productSpecName;
     private String productImg;
     private int discountAmount;
-    private int sellPrice;
+    private String sellPrice;
     private String productName;
     private String orderDetailId;
     private String productUnitName;
     private int sellAmount;
-    private int sellCount;
+    private String sellCount;
     private int needPayAmount;
     private String productImgBig;
 
@@ -87,11 +87,11 @@ public class BuyShopEntity {
         this.discountAmount = discountAmount;
     }
 
-    public int getSellPrice() {
+    public String getSellPrice() {
         return sellPrice;
     }
 
-    public void setSellPrice(int sellPrice) {
+    public void setSellPrice(String sellPrice) {
         this.sellPrice = sellPrice;
     }
 
@@ -127,11 +127,11 @@ public class BuyShopEntity {
         this.sellAmount = sellAmount;
     }
 
-    public int getSellCount() {
+    public String getSellCount() {
         return sellCount;
     }
 
-    public void setSellCount(int sellCount) {
+    public void setSellCount(String sellCount) {
         this.sellCount = sellCount;
     }
 

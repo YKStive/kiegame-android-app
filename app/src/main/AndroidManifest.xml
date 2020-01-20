@@ -62,5 +62,13 @@
             android:name=".ui.activity.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+        <!-- 购物车 -->
+        <activity
+            android:name=".ui.activity.ShopCarActivity"
+            android:screenOrientation="portrait" />
+        <!-- 商品详情 -->
+        <activity
+            android:name=".ui.activity.ShopDetailActivity"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

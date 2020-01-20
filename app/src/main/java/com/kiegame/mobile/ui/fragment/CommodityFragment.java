@@ -1,5 +1,7 @@
 package com.kiegame.mobile.ui.fragment;
 
+import android.content.Intent;
+
 import androidx.lifecycle.ViewModelProviders;
 
 import com.kiegame.mobile.R;
@@ -7,6 +9,7 @@ import com.kiegame.mobile.databinding.FragmentCommodityBinding;
 import com.kiegame.mobile.model.CommodityModel;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
+import com.kiegame.mobile.ui.activity.ShopCarActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
     protected void onObject() {
         this.shops = new ArrayList<>();
         model = ViewModelProviders.of(this).get(CommodityModel.class);
+        binding.setFragment(this);
         binding.setModel(model);
     }
 
@@ -88,5 +92,12 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
      */
     private void lisShopResult(List<ShopEntity> data) {
         binding.mlvShopList.setShops(data);
+    }
+
+    /**
+     * 跳转到购物车
+     */
+    public void startShopCarActivity() {
+        startActivity(new Intent(getActivity(), ShopCarActivity.class));
     }
 }

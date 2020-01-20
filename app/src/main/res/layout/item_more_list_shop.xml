@@ -83,7 +83,6 @@
         android:gravity="center"
         android:maxLength="4"
         android:maxLines="1"
-        android:text="@string/zero"
         android:textColor="#282828"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@id/iv_shop_image"

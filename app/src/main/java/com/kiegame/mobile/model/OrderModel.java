@@ -33,7 +33,8 @@ public class OrderModel extends ViewModel {
      * 查询订单
      */
     public LiveData<List<BuyOrderEntity>> queryOrders(Integer payState, String startTime, String endTime, Integer payType, String seatNum, String customName) {
-        Network.api().listBuyOrder(login.getServiceId(), payState, startTime, endTime, 2, payType, seatNum, customName, login.getEmpId())
+//        Network.api().listBuyOrder(login.getServiceId(), payState, startTime, endTime, 2, payType, seatNum, customName, login.getEmpId())
+        Network.api().listBuyOrder(login.getServiceId(), payState, startTime, endTime, 2, payType, seatNum, customName, null)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<BuyOrderEntity>>(false) {
                     @Override

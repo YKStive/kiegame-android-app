@@ -58,4 +58,12 @@
     <string name="wait_pay_order_payment_btn">支&#160;付</string>
     <string name="wait_payment_to_pay">去支付</string>
     <string name="wait_payment_cancel_pay">取消订单</string>
+    <string name="confirm_order">确认订单</string>
+    <string name="select_fill_hint">选填</string>
+    <string name="go_net_fee_recharge">去充值</string>
+    <string name="create_order_note">备注</string>
+    <string name="add_to_shop_car">加入购物车</string>
+    <string name="buy_now">立即购买</string>
+    <string name="shop_taste">口味</string>
+    <string name="shop_norm">规格</string>
 </resources>

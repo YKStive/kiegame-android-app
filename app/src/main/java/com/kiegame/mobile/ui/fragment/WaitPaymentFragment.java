@@ -49,7 +49,12 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
     protected void onView() {
         binding.tvTotalMoney.setText("0");
 
-        binding.rvOrder.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvOrder.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+        });
         binding.rvOrder.addItemDecoration(new MarginItemDecoration(10));
         adapter = new BaseQuickAdapter<BuyOrderEntity, BaseViewHolder>(R.layout.item_order_wait_pay) {
             @Override
@@ -60,11 +65,13 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                     setMultiShopState(helper);
                     helper.setText(R.id.tv_shop_total_num, String.format("共%s件", shops.size()));
                     LinearLayout images = helper.getView(R.id.ll_shop_image_content);
+                    images.removeAllViews();
                     for (BuyShopEntity shop : shops) {
                         ImageView view = new ImageView(helper.itemView.getContext());
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Pixel.dp2px(70), Pixel.dp2px(70));
                         params.rightMargin = Pixel.dp2px(10);
                         view.setLayoutParams(params);
+                        view.setScaleType(ImageView.ScaleType.CENTER_CROP);
                         images.addView(view);
                         Glide.with(view).load(shop.getProductImg()).into(view);
                     }
@@ -87,7 +94,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
     private void setMultiShopState(@NonNull BaseViewHolder helper) {
         helper.getView(R.id.tv_shop_total_num).setVisibility(View.VISIBLE);
         helper.getView(R.id.nsl_shop_image_scroll).setVisibility(View.VISIBLE);
-        helper.getView(R.id.iv_shop_image).setVisibility(View.GONE);
+        helper.getView(R.id.iv_shop_image).setVisibility(View.INVISIBLE);
         helper.getView(R.id.tv_shop_name).setVisibility(View.GONE);
         helper.getView(R.id.tv_shop_des).setVisibility(View.GONE);
     }

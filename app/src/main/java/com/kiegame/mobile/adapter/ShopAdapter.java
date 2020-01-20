@@ -1,5 +1,6 @@
 package com.kiegame.mobile.adapter;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,6 +12,8 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
+import com.kiegame.mobile.ui.activity.ShopDetailActivity;
+import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 
 import java.math.BigDecimal;
@@ -42,12 +45,14 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
     protected void convert(@NonNull BaseViewHolder helper, ShopEntity item) {
         switch (helper.getItemViewType()) {
             case ShopEntity.CONTENT:
-                Glide.with(helper.itemView).load(item.getProductImg()).into((ImageView) helper.getView(R.id.iv_shop_image));
+                ImageView view = helper.getView(R.id.iv_shop_image);
+                Glide.with(helper.itemView).load(item.getProductImg()).into(view);
                 helper.setText(R.id.tv_shop_name, item.getProductName());
                 helper.setText(R.id.tv_shop_norm, item.getProductUnitName());
                 helper.setText(R.id.tv_shop_money, cal(item.getSellPrice()));
                 setPlusShopClickListener(helper, item);
                 setLessShopClickListener(helper, item);
+                view.setOnClickListener(v -> v.getContext().startActivity(new Intent(v.getContext(), ShopDetailActivity.class)));
                 break;
             case ShopEntity.TITLE:
                 TextView tv = helper.getView(R.id.tv_title);
@@ -67,7 +72,8 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
     private void setLessShopClickListener(@NonNull BaseViewHolder helper, ShopEntity item) {
         helper.getView(R.id.tv_btn_less).setOnClickListener(v -> {
             TextView tv = helper.getView(R.id.tv_shop_num);
-            int num = Integer.parseInt(tv.getText().toString()) - 1;
+            String size = tv.getText().toString();
+            int num = Text.empty(size) ? -1 : Integer.parseInt(size) - 1;
             if (num < 0) {
                 Toast.show("不能再少了");
             } else {
@@ -94,7 +100,8 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 return;
             }
             TextView tv = helper.getView(R.id.tv_shop_num);
-            int num = Integer.parseInt(tv.getText().toString()) + 1;
+            String size = tv.getText().toString();
+            int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
             if (num > item.getBarCount()) {
                 Toast.show("不能再多了");
             } else {
@@ -103,6 +110,9 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 }
                 item.setBuySize(num);
                 tv.setText(String.valueOf(num));
+                if (callback != null) {
+                    callback.OnJoinShop(item);
+                }
             }
         });
     }

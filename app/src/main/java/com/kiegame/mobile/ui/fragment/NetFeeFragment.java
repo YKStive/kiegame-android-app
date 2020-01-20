@@ -25,6 +25,7 @@ import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.ui.activity.MainActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.utils.Text;
+import com.kiegame.mobile.utils.Toast;
 import com.youth.banner.loader.ImageLoader;
 
 import java.math.BigDecimal;
@@ -196,6 +197,11 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * @param money 金额数量
      */
     public void recharge(View view, int money) {
+        String userNameValue = this.model.userName.getValue();
+        if (userNameValue == null || userNameValue.equals("没有选择会员")) {
+            Toast.show("请先选择会员");
+            return;
+        }
         if (this.moneyBtn != null) {
             this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
         }

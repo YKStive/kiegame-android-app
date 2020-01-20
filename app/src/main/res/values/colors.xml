@@ -10,8 +10,12 @@
     <color name="white">#ffffff</color>
     <!-- 灰色 -->
     <color name="gray">#888888</color>
+    <!-- 灰白色 -->
+    <color name="gray_white">#999999</color>
     <!-- 黑色 -->
     <color name="black">#000000</color>
+    <!-- 黑色文字 -->
+    <color name="black_dark">#111111</color>
     <!-- 黑色文字 -->
     <color name="black_text">#1A1A1B</color>
     <!-- 灰黑色文字 -->
