@@ -17,4 +17,6 @@ public class Setting {
     public final static String USER_LOGIN_OBJECT = "user.login.object";
     // token
     public final static String APP_NETWORK_TOKEN = "app.network.token";
+    // shop
+    public final static String APP_SHOP_ENTITY = "app.shop.entity";
 }

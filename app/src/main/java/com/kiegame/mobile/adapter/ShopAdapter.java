@@ -12,6 +12,7 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
+import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.activity.ShopDetailActivity;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
@@ -52,7 +53,9 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 helper.setText(R.id.tv_shop_money, cal(item.getSellPrice()));
                 setPlusShopClickListener(helper, item);
                 setLessShopClickListener(helper, item);
-                view.setOnClickListener(v -> v.getContext().startActivity(new Intent(v.getContext(), ShopDetailActivity.class)));
+                view.setOnClickListener(v -> v.getContext()
+                        .startActivity(new Intent(v.getContext(), ShopDetailActivity.class)
+                                .putExtra(Setting.APP_SHOP_ENTITY, item)));
                 break;
             case ShopEntity.TITLE:
                 TextView tv = helper.getView(R.id.tv_title);
@@ -79,9 +82,11 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             } else {
                 if (num == 0) {
                     helper.setVisible(R.id.tv_btn_less, false);
+                    tv.setText("");
+                } else {
+                    tv.setText(String.valueOf(num));
                 }
                 item.setBuySize(num);
-                tv.setText(String.valueOf(num));
                 if (callback != null) {
                     callback.OnJoinShop(item);
                 }

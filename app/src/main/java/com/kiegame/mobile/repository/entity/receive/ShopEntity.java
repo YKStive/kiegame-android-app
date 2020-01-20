@@ -2,12 +2,14 @@ package com.kiegame.mobile.repository.entity.receive;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
+import java.io.Serializable;
+
 /**
  * Created by: var_rain.
  * Created date: 2020/1/19.
  * Description: 商品
  */
-public class ShopEntity implements MultiItemEntity {
+public class ShopEntity implements MultiItemEntity, Serializable {
 
     /**
      * barCount : 2

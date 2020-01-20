@@ -81,8 +81,10 @@
             android:id="@+id/tv_btn_plus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="18dp"
             android:layout_marginBottom="16dp"
             android:contentDescription="@string/app_name"
+            android:onClick="@{()->activity.plus()}"
             android:src="@drawable/ic_plus_btn"
             app:layout_constraintBottom_toTopOf="@id/tv_buy_now_btn"
             app:layout_constraintRight_toRightOf="parent" />
@@ -109,6 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:contentDescription="@string/app_name"
+            android:onClick="@{()->activity.less()}"
             android:src="@drawable/ic_less_btn"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@id/tv_btn_plus"
@@ -150,6 +153,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_shop_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -161,6 +165,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_shop_buy_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#666666"
@@ -181,6 +186,7 @@
             tools:text="大杯水果茶" />
 
         <TextView
+            android:id="@+id/tv_shop_stand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
