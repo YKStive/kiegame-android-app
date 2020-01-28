@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_coupon_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="42dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="42dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_coupon_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="4:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_coupon_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:textColor="#694827"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_coupon_image"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintLeft_toLeftOf="@id/iv_coupon_image"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_coupon_price"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:ignore="SmallSp"
+        tools:text="有效期2019.11.13-2020.11.30" />
+
+    <TextView
+        android:id="@+id/tv_rmb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/net_fee_rmb"
+        android:textColor="#694827"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:typeface="serif"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_coupon_price"
+        app:layout_constraintLeft_toLeftOf="@id/tv_coupon_date" />
+
+    <TextView
+        android:id="@+id/tv_coupon_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:textColor="#694827"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tv_coupon_date"
+        app:layout_constraintLeft_toRightOf="@id/tv_rmb"
+        app:layout_constraintTop_toTopOf="@id/iv_coupon_image"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="50" />
+
+    <TextView
+        android:id="@+id/tv_coupon_rule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:textColor="#694827"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_coupon_price"
+        app:layout_constraintLeft_toRightOf="@id/tv_coupon_price"
+        tools:ignore="SmallSp"
+        tools:text="充100送" />
+</androidx.constraintlayout.widget.ConstraintLayout>

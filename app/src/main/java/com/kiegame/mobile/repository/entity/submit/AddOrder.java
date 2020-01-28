@@ -1,5 +1,7 @@
 package com.kiegame.mobile.repository.entity.submit;
 
+import java.util.List;
+
 /**
  * Created by: var_rain.
  * Created date: 2020/1/19.
@@ -9,10 +11,16 @@ public class AddOrder {
 
     // *门店ID
     private String serviceId;
+    // 产品订单ID或充值ID
+    private String productOrderList;
+    // 充值订单ID或产品ID
+    private String rechargeOrderList;
     // 座位号
     private String seatNumber;
     // *会员ID
     private String customerId;
+    // *产品列表
+    private List<BuyShop> productList;
     // *充值金额
     private int rechargeMoney;
     // *充值奖励金额 没有为0
@@ -166,5 +174,29 @@ public class AddOrder {
 
     public void setBuyPayPassword(String buyPayPassword) {
         this.buyPayPassword = buyPayPassword;
+    }
+
+    public List<BuyShop> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<BuyShop> productList) {
+        this.productList = productList;
+    }
+
+    public String getProductOrderList() {
+        return productOrderList;
+    }
+
+    public void setProductOrderList(String productOrderList) {
+        this.productOrderList = productOrderList;
+    }
+
+    public String getRechargeOrderList() {
+        return rechargeOrderList;
+    }
+
+    public void setRechargeOrderList(String rechargeOrderList) {
+        this.rechargeOrderList = rechargeOrderList;
     }
 }

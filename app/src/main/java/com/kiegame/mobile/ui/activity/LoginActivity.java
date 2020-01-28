@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModelProviders;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityLoginBinding;
 import com.kiegame.mobile.model.LoginModel;
+import com.kiegame.mobile.repository.cache.RAM;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.Prefer;
-import com.kiegame.mobile.utils.PreferPlus;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 
@@ -82,9 +82,9 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
         } else {
             Prefer.remove(Setting.USER_LOGIN_PASSWORD);
         }
-        Prefer.put(Setting.APP_NETWORK_TOKEN, data.getLoginToken());
-
-        PreferPlus.put(Setting.USER_LOGIN_OBJECT, data);
+        // 保存到内存中
+        RAM.setToken(data.getLoginToken());
+        RAM.setLoginInfo(data);
 
         startActivity(new Intent(this, MainActivity.class));
         finish();

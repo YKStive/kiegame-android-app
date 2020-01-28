@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/translucent_black_50"
+        android:clickable="true"
+        android:focusable="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.8">
+
+            <ImageView
+                android:id="@+id/iv_shop_image"
+                android:layout_width="104dp"
+                android:layout_height="104dp"
+                android:layout_marginStart="19dp"
+                android:layout_marginTop="24dp"
+                android:contentDescription="@string/app_name"
+                android:scaleType="centerCrop"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/tv_shop_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textColor="#333333"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@id/iv_shop_image"
+                app:layout_constraintTop_toTopOf="@id/iv_shop_image"
+                tools:text="满杯水果茶" />
+
+            <TextView
+                android:id="@+id/tv_shop_norm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textColor="#333333"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tv_shop_name"
+                app:layout_constraintLeft_toRightOf="@id/tv_shop_name"
+                tools:ignore="SmallSp"
+                tools:text="700ml" />
+
+            <TextView
+                android:id="@+id/tv_shop_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="#FF2323"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="@id/tv_shop_name"
+                app:layout_constraintTop_toBottomOf="@id/tv_shop_name"
+                tools:text="￥12" />
+
+            <ImageView
+                android:id="@+id/iv_btn_less"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_less_btn"
+                app:layout_constraintBottom_toBottomOf="@id/iv_shop_image"
+                app:layout_constraintLeft_toLeftOf="@id/tv_shop_name" />
+
+            <TextView
+                android:id="@+id/tv_shop_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:ems="2"
+                android:gravity="center"
+                android:maxLength="4"
+                android:maxLines="1"
+                android:textColor="#282828"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_btn_less"
+                app:layout_constraintLeft_toRightOf="@id/iv_btn_less"
+                app:layout_constraintTop_toTopOf="@id/iv_btn_less"
+                tools:text="9999" />
+
+            <ImageView
+                android:id="@+id/iv_btn_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_plus_btn"
+                app:layout_constraintBottom_toBottomOf="@id/iv_shop_image"
+                app:layout_constraintLeft_toRightOf="@id/tv_shop_num" />
+
+            <View
+                android:id="@+id/vv_divider_line_start"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="19dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginRight="19dp"
+                android:background="#E8E8E8"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_shop_image" />
+
+            <TextView
+                android:id="@+id/tv_taste_text"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/shop_taste"
+                android:textColor="#333333"
+                android:textSize="12sp"
+                app:layout_constraintLeft_toLeftOf="@id/vv_divider_line_start"
+                app:layout_constraintTop_toTopOf="@id/fl_taste_layout" />
+
+            <com.kiegame.mobile.ui.views.FlowLayout
+                android:id="@+id/fl_taste_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                app:itemSpacing="10dp"
+                app:layout_constraintLeft_toRightOf="@id/tv_taste_text"
+                app:layout_constraintRight_toRightOf="@id/vv_divider_line_start"
+                app:layout_constraintTop_toBottomOf="@id/vv_divider_line_start"
+                app:lineSpacing="10dp" />
+
+            <TextView
+                android:id="@+id/tv_norm_text"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="@string/shop_norm"
+                android:textColor="#333333"
+                android:textSize="12sp"
+                app:layout_constraintLeft_toLeftOf="@id/vv_divider_line_start"
+                app:layout_constraintTop_toTopOf="@id/fl_norm_layout" />
+
+            <com.kiegame.mobile.ui.views.FlowLayout
+                android:id="@+id/fl_norm_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:itemSpacing="10dp"
+                app:layout_constraintLeft_toRightOf="@id/tv_norm_text"
+                app:layout_constraintRight_toRightOf="@id/vv_divider_line_start"
+                app:layout_constraintTop_toBottomOf="@id/fl_taste_layout"
+                app:lineSpacing="10dp" />
+
+            <View
+                android:id="@+id/vv_divider_line_end"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="19dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="19dp"
+                android:background="#E8E8E8"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fl_norm_layout" />
+
+            <TextView
+                android:id="@+id/tv_btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/shape_shop_cancel_btn_background"
+                android:paddingLeft="27dp"
+                android:paddingTop="10dp"
+                android:paddingRight="27dp"
+                android:paddingBottom="10dp"
+                android:text="@string/app_btn_cancel"
+                android:textColor="#282828"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/vv_divider_line_end"
+                app:layout_constraintRight_toLeftOf="@id/tv_btn_ok"
+                app:layout_constraintTop_toBottomOf="@id/vv_divider_line_end" />
+
+
+            <TextView
+                android:id="@+id/tv_btn_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/shape_shop_ok_btn_background"
+                android:paddingLeft="27dp"
+                android:paddingTop="10dp"
+                android:paddingRight="27dp"
+                android:paddingBottom="10dp"
+                android:text="@string/app_btn_ok"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tv_btn_cancel"
+                app:layout_constraintRight_toRightOf="@id/vv_divider_line_end"
+                app:layout_constraintTop_toBottomOf="@id/vv_divider_line_end" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

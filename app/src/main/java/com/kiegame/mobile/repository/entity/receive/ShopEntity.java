@@ -3,6 +3,7 @@ package com.kiegame.mobile.repository.entity.receive;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Created by: var_rain.
@@ -68,6 +69,9 @@ public class ShopEntity implements MultiItemEntity, Serializable {
 
     private int itemType;
     private int buySize;
+    private String buyFlavor;
+    private String buyNorm;
+    private String buyDescription;
 
     public ShopEntity() {
 
@@ -280,5 +284,47 @@ public class ShopEntity implements MultiItemEntity, Serializable {
 
     public void setBuySize(int buySize) {
         this.buySize = buySize;
+    }
+
+    public String getBuyFlavor() {
+        return buyFlavor;
+    }
+
+    public void setBuyFlavor(String buyFlavor) {
+        this.buyFlavor = buyFlavor;
+    }
+
+    public String getBuyNorm() {
+        return buyNorm;
+    }
+
+    public void setBuyNorm(String buyNorm) {
+        this.buyNorm = buyNorm;
+    }
+
+    public String getBuyDescription() {
+        return buyDescription;
+    }
+
+    public void setBuyDescription(String buyDescription) {
+        this.buyDescription = buyDescription;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShopEntity that = (ShopEntity) o;
+        return buySize == that.buySize &&
+                Objects.equals(productId, that.productId) &&
+                Objects.equals(productName, that.productName) &&
+                Objects.equals(buyFlavor, that.buyFlavor) &&
+                Objects.equals(buyNorm, that.buyNorm) &&
+                Objects.equals(buyDescription, that.buyDescription);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productId, productName, buySize, buyFlavor, buyNorm, buyDescription);
     }
 }

@@ -1,7 +1,6 @@
 package com.kiegame.mobile.repository.interceptor;
 
-import com.kiegame.mobile.settings.Setting;
-import com.kiegame.mobile.utils.Prefer;
+import com.kiegame.mobile.repository.cache.RAM;
 import com.kiegame.mobile.utils.Text;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +21,7 @@ public class TokenInterceptor implements Interceptor {
     @NotNull
     @Override
     public Response intercept(@NotNull Chain chain) throws IOException {
-        String token = Prefer.get(Setting.APP_NETWORK_TOKEN, "");
+        String token = RAM.getToken();
         if (Text.empty(token)) {
             return chain.proceed(chain.request());
         } else {

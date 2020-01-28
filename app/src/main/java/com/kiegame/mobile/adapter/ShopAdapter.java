@@ -14,6 +14,7 @@ import com.kiegame.mobile.R;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.activity.ShopDetailActivity;
+import com.kiegame.mobile.utils.ShopDetail;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 
@@ -49,7 +50,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 ImageView view = helper.getView(R.id.iv_shop_image);
                 Glide.with(helper.itemView).load(item.getProductImg()).into(view);
                 helper.setText(R.id.tv_shop_name, item.getProductName());
-                helper.setText(R.id.tv_shop_norm, item.getProductUnitName());
+                helper.setText(R.id.tv_shop_norm, item.getProductSpecName());
                 helper.setText(R.id.tv_shop_money, cal(item.getSellPrice()));
                 setPlusShopClickListener(helper, item);
                 setLessShopClickListener(helper, item);
@@ -105,21 +106,35 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 return;
             }
             TextView tv = helper.getView(R.id.tv_shop_num);
-            String size = tv.getText().toString();
-            int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-            if (num > item.getBarCount()) {
-                Toast.show("不能再多了");
+            if (!Text.empty(item.getProductFlavorName()) || !Text.empty(item.getProductSpecName())) {
+                ShopDetail.ins().callback(data -> updateShopNum(helper, item, tv, data.getProductBuySum())).set(item).show();
             } else {
-                if (num > 0) {
-                    helper.setVisible(R.id.tv_btn_less, true);
-                }
-                item.setBuySize(num);
-                tv.setText(String.valueOf(num));
-                if (callback != null) {
-                    callback.OnJoinShop(item);
+                String size = tv.getText().toString();
+                int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
+                if (num > item.getBarCount()) {
+                    Toast.show("不能再多了");
+                } else {
+                    updateShopNum(helper, item, tv, num);
                 }
             }
         });
+    }
+
+    /**
+     * 更新商品购买数量
+     */
+    private void updateShopNum(@NonNull BaseViewHolder helper, ShopEntity item, TextView tv, int sum) {
+        if (sum > 0) {
+            helper.setVisible(R.id.tv_btn_less, true);
+            tv.setText(String.valueOf(sum));
+        } else {
+            helper.setVisible(R.id.tv_btn_less, false);
+            tv.setText("");
+        }
+        item.setBuySize(sum);
+        if (callback != null) {
+            callback.OnJoinShop(item);
+        }
     }
 
     /**

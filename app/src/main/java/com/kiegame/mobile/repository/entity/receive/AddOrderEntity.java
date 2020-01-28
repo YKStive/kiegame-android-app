@@ -27,6 +27,9 @@ public class AddOrderEntity {
     private int rechargeOrderRewardMoney;
     private String rechargeOrderId;
     private String paymentPayId;
+    // 扫码支付二维码图片
+    private String codeUrl;
+    private String codeImgUrl;
     private int payState;
 
     public int getProductOrderDiscountMoney() {
@@ -99,5 +102,21 @@ public class AddOrderEntity {
 
     public void setPayState(int payState) {
         this.payState = payState;
+    }
+
+    public String getCodeUrl() {
+        return codeUrl;
+    }
+
+    public void setCodeUrl(String codeUrl) {
+        this.codeUrl = codeUrl;
+    }
+
+    public String getCodeImgUrl() {
+        return codeImgUrl;
+    }
+
+    public void setCodeImgUrl(String codeImgUrl) {
+        this.codeImgUrl = codeImgUrl;
     }
 }

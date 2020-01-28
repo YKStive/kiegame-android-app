@@ -205,8 +205,13 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         if (this.moneyBtn != null) {
             this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
         }
-        this.moneyBtn = (TextView) view;
-        this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_press_border);
+        if (view.equals(this.moneyBtn)) {
+            money = 0;
+            this.moneyBtn = null;
+        } else {
+            this.moneyBtn = (TextView) view;
+            this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_press_border);
+        }
         this.model.recharge.setValue(String.format("%s.00", money));
         this.model.gabon.setValue(String.format("%s.00", money));
     }

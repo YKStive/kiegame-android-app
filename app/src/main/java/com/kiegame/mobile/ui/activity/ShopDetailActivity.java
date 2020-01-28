@@ -51,7 +51,7 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
     protected void onView() {
         Glide.with(this).load(shop.getProductImg()).into(binding.ivShopImage);
         binding.tvShopName.setText(shop.getProductName());
-        binding.tvShopStand.setText(shop.getProductUnitName());
+        binding.tvShopStand.setText(shop.getProductSpecName());
         binding.tvShopDes.setText(shop.getProductDesc());
         binding.tvShopPrice.setText(cal(shop.getSellPrice()));
         binding.tvShopBuyInfo.setText(shop.getProductName());

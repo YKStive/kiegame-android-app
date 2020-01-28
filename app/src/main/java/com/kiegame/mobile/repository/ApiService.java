@@ -1,6 +1,7 @@
 package com.kiegame.mobile.repository;
 
 import com.kiegame.mobile.BuildConfig;
+import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
@@ -57,7 +58,7 @@ public interface ApiService {
     );
 
     /**
-     * 充值下订单结算
+     * 下订单/结算
      */
     @POST("app/buyOrder/addOrder")
     Observable<Result<List<AddOrderEntity>>> addOrder(@Body AddOrder body);
@@ -108,5 +109,46 @@ public interface ApiService {
             @Query("customerName") String customerName,
             // *当前登录员工ID
             @Query("empId") String empId
+    );
+
+    /**
+     * 订单支付
+     */
+    @POST("app/buyOrder/updateOrderPay")
+    Observable<Result<List<AddOrderEntity>>> updateOrderPay(@Body AddOrder body);
+
+    /**
+     * 门店网费活动查询
+     */
+    @GET("app/activity/listServiceRechargeActivity")
+    Observable<Result<List<ActivityEntity>>> rechargeActivity(
+            // *门店ID
+            @Query("serviceId") String serviceId,
+            // 赠送形式 1:卡券 2:立即使用(APP传2)
+            @Query("giveType") Integer giveType
+    );
+
+    /**
+     * 门店产品活动查询
+     */
+    @GET("app/activity/listServiceProductActivity")
+    Observable<Result<List<ActivityEntity>>> productActivity(
+            // *门店ID
+            @Query("serviceId") String serviceId,
+            // 赠送形式
+            @Query("giveType") Integer giveType,
+            // *产品ID
+            @Query("productId") String productId
+    );
+
+    /**
+     * 门店用户卡券查询
+     */
+    @GET("app/activity/listServiceCustomerActivity")
+    Observable<Result<List<ActivityEntity>>> customerActivity(
+            // 门店ID
+            @Query("serviceId") String serviceId,
+            // *会员ID
+            @Query("customerId") String customerId
     );
 }

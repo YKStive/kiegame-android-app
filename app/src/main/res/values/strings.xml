@@ -66,4 +66,10 @@
     <string name="buy_now">立即购买</string>
     <string name="shop_taste">口味</string>
     <string name="shop_norm">规格</string>
+    <string name="app_btn_cancel">取消</string>
+    <string name="app_btn_ok">确定</string>
+    <string name="app_select_coupon">选择优惠券</string>
+    <string name="app_coupon_not_use">不使用</string>
+    <string name="coupon_service_activity">门店活动</string>
+    <string name="coupon_user_coupon">客户优惠券</string>
 </resources>

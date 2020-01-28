@@ -1,0 +1,325 @@
+package com.kiegame.mobile.utils;
+
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+
+import androidx.databinding.DataBindingUtil;
+
+import com.bumptech.glide.Glide;
+import com.kiegame.mobile.Game;
+import com.kiegame.mobile.R;
+import com.kiegame.mobile.databinding.ViewShopDetailBinding;
+import com.kiegame.mobile.repository.entity.receive.ShopEntity;
+import com.kiegame.mobile.repository.entity.submit.BuyShop;
+import com.kiegame.mobile.ui.base.listener.OnAnimationListener;
+import com.kiegame.mobile.ui.views.FlowLayout;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+/**
+ * Created by: var_rain.
+ * Created date: 2020/1/28.
+ * Description: 商品详情
+ */
+public class ShopDetail {
+
+    @SuppressLint("StaticFieldLeak")
+    private static ShopDetail INS;
+    private ViewShopDetailBinding binding;
+    private ValueAnimator animator;
+    private boolean isShowing;
+    private TextView selectFlavor;
+    private TextView selectNorm;
+    private ShopEntity shop;
+    private OnShopAttachCallback callback;
+
+    // 标签类型 口味
+    private static final int TAG_TYPE_FLAVOR = 1;
+    // 标签类型 规格
+    private static final int TAG_TYPE_NORM = 2;
+
+    private ShopDetail() {
+        this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_shop_detail, null, false);
+        this.initAnim();
+    }
+
+    /**
+     * 获取 {@link ShopDetail} 对象
+     *
+     * @return 返回 {@link ShopDetail}
+     */
+    public static ShopDetail ins() {
+        if (ShopDetail.INS == null) {
+            ShopDetail.INS = new ShopDetail();
+        }
+        return ShopDetail.INS;
+    }
+
+    /**
+     * 显示商品详情
+     */
+    public void show() {
+        if (!this.isShowing) {
+            this.animator.start();
+        }
+    }
+
+    /**
+     * 设置确认回调
+     *
+     * @param callback {@link OnShopAttachCallback}
+     */
+    public ShopDetail callback(OnShopAttachCallback callback) {
+        this.callback = callback;
+        return this;
+    }
+
+    /**
+     * 设置数据
+     *
+     * @param data 商品数据对象
+     */
+    public ShopDetail set(ShopEntity data) {
+        if (data != null) {
+            this.shop = data;
+            Glide.with(binding.getRoot()).load(data.getProductImg()).into(binding.ivShopImage);
+            binding.tvShopName.setText(data.getProductName());
+            binding.tvShopNorm.setText(data.getProductSpecName());
+            binding.tvShopPrice.setText(String.format("￥%s", cal(data.getSellPrice())));
+            this.makeFlavorTags(data.getProductFlavorName());
+            this.makeSpecTags(data.getProductSpecName());
+            binding.tvShopNum.setText("1");
+            binding.ivBtnLess.setOnClickListener(v -> this.onBtnLess());
+            binding.ivBtnPlus.setOnClickListener(v -> this.onBtnPlus());
+            binding.tvBtnCancel.setOnClickListener(v -> this.hide());
+            binding.tvBtnOk.setOnClickListener(v -> {
+                if (this.callback != null) {
+                    String flavor = selectFlavor != null ? selectFlavor.getText().toString() : "";
+                    String norm = selectNorm != null ? selectNorm.getText().toString() : "";
+                    BuyShop buy = new BuyShop();
+                    buy.setProductId(shop.getProductId());
+                    buy.setProductFlavorName(flavor);
+                    buy.setProductSpecName(norm);
+                    buy.setProductBuySum(Integer.parseInt(binding.tvShopNum.getText().toString()));
+                    this.callback.shopAttach(buy);
+                }
+                this.hide();
+            });
+        }
+        return this;
+    }
+
+    /**
+     * 减少
+     */
+    private void onBtnLess() {
+        TextView tv = binding.tvShopNum;
+        String size = tv.getText().toString();
+        int num = Text.empty(size) ? -1 : Integer.parseInt(size) - 1;
+        if (num < 0) {
+            Toast.show("不能再少了");
+        } else {
+            tv.setText(String.valueOf(num));
+            shop.setBuySize(num);
+        }
+    }
+
+    /**
+     * 增加
+     */
+    private void onBtnPlus() {
+        if (shop.getBarCount() <= 0) {
+            Toast.show("这种商品已经售空了");
+            return;
+        }
+        TextView tv = binding.tvShopNum;
+        String size = tv.getText().toString();
+        int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
+        if (num > shop.getBarCount()) {
+            Toast.show("不能再多了");
+        } else {
+            shop.setBuySize(num);
+            tv.setText(String.valueOf(num));
+        }
+    }
+
+    /**
+     * 计算金额,分转换位元,保留两位
+     *
+     * @param money 金额, 分
+     * @return 转换后的金额, 元
+     */
+    private String cal(int money) {
+        BigDecimal source = new BigDecimal(money);
+        BigDecimal ratio = new BigDecimal(100);
+        BigDecimal divide = source.divide(ratio, 2, RoundingMode.HALF_UP);
+        return divide.toString();
+    }
+
+    /**
+     * 创建规格选择标签
+     */
+    private void makeSpecTags(String spec) {
+        if (!Text.empty(spec)) {
+            binding.flNormLayout.removeAllViews();
+            String[] norm = spec.split(",");
+            for (String name : norm) {
+                binding.flNormLayout.addView(makeTextView(name, TAG_TYPE_NORM));
+            }
+        } else {
+            binding.flNormLayout.setVisibility(View.GONE);
+            binding.tvNormText.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 创建口味选择标签
+     */
+    private void makeFlavorTags(String flavor) {
+        if (!Text.empty(flavor)) {
+            binding.flTasteLayout.removeAllViews();
+            String[] taste = flavor.split(",");
+            for (String name : taste) {
+                binding.flTasteLayout.addView(makeTextView(name, TAG_TYPE_FLAVOR));
+            }
+        } else {
+            binding.flTasteLayout.setVisibility(View.GONE);
+            binding.tvTasteText.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 创建口味/规格选择按钮
+     */
+    private TextView makeTextView(String text, int type) {
+        FlowLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Pixel.dp2px(30));
+        TextView textView = new TextView(binding.getRoot().getContext());
+        textView.setText(text);
+        textView.setTag(type);
+        textView.setLayoutParams(params);
+        textView.setGravity(Gravity.CENTER);
+        textView.setPadding(Pixel.dp2px(16), 0, Pixel.dp2px(16), 0);
+        cleanBtnStyle(textView);
+        if (selectFlavor == null) {
+            if (type == TAG_TYPE_FLAVOR) {
+                selectFlavor = textView;
+                setTextViewSelect(selectFlavor);
+            } else {
+                cleanBtnStyle(textView);
+            }
+        }
+        if (selectNorm == null) {
+            if (type == TAG_TYPE_NORM) {
+                selectNorm = textView;
+                setTextViewSelect(selectNorm);
+            } else {
+                cleanBtnStyle(textView);
+            }
+        }
+        textView.setTextSize(10);
+        textView.setOnClickListener(v -> setBtnStyle((TextView) v));
+        return textView;
+    }
+
+    /**
+     * 设置点击样式
+     *
+     * @param view {@link TextView}
+     */
+    private void setBtnStyle(TextView view) {
+        int type = (int) view.getTag();
+        switch (type) {
+            case TAG_TYPE_FLAVOR:
+                if (selectFlavor != null) {
+                    cleanBtnStyle(selectFlavor);
+                }
+                selectFlavor = view;
+                setTextViewSelect(selectFlavor);
+                break;
+            case TAG_TYPE_NORM:
+                if (selectNorm != null) {
+                    cleanBtnStyle(selectNorm);
+                }
+                selectNorm = view;
+                setTextViewSelect(selectNorm);
+                break;
+        }
+    }
+
+    /**
+     * 设置选中状态
+     */
+    private void setTextViewSelect(TextView view) {
+        view.setTextColor(view.getResources().getColor(R.color.black_dark));
+        view.setBackgroundResource(R.drawable.shape_shop_norm_btn_press_background);
+    }
+
+    /**
+     * 清除点击样式
+     *
+     * @param view {@link TextView}
+     */
+    private void cleanBtnStyle(TextView view) {
+        view.setBackgroundResource(R.drawable.shape_shop_norm_btn_none_background);
+        view.setTextColor(view.getResources().getColor(R.color.gray_white));
+    }
+
+    /**
+     * 初始化动画
+     */
+    private void initAnim() {
+        this.animator = ValueAnimator.ofFloat(0.0f, 1.0f);
+        this.animator.setDuration(150);
+        this.animator.addUpdateListener(animation -> {
+            if (this.binding != null) {
+                this.binding.getRoot().setAlpha((Float) animation.getAnimatedValue());
+            }
+        });
+        this.animator.addListener(new OnAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                InjectView.ins().inject(binding.getRoot());
+                isShowing = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation, boolean isReverse) {
+                if (isReverse) {
+                    InjectView.ins().clean(binding.getRoot());
+                    isShowing = false;
+                }
+            }
+        });
+    }
+
+    /**
+     * 隐藏商品详情
+     */
+    private void hide() {
+        if (this.animator != null && this.isShowing) {
+            this.animator.reverse();
+        }
+        this.selectFlavor = null;
+        this.selectNorm = null;
+    }
+
+    /**
+     * 商品添加回调接口
+     */
+    public interface OnShopAttachCallback {
+        /**
+         * 商品添加
+         *
+         * @param data 商品对象
+         */
+        void shopAttach(BuyShop data);
+    }
+}

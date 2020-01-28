@@ -7,10 +7,8 @@ import android.view.View;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.adapter.OrderAdapter;
 import com.kiegame.mobile.databinding.FragmentOrderBinding;
-import com.kiegame.mobile.repository.entity.receive.LoginEntity;
-import com.kiegame.mobile.settings.Setting;
+import com.kiegame.mobile.repository.cache.RAM;
 import com.kiegame.mobile.ui.base.BaseFragment;
-import com.kiegame.mobile.utils.PreferPlus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +30,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
 
     @Override
     protected void onObject() {
-        binding.setLogin(PreferPlus.get(Setting.USER_LOGIN_OBJECT, LoginEntity.class));
+        binding.setLogin(RAM.getLoginInfo());
         this.views = new ArrayList<>();
         this.titles = new String[]{
                 getString(R.string.order_wait_payment),
