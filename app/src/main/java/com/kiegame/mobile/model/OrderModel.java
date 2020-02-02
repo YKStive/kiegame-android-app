@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
-import com.kiegame.mobile.repository.cache.RAM;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 
@@ -25,7 +25,7 @@ public class OrderModel extends ViewModel {
 
     public OrderModel() {
         this.orders = new MutableLiveData<>();
-        this.login = RAM.getLoginInfo();
+        this.login = Cache.ins().getLoginInfo();
     }
 
     /**

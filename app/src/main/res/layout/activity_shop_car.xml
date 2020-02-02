@@ -5,6 +5,12 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="cache"
+            type="com.kiegame.mobile.repository.cache.Cache" />
+
         <variable
             name="activity"
             type="com.kiegame.mobile.ui.activity.ShopCarActivity" />
@@ -125,6 +131,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:text="@{cache.userName}"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 tools:text="B012｜510*************4612｜李某某" />
@@ -132,10 +139,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="@{()->activity.deleteVipInfo()}"
                 android:padding="10dp"
                 android:text="@string/net_fee_vip_info_delete"
                 android:textColor="#FFE100"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility='@{cache.userName.equals("没有选择会员") ? View.INVISIBLE : View.VISIBLE}' />
         </LinearLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -212,6 +221,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="14dp"
                         android:paddingBottom="14dp"
+                        android:text="@{cache.shopMoneyTotal}"
                         android:textColor="#FF1833"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -225,6 +235,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/white"
                     android:gravity="center"
+                    android:onClick="@{()->activity.couponUse()}"
                     android:orientation="horizontal"
                     android:padding="@dimen/net_fee_btn_use_coupon_padding"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -297,6 +308,7 @@
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:gravity="center|end"
+                        android:text="@{@string/net_fee_use_coupon_format(cache.netFee)}"
                         android:textColor="@color/net_fee_total_text"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -337,6 +349,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="15dp"
                             android:button="@drawable/selector_radio_background"
+                            android:checked="@={cache.paymentOnline}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_online"
@@ -349,6 +362,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
                             android:button="@drawable/selector_radio_background"
+                            android:checked="@={cache.paymentOffline}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_offline"
@@ -454,6 +468,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
                 android:layout_weight="1"
+                android:text="@{cache.paymentMoney}"
                 android:textColor="@color/net_fee_total_money"
                 android:textSize="19sp"
                 tools:text="10" />

@@ -1,6 +1,6 @@
 package com.kiegame.mobile.repository.interceptor;
 
-import com.kiegame.mobile.repository.cache.RAM;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.utils.Text;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ public class TokenInterceptor implements Interceptor {
     @NotNull
     @Override
     public Response intercept(@NotNull Chain chain) throws IOException {
-        String token = RAM.getToken();
+        String token = Cache.ins().getToken();
         if (Text.empty(token)) {
             return chain.proceed(chain.request());
         } else {

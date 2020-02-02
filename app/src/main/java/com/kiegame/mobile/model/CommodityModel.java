@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
-import com.kiegame.mobile.repository.cache.RAM;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
@@ -30,7 +30,7 @@ public class CommodityModel extends ViewModel {
         this.shopSort = new MutableLiveData<>();
         this.shops = new MutableLiveData<>();
 
-        this.login = RAM.getLoginInfo();
+        this.login = Cache.ins().getLoginInfo();
     }
 
     /**

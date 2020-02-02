@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
-import com.kiegame.mobile.repository.cache.RAM;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
@@ -22,7 +22,6 @@ import java.util.List;
 public class NetFeeModel extends ViewModel {
 
     public MutableLiveData<String> userSearch;
-    public MutableLiveData<String> userName;
     public MutableLiveData<String> amount;
     public MutableLiveData<String> award;
     public MutableLiveData<String> gabon;
@@ -30,8 +29,6 @@ public class NetFeeModel extends ViewModel {
     public MutableLiveData<String> recharge;
     public MutableLiveData<Boolean> paymentOnline;
     public MutableLiveData<Boolean> paymentOffline;
-    public MutableLiveData<String> paymentShop;
-    public MutableLiveData<String> paymentTotal;
 
     public LoginEntity login;
 
@@ -39,10 +36,9 @@ public class NetFeeModel extends ViewModel {
     private MutableLiveData<List<UserInfoEntity>> userInfos;
 
     public NetFeeModel() {
-        this.login = RAM.getLoginInfo();
+        this.login = Cache.ins().getLoginInfo();
 
         this.userSearch = new MutableLiveData<>();
-        this.userName = new MutableLiveData<>();
         this.amount = new MutableLiveData<>();
         this.award = new MutableLiveData<>();
         this.gabon = new MutableLiveData<>();
@@ -50,8 +46,6 @@ public class NetFeeModel extends ViewModel {
         this.recharge = new MutableLiveData<>();
         this.paymentOnline = new MutableLiveData<>();
         this.paymentOffline = new MutableLiveData<>();
-        this.paymentShop = new MutableLiveData<>();
-        this.paymentTotal = new MutableLiveData<>();
 
         this.banner = new MutableLiveData<>();
         this.userInfos = new MutableLiveData<>();
@@ -63,7 +57,6 @@ public class NetFeeModel extends ViewModel {
      * 初始化用户数据
      */
     private void initData() {
-        this.userName.setValue("没有选择会员");
         this.amount.setValue("0");
         this.award.setValue("0");
         this.gabon.setValue("0");
@@ -71,8 +64,6 @@ public class NetFeeModel extends ViewModel {
         this.recharge.setValue("0.00");
         this.paymentOnline.setValue(true);
         this.paymentOffline.setValue(false);
-        this.paymentShop.setValue("￥0.00");
-        this.paymentTotal.setValue("0.00");
     }
 
     /**

@@ -19,6 +19,16 @@ public class BuyShop {
     private int productDiscountType;
     // 产品优惠ID
     private int productDiscountId;
+    // -费用/金额
+    private int fee;
+
+    public int getFee() {
+        return fee;
+    }
+
+    public void setFee(int fee) {
+        this.fee = fee;
+    }
 
     public String getProductId() {
         return productId;

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityLoginBinding;
 import com.kiegame.mobile.model.LoginModel;
-import com.kiegame.mobile.repository.cache.RAM;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.base.BaseActivity;
@@ -83,8 +83,8 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
             Prefer.remove(Setting.USER_LOGIN_PASSWORD);
         }
         // 保存到内存中
-        RAM.setToken(data.getLoginToken());
-        RAM.setLoginInfo(data);
+        Cache.ins().setToken(data.getLoginToken());
+        Cache.ins().setLoginInfo(data);
 
         startActivity(new Intent(this, MainActivity.class));
         finish();

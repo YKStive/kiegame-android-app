@@ -95,7 +95,6 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
         });
     }
 
-
     /**
      * 设置添加购物车点击事件处理
      */

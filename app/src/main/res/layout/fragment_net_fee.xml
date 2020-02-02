@@ -18,6 +18,10 @@
         <variable
             name="fragment"
             type="com.kiegame.mobile.ui.fragment.NetFeeFragment" />
+
+        <variable
+            name="cache"
+            type="com.kiegame.mobile.repository.cache.Cache" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -171,7 +175,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="@{model.userName}"
+                    android:text="@{cache.userName}"
                     android:textColor="@color/net_fee_vip_info"
                     android:textSize="@dimen/net_fee_vip_info"
                     tools:text="B012｜510*************4612｜李某某" />
@@ -188,7 +192,7 @@
                     android:text="@string/net_fee_vip_info_delete"
                     android:textColor="@color/white"
                     android:textSize="@dimen/net_fee_vip_info_btn_delete"
-                    android:visibility='@{model.userName.equals("没有选择会员") ? View.INVISIBLE : View.VISIBLE}' />
+                    android:visibility='@{cache.userName.equals("没有选择会员") ? View.INVISIBLE : View.VISIBLE}' />
             </LinearLayout>
 
             <LinearLayout
@@ -453,6 +457,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/white"
                     android:gravity="center"
+                    android:onClick="@{()->fragment.couponUse()}"
                     android:orientation="horizontal"
                     android:padding="@dimen/net_fee_btn_use_coupon_padding"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -534,7 +539,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="15dp"
                             android:button="@drawable/selector_radio_background"
-                            android:checked="@={model.paymentOnline}"
+                            android:checked="@={cache.paymentOnline}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_online"
@@ -547,7 +552,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
                             android:button="@drawable/selector_radio_background"
-                            android:checked="@={model.paymentOffline}"
+                            android:checked="@={cache.paymentOffline}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_offline"
@@ -583,7 +588,7 @@
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
                         android:gravity="center|end"
-                        android:text="@{model.paymentShop}"
+                        android:text="@{@string/net_fee_use_coupon_format(cache.shopMoneyTotal)}"
                         android:textColor="@color/net_fee_total_text"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -644,7 +649,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
                 android:layout_weight="1"
-                android:text="@{model.paymentTotal}"
+                android:text="@{cache.paymentMoney}"
                 android:textColor="@color/net_fee_total_money"
                 android:textSize="19sp"
                 tools:text="10" />

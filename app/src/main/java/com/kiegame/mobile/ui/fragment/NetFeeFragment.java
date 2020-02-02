@@ -20,10 +20,12 @@ import com.bumptech.glide.Glide;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentNetFeeBinding;
 import com.kiegame.mobile.model.NetFeeModel;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.ui.activity.MainActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
+import com.kiegame.mobile.utils.CouponSelect;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 import com.youth.banner.loader.ImageLoader;
@@ -55,6 +57,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         model = ViewModelProviders.of(this).get(NetFeeModel.class);
         binding.setModel(model);
         binding.setFragment(this);
+        binding.setCache(Cache.ins());
         model.userSearch.observe(this, this::searchUserInfoList);
     }
 
@@ -134,7 +137,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                     model.userSearch.setValue("");
                     hideInputMethod();
                     binding.etSearchInput.clearFocus();
-                    model.userName.setValue(tv.getText().toString());
+                    Cache.ins().setUserName(tv.getText().toString());
                     model.amount.setValue(cal(entity.getAccountBalance()));
                     model.award.setValue(cal(entity.getBonusBalance()));
                 });
@@ -188,6 +191,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         }
         this.model.recharge.setValue("0.00");
         model.resetData();
+
+        Cache.ins().setNetFee(0);
+        Cache.ins().setUserName("没有选择会员");
     }
 
     /**
@@ -197,7 +203,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * @param money 金额数量
      */
     public void recharge(View view, int money) {
-        String userNameValue = this.model.userName.getValue();
+        String userNameValue = Cache.ins().getUserName();
         if (userNameValue == null || userNameValue.equals("没有选择会员")) {
             Toast.show("请先选择会员");
             return;
@@ -214,6 +220,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         }
         this.model.recharge.setValue(String.format("%s.00", money));
         this.model.gabon.setValue(String.format("%s.00", money));
+
+        // 此处扩大100倍为了总计时计算
+        Cache.ins().setNetFee(money * 100);
     }
 
     /**
@@ -238,5 +247,12 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     public void createOrder() {
 
+    }
+
+    /**
+     * 优惠券
+     */
+    public void couponUse() {
+        CouponSelect.ins().set().show();
     }
 }

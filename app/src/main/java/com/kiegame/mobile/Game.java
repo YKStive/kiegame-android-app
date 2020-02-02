@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,6 +61,30 @@ public class Game extends MultiDexApplication implements Application.ActivityLif
      */
     public Activity activity() {
         return this.activity;
+    }
+
+    /**
+     * 获取屏幕大小信息
+     *
+     * @param real 是否真实数据
+     * @return {@link DisplayMetrics}
+     */
+    public DisplayMetrics metrics(boolean real) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        if (this.activity != null) {
+            WindowManager windowManager = this.activity.getWindowManager();
+            if (windowManager != null) {
+                Display display = windowManager.getDefaultDisplay();
+                if (display != null) {
+                    if (real) {
+                        display.getRealMetrics(metrics);
+                    } else {
+                        display.getMetrics(metrics);
+                    }
+                }
+            }
+        }
+        return metrics;
     }
 
     /**
