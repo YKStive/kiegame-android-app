@@ -222,6 +222,14 @@ public class MoreListView extends FrameLayout {
     }
 
     /**
+     * 更新数据
+     */
+    public void update() {
+        shopAdapter.notifyDataSetChanged();
+        menuAdapter.notifyDataSetChanged();
+    }
+
+    /**
      * 分类商品,并创建商品分类列表
      *
      * @param shops 商品数据

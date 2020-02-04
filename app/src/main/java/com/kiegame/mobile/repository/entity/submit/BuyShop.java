@@ -27,6 +27,30 @@ public class BuyShop {
     private String shopImage;
     // -商品名称
     private String shopName;
+    // -是否勾选购买
+    private boolean isBuy;
+    // -最大数量
+    private int max;
+
+    public int getMax() {
+        return max;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    public BuyShop() {
+        this.isBuy = true;
+    }
+
+    public boolean isBuy() {
+        return isBuy;
+    }
+
+    public void setBuy(boolean buy) {
+        isBuy = buy;
+    }
 
     public String getShopName() {
         return shopName;

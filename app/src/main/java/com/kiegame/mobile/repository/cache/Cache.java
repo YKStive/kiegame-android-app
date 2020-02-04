@@ -161,15 +161,19 @@ public class Cache extends BaseObservable {
     /**
      * 更新支付结算金额
      */
-    private void updateTotalMoney() {
+    public void updateTotalMoney() {
         Integer value = this.netFee.getValue();
         int money = value == null ? 0 : value;
         List<BuyShop> shops = this.shops.getValue();
         if (shops != null) {
             int shopSum = 0;
             for (BuyShop shop : shops) {
-                money += (shop.getFee() * shop.getProductBuySum());
-                shopSum += shop.getProductBuySum();
+                if (shop != null) {
+                    if (shop.isBuy()) {
+                        money += (shop.getFee() * shop.getProductBuySum());
+                    }
+                    shopSum += shop.getProductBuySum();
+                }
             }
             this.shopSum.setValue(shopSum);
         }
@@ -230,7 +234,7 @@ public class Cache extends BaseObservable {
         List<BuyShop> value = shops.getValue();
         if (value != null) {
             for (BuyShop shop : value) {
-                if (shop != null) {
+                if (shop != null && shop.isBuy()) {
                     total += (shop.getFee() * shop.getProductBuySum());
                 }
             }
@@ -246,6 +250,18 @@ public class Cache extends BaseObservable {
      * @param spec   规格
      */
     public void attachShop(ShopEntity data, String flavor, String spec) {
+        this.attachShop(data, flavor, spec, 1);
+    }
+
+    /**
+     * 添加商品到商品列表
+     *
+     * @param data   {@link ShopEntity} 商品数据对象
+     * @param flavor 口味
+     * @param spec   规格
+     * @param sum    商品数量
+     */
+    public void attachShop(ShopEntity data, String flavor, String spec, int sum) {
         if (flavor == null) flavor = "";
         if (spec == null) spec = "";
 
@@ -260,7 +276,7 @@ public class Cache extends BaseObservable {
             if (buy.getProductId().equals(data.getProductId())
                     && buy.getProductFlavorName().equals(flavor)
                     && buy.getProductSpecName().equals(spec)) {
-                buy.setProductBuySum(buy.getProductBuySum() + 1);
+                buy.setProductBuySum(buy.getProductBuySum() + sum);
                 hasShop = true;
                 break;
             }
@@ -268,14 +284,54 @@ public class Cache extends BaseObservable {
         // 如果没找到就新建一个并添加到商品列表中
         if (!hasShop) {
             BuyShop shop = new BuyShop();
-            shop.setProductBuySum(1);
+            shop.setProductBuySum(sum);
             shop.setShopName(data.getProductName());
             shop.setShopImage(data.getProductImg());
             shop.setProductSpecName(spec);
             shop.setProductFlavorName(flavor);
             shop.setProductId(data.getProductId());
             shop.setFee(data.getSellPrice());
+            shop.setMax(data.getBarCount());
             value.add(shop);
+        }
+        // 更新数据
+        this.shops.setValue(value);
+        this.updateTotalMoney();
+        this.notifyChange();
+    }
+
+
+    /**
+     * 添加商品到商品列表
+     *
+     * @param data   {@link BuyShop} 商品数据对象
+     * @param flavor 口味
+     * @param spec   规格
+     * @param sum    商品数量
+     */
+    public void attachShop(BuyShop data, String flavor, String spec, int sum) {
+        if (flavor == null) flavor = "";
+        if (spec == null) spec = "";
+
+        List<BuyShop> value = this.shops.getValue();
+        if (value == null) {
+            value = new ArrayList<>();
+        }
+        boolean hasShop = false;
+        // 查找是否有相同商品ID,相同口味,相同规格的商品对象
+        for (BuyShop buy : value) {
+            // 如果找到了,就增加商品购买数量
+            if (buy.getProductId().equals(data.getProductId())
+                    && buy.getProductFlavorName().equals(flavor)
+                    && buy.getProductSpecName().equals(spec)) {
+                buy.setProductBuySum(buy.getProductBuySum() + sum);
+                hasShop = true;
+                break;
+            }
+        }
+        // 如果没找到就新建一个并添加到商品列表中
+        if (!hasShop) {
+            value.add(data);
         }
         // 更新数据
         this.shops.setValue(value);
@@ -319,6 +375,26 @@ public class Cache extends BaseObservable {
             this.updateTotalMoney();
             this.notifyChange();
         }
+    }
+
+    /**
+     * 获取商品总数
+     *
+     * @param productId 商品ID
+     * @return 返回商品列表中的该商品总数
+     */
+    public int shopTotal(String productId) {
+        List<BuyShop> value = shops.getValue();
+        if (value != null && !value.isEmpty()) {
+            int sum = 0;
+            for (BuyShop buy : value) {
+                if (buy.getProductId().equals(productId)) {
+                    sum += buy.getProductBuySum();
+                }
+            }
+            return sum;
+        }
+        return 0;
     }
 
     /**

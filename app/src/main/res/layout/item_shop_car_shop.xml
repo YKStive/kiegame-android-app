@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/vv_divider_line"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="#dadada"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <CheckBox
+        android:id="@+id/cb_shop_select"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:button="@drawable/selector_shop_select_btn"
+        android:checked="true"
+        app:layout_constraintBottom_toTopOf="@id/vv_divider_line"
+        app:layout_constraintLeft_toLeftOf="@id/vv_divider_line"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_shop_image"
+        android:layout_width="70dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintBottom_toTopOf="@id/vv_divider_line"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintLeft_toRightOf="@id/cb_shop_select"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@mipmap/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/iv_btn_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_plus_btn"
+        app:layout_constraintRight_toRightOf="@id/vv_divider_line"
+        app:layout_constraintTop_toTopOf="@id/iv_shop_image" />
+
+    <TextView
+        android:id="@+id/tv_shop_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:ems="2"
+        android:gravity="center"
+        android:maxLength="4"
+        android:maxLines="1"
+        android:textColor="#282828"
+        android:textSize="18sp"
+        app:layout_constraintRight_toLeftOf="@id/iv_btn_plus"
+        app:layout_constraintTop_toTopOf="@id/iv_shop_image"
+        tools:text="9999" />
+
+    <ImageView
+        android:id="@+id/iv_btn_less"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_less_btn"
+        app:layout_constraintRight_toLeftOf="@id/tv_shop_num"
+        app:layout_constraintTop_toTopOf="@id/iv_shop_image" />
+
+    <TextView
+        android:id="@+id/tv_shop_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="#1A1A1B"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/iv_shop_image"
+        app:layout_constraintRight_toLeftOf="@id/iv_btn_less"
+        app:layout_constraintTop_toTopOf="@id/iv_shop_image"
+        tools:text="香草拿铁" />
+
+    <TextView
+        android:id="@+id/tv_shop_des"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="10dp"
+        android:textColor="#A8A8A8"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toRightOf="@id/iv_shop_image"
+        app:layout_constraintRight_toLeftOf="@id/iv_btn_less"
+        app:layout_constraintTop_toBottomOf="@id/tv_shop_name"
+        tools:text="大/加冰/不加糖" />
+
+
+    <TextView
+        android:id="@+id/tv_shop_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:gravity="end|center_vertical"
+        android:textColor="#1A1A1B"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_shop_image"
+        app:layout_constraintLeft_toRightOf="@id/iv_shop_image"
+        app:layout_constraintRight_toRightOf="@id/vv_divider_line"
+        tools:text="¥15" />
+</androidx.constraintlayout.widget.ConstraintLayout>

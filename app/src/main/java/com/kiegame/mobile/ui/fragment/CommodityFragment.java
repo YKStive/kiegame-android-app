@@ -29,6 +29,14 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
     private Badge badge;
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (binding != null && binding.mlvShopList != null) {
+            binding.mlvShopList.update();
+        }
+    }
+
+    @Override
     protected int onLayout() {
         return R.layout.fragment_commodity;
     }
