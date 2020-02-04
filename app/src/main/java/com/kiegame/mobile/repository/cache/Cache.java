@@ -1,10 +1,14 @@
 package com.kiegame.mobile.repository.cache;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.utils.Prefer;
@@ -39,6 +43,8 @@ public class Cache extends BaseObservable {
     private boolean paymentOnline;
     // 客维支付
     private boolean paymentOffline;
+    // 商品数量
+    private MutableLiveData<Integer> shopSum;
 
     private Cache() {
         this.token = Prefer.get(Setting.APP_NETWORK_TOKEN, "");
@@ -50,6 +56,8 @@ public class Cache extends BaseObservable {
         this.userName = "没有选择会员";
         this.paymentOnline = true;
         this.paymentOffline = false;
+        this.shopSum = new MutableLiveData<>();
+        this.shopSum.postValue(0);
     }
 
     /**
@@ -62,6 +70,24 @@ public class Cache extends BaseObservable {
             Cache.INS = new Cache();
         }
         return Cache.INS;
+    }
+
+    /**
+     * 设置商品数量改变监听
+     *
+     * @param owner    生命周期观察者
+     * @param observer 观察者回调
+     */
+    public void setOnShopSumChangeListener(@NonNull LifecycleOwner owner, @NonNull Observer<? super Integer> observer) {
+        this.shopSum.observe(owner, observer);
+    }
+
+    /**
+     * 获取商品列表数量
+     */
+    public int getShopSum() {
+        Integer value = shopSum.getValue();
+        return value == null ? 0 : value;
     }
 
     /**
@@ -140,9 +166,12 @@ public class Cache extends BaseObservable {
         int money = value == null ? 0 : value;
         List<BuyShop> shops = this.shops.getValue();
         if (shops != null) {
+            int shopSum = 0;
             for (BuyShop shop : shops) {
-                money += shop.getFee();
+                money += (shop.getFee() * shop.getProductBuySum());
+                shopSum += shop.getProductBuySum();
             }
+            this.shopSum.setValue(shopSum);
         }
         this.paymentMoney = money;
     }
@@ -202,7 +231,7 @@ public class Cache extends BaseObservable {
         if (value != null) {
             for (BuyShop shop : value) {
                 if (shop != null) {
-                    total += shop.getFee();
+                    total += (shop.getFee() * shop.getProductBuySum());
                 }
             }
         }
@@ -212,17 +241,84 @@ public class Cache extends BaseObservable {
     /**
      * 添加商品到商品列表
      *
-     * @param shop {@link BuyShop} 商品数据对象
+     * @param data   {@link ShopEntity} 商品数据对象
+     * @param flavor 口味
+     * @param spec   规格
      */
-    public void attachShop(BuyShop shop) {
+    public void attachShop(ShopEntity data, String flavor, String spec) {
+        if (flavor == null) flavor = "";
+        if (spec == null) spec = "";
+
         List<BuyShop> value = this.shops.getValue();
         if (value == null) {
             value = new ArrayList<>();
         }
-        value.add(shop);
+        boolean hasShop = false;
+        // 查找是否有相同商品ID,相同口味,相同规格的商品对象
+        for (BuyShop buy : value) {
+            // 如果找到了,就增加商品购买数量
+            if (buy.getProductId().equals(data.getProductId())
+                    && buy.getProductFlavorName().equals(flavor)
+                    && buy.getProductSpecName().equals(spec)) {
+                buy.setProductBuySum(buy.getProductBuySum() + 1);
+                hasShop = true;
+                break;
+            }
+        }
+        // 如果没找到就新建一个并添加到商品列表中
+        if (!hasShop) {
+            BuyShop shop = new BuyShop();
+            shop.setProductBuySum(1);
+            shop.setShopName(data.getProductName());
+            shop.setShopImage(data.getProductImg());
+            shop.setProductSpecName(spec);
+            shop.setProductFlavorName(flavor);
+            shop.setProductId(data.getProductId());
+            shop.setFee(data.getSellPrice());
+            value.add(shop);
+        }
+        // 更新数据
         this.shops.setValue(value);
         this.updateTotalMoney();
         this.notifyChange();
+    }
+
+    /**
+     * 删除商品
+     *
+     * @param productId 商品ID
+     * @param flavor    口味
+     * @param spec      规格
+     */
+    public void detachShop(String productId, String flavor, String spec) {
+        if (flavor == null) flavor = "";
+        if (spec == null) spec = "";
+
+        List<BuyShop> value = shops.getValue();
+        // 如果商品列表不是空的
+        if (value != null && !value.isEmpty()) {
+            // 查找是否有这种商品
+            for (int i = 0; i < value.size(); i++) {
+                BuyShop buy = value.get(i);
+                // 如果找到了,判断购买数量
+                if (buy.getProductId().equals(productId)
+                        && buy.getProductFlavorName().equals(flavor)
+                        && buy.getProductSpecName().equals(spec)) {
+                    if (buy.getProductBuySum() <= 1) {
+                        // 如果商品数量小等于1,减一则相当于不购买,从商品列表中删除
+                        value.remove(i);
+                    } else {
+                        // 如果商品数量大于1,则减少一个商品数量
+                        value.get(i).setProductBuySum(buy.getProductBuySum() - 1);
+                    }
+                    break;
+                }
+            }
+            // 更新数据
+            this.shops.setValue(value);
+            this.updateTotalMoney();
+            this.notifyChange();
+        }
     }
 
     /**

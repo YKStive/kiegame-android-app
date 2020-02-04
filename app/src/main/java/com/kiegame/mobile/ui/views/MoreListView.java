@@ -243,13 +243,4 @@ public class MoreListView extends FrameLayout {
             this.shops.add(shop);
         }
     }
-
-    /**
-     * 设置商品添加回调
-     *
-     * @param callback {@link ShopAdapter.OnJoinShopCallback}
-     */
-    public void setCallback(ShopAdapter.OnJoinShopCallback callback) {
-        shopAdapter.setCallback(callback);
-    }
 }

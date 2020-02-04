@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.activity.ShopDetailActivity;
@@ -28,8 +29,6 @@ import java.util.List;
  * Description: 商品列表适配器
  */
 public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewHolder> {
-
-    private OnJoinShopCallback callback;
 
     /**
      * Same as QuickAdapter#QuickAdapter(Context,int) but with
@@ -52,6 +51,9 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 helper.setText(R.id.tv_shop_name, item.getProductName());
                 helper.setText(R.id.tv_shop_norm, item.getProductSpecName());
                 helper.setText(R.id.tv_shop_money, cal(item.getSellPrice()));
+                helper.setVisible(R.id.tv_btn_less, item.getBuySize() != 0);
+                helper.setVisible(R.id.tv_shop_num, item.getBuySize() != 0);
+                helper.setText(R.id.tv_shop_num, String.valueOf(item.getBuySize()));
                 setPlusShopClickListener(helper, item);
                 setLessShopClickListener(helper, item);
                 view.setOnClickListener(v -> v.getContext()
@@ -81,16 +83,15 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             if (num < 0) {
                 Toast.show("不能再少了");
             } else {
+                helper.setVisible(R.id.tv_btn_less, num != 0);
+                tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
                 if (num == 0) {
-                    helper.setVisible(R.id.tv_btn_less, false);
                     tv.setText("");
                 } else {
                     tv.setText(String.valueOf(num));
                 }
                 item.setBuySize(num);
-                if (callback != null) {
-                    callback.OnJoinShop(item);
-                }
+                Cache.ins().detachShop(item.getProductId(), null, null);
             }
         });
     }
@@ -106,7 +107,10 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             }
             TextView tv = helper.getView(R.id.tv_shop_num);
             if (!Text.empty(item.getProductFlavorName()) || !Text.empty(item.getProductSpecName())) {
-                ShopDetail.ins().callback(data -> updateShopNum(helper, item, tv, data.getProductBuySum())).set(item).show();
+                ShopDetail.ins().callback(data -> {
+                    updateShopNum(helper, item, tv, data.getProductBuySum());
+                    Cache.ins().attachShop(item, data.getProductFlavorName(), data.getProductSpecName());
+                }).set(item).show();
             } else {
                 String size = tv.getText().toString();
                 int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
@@ -114,6 +118,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                     Toast.show("不能再多了");
                 } else {
                     updateShopNum(helper, item, tv, num);
+                    Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
                 }
             }
         });
@@ -123,17 +128,14 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
      * 更新商品购买数量
      */
     private void updateShopNum(@NonNull BaseViewHolder helper, ShopEntity item, TextView tv, int sum) {
+        helper.setVisible(R.id.tv_btn_less, sum != 0);
+        tv.setVisibility(sum != 0 ? View.VISIBLE : View.GONE);
         if (sum > 0) {
-            helper.setVisible(R.id.tv_btn_less, true);
             tv.setText(String.valueOf(sum));
         } else {
-            helper.setVisible(R.id.tv_btn_less, false);
             tv.setText("");
         }
         item.setBuySize(sum);
-        if (callback != null) {
-            callback.OnJoinShop(item);
-        }
     }
 
     /**
@@ -147,27 +149,5 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
         BigDecimal ratio = new BigDecimal(100);
         BigDecimal divide = source.divide(ratio, 2, RoundingMode.HALF_UP);
         return divide.toString();
-    }
-
-    /**
-     * 设置商品添加回调
-     *
-     * @param callback {@link OnJoinShopCallback}
-     */
-    public void setCallback(OnJoinShopCallback callback) {
-        this.callback = callback;
-    }
-
-    /**
-     * 添加商品回调接口
-     */
-    public interface OnJoinShopCallback {
-
-        /**
-         * 添加商品
-         *
-         * @param shop 商品
-         */
-        void OnJoinShop(ShopEntity shop);
     }
 }
