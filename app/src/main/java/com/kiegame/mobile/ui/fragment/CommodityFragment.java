@@ -2,7 +2,7 @@ package com.kiegame.mobile.ui.fragment;
 
 import android.content.Intent;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentCommodityBinding;
@@ -35,9 +35,9 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
 
     @Override
     protected void onObject() {
-        model = ViewModelProviders.of(this).get(CommodityModel.class);
+        this.model = new ViewModelProvider(this).get(CommodityModel.class);
         binding.setFragment(this);
-        binding.setModel(model);
+        binding.setModel(this.model);
     }
 
     @Override

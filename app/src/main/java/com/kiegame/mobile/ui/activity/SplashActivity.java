@@ -2,7 +2,7 @@ package com.kiegame.mobile.ui.activity;
 
 import android.content.Intent;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivitySplashBinding;
@@ -29,7 +29,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
 
     @Override
     protected void onObject() {
-        model = ViewModelProviders.of(this).get(SplashModel.class);
+        model = new ViewModelProvider(this).get(SplashModel.class);
     }
 
     @Override

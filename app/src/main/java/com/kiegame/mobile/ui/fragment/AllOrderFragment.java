@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -42,7 +42,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
 
     @Override
     protected void onObject() {
-        model = ViewModelProviders.of(this).get(OrderModel.class);
+        model = new ViewModelProvider(this).get(OrderModel.class);
     }
 
     @Override

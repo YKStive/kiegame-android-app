@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.kiegame.mobile.R;
@@ -54,7 +54,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
 
     @Override
     protected void onObject() {
-        model = ViewModelProviders.of(this).get(NetFeeModel.class);
+        model = new ViewModelProvider(this).get(NetFeeModel.class);
         binding.setModel(model);
         binding.setFragment(this);
         binding.setCache(Cache.ins());

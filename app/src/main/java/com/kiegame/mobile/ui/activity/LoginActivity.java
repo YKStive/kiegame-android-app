@@ -2,7 +2,7 @@ package com.kiegame.mobile.ui.activity;
 
 import android.content.Intent;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityLoginBinding;
@@ -31,7 +31,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
 
     @Override
     protected void onObject() {
-        model = ViewModelProviders.of(this).get(LoginModel.class);
+        model = new ViewModelProvider(this).get(LoginModel.class);
         binding.setActivity(this);
         binding.setModel(model);
     }
