@@ -14,6 +14,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityShopCarBinding;
 import com.kiegame.mobile.repository.cache.Cache;
+import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.CouponSelect;
@@ -22,6 +23,7 @@ import com.kiegame.mobile.utils.Toast;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 /**
  * Created by: var_rain.
@@ -45,15 +47,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 
     @Override
     protected void onView() {
-        if (Cache.ins().getShopSum() <= 0) {
-            binding.rvShopLayout.setVisibility(View.GONE);
-            binding.vvDividerLineStart.setVisibility(View.GONE);
-            binding.llShopTotal.setVisibility(View.GONE);
-        } else {
-            binding.rvShopLayout.setVisibility(View.VISIBLE);
-            binding.vvDividerLineStart.setVisibility(View.VISIBLE);
-            binding.llShopTotal.setVisibility(View.VISIBLE);
-        }
+        setShopListVisible();
         adapter = new BaseQuickAdapter<BuyShop, BaseViewHolder>(R.layout.item_shop_car_shop, Cache.ins().getShops()) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, BuyShop item) {
@@ -91,6 +85,21 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     }
 
     /**
+     * 设置商品列表显示或隐藏
+     */
+    private void setShopListVisible() {
+        if (Cache.ins().getShopSum() <= 0) {
+            binding.rvShopLayout.setVisibility(View.GONE);
+            binding.vvDividerLineStart.setVisibility(View.GONE);
+            binding.llShopTotal.setVisibility(View.GONE);
+        } else {
+            binding.rvShopLayout.setVisibility(View.VISIBLE);
+            binding.vvDividerLineStart.setVisibility(View.VISIBLE);
+            binding.llShopTotal.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
      * 增加
      */
     public void plus(ImageView less, TextView tv, BuyShop data) {
@@ -107,6 +116,13 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setText(String.valueOf(num));
             Cache.ins().attachShop(data, data.getProductFlavorName(), data.getProductSpecName(), 1);
+            List<ShopEntity> entities = Cache.ins().getEntities();
+            for (ShopEntity buy : entities) {
+                if (buy.getProductId().equals(data.getProductId())) {
+                    buy.setBuySize(buy.getBuySize() + 1);
+                    break;
+                }
+            }
         }
         adapter.notifyDataSetChanged();
     }
@@ -124,8 +140,18 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setText(num == 0 ? "" : String.valueOf(num));
             Cache.ins().detachShop(data.getProductId(), data.getProductFlavorName(), data.getProductSpecName());
+            List<ShopEntity> entities = Cache.ins().getEntities();
+            for (ShopEntity buy : entities) {
+                if (buy.getProductId().equals(data.getProductId())) {
+                    buy.setBuySize(buy.getBuySize() - 1);
+                    break;
+                }
+            }
         }
         adapter.notifyDataSetChanged();
+        if (Cache.ins().getShopSum() <= 0) {
+            setShopListVisible();
+        }
     }
 
     /**

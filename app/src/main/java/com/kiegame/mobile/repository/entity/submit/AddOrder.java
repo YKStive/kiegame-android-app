@@ -26,11 +26,11 @@ public class AddOrder {
     // *充值奖励金额 没有为0
     private int rechargeRewardMoney;
     // 充值优惠类型
-    private int rechargeDiscountType;
+    private Integer rechargeDiscountType;
     // 充值优惠ID
     private String rechargeDiscountId;
     // 充值优惠金额
-    private int rechargeDiscountMoney;
+    private Integer rechargeDiscountMoney;
     // *是否下订单 下单1 结算2
     private int isAddOrder;
     // *支付类型 现金2 卡扣3 客维4 扫码支付5
@@ -88,11 +88,11 @@ public class AddOrder {
         this.rechargeRewardMoney = rechargeRewardMoney;
     }
 
-    public int getRechargeDiscountType() {
+    public Integer getRechargeDiscountType() {
         return rechargeDiscountType;
     }
 
-    public void setRechargeDiscountType(int rechargeDiscountType) {
+    public void setRechargeDiscountType(Integer rechargeDiscountType) {
         this.rechargeDiscountType = rechargeDiscountType;
     }
 
@@ -104,11 +104,11 @@ public class AddOrder {
         this.rechargeDiscountId = rechargeDiscountId;
     }
 
-    public int getRechargeDiscountMoney() {
+    public Integer getRechargeDiscountMoney() {
         return rechargeDiscountMoney;
     }
 
-    public void setRechargeDiscountMoney(int rechargeDiscountMoney) {
+    public void setRechargeDiscountMoney(Integer rechargeDiscountMoney) {
         this.rechargeDiscountMoney = rechargeDiscountMoney;
     }
 

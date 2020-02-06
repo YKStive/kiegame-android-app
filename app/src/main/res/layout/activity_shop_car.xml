@@ -491,6 +491,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="@{()->activity.finish()}"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/go_net_fee_recharge"

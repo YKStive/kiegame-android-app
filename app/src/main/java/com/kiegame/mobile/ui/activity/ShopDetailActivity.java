@@ -1,5 +1,6 @@
 package com.kiegame.mobile.ui.activity;
 
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityShopDetailBinding;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.base.BaseActivity;
@@ -19,6 +21,7 @@ import com.kiegame.mobile.utils.Toast;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 /**
  * Created by: var_rain.
@@ -30,6 +33,7 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
     private TextView selectFlavor;
     private TextView selectNorm;
     private ShopEntity shop;
+    private int buySourceSize;
 
     // 标签类型 口味
     private static final int TAG_TYPE_FLAVOR = 1;
@@ -45,6 +49,10 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
     protected void onObject() {
         binding.setActivity(this);
         shop = (ShopEntity) getIntent().getSerializableExtra(Setting.APP_SHOP_ENTITY);
+        if (shop != null) {
+            buySourceSize = shop.getBuySize();
+            shop.setBuySize(0);
+        }
     }
 
     @Override
@@ -197,11 +205,12 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         TextView tv = binding.tvShopNum;
         String size = tv.getText().toString();
         int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-        if (num > shop.getBarCount()) {
+        if (Cache.ins().shopTotal(shop.getProductId()) + num > shop.getBarCount()) {
             Toast.show("不能再多了");
         } else {
             if (num > 0) {
                 binding.tvBtnLess.setVisibility(View.VISIBLE);
+                binding.tvShopNum.setVisibility(View.VISIBLE);
             }
             shop.setBuySize(num);
             tv.setText(String.valueOf(num));
@@ -220,11 +229,65 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         } else {
             if (num == 0) {
                 binding.tvBtnLess.setVisibility(View.INVISIBLE);
+                tv.setVisibility(View.INVISIBLE);
                 tv.setText("");
             } else {
                 tv.setText(String.valueOf(num));
             }
             shop.setBuySize(num);
+        }
+    }
+
+    /**
+     * 添加到购物车
+     */
+    public void addShopCar() {
+        if (shop.getBuySize() > 0) {
+            addShopToOrderList();
+            Toast.show("已添加到购物车");
+        } else {
+            Toast.show("请设置数量");
+        }
+    }
+
+    /**
+     * 添加商品到购物车
+     */
+    private void addShopToOrderList() {
+        String flavor = "";
+        String spec = "";
+        if (selectFlavor != null) {
+            flavor = selectFlavor.getText().toString();
+        }
+        if (selectNorm != null) {
+            spec = selectNorm.getText().toString();
+        }
+        Cache.ins().attachShop(shop, flavor, spec, shop.getBuySize());
+        List<ShopEntity> entities = Cache.ins().getEntities();
+        for (ShopEntity buy : entities) {
+            if (buy.getProductId().equals(shop.getProductId())) {
+                buy.setBuySize(buySourceSize + shop.getBuySize());
+                break;
+            }
+        }
+        shop.setBuySize(0);
+        buySourceSize += shop.getBuySize();
+        binding.tvShopNum.setText("0");
+        binding.tvShopNum.setVisibility(View.INVISIBLE);
+        binding.tvBtnLess.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * 立即购买
+     */
+    public void buyNow() {
+        if (shop.getBuySize() > 0) {
+            addShopToOrderList();
+            addShopToOrderList();
+            startActivity(new Intent(this, ShopCarActivity.class));
+            finish();
+        } else {
+            Toast.show("请设置数量");
         }
     }
 }

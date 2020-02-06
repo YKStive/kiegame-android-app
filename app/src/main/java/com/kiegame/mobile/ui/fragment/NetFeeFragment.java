@@ -21,6 +21,7 @@ import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentNetFeeBinding;
 import com.kiegame.mobile.model.NetFeeModel;
 import com.kiegame.mobile.repository.cache.Cache;
+import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.ui.activity.MainActivity;
@@ -46,6 +47,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private PopupWindow pw;
     private LinearLayout list;
     private LayoutInflater inflater;
+    private UserInfoEntity userInfo;
 
     @Override
     protected int onLayout() {
@@ -134,6 +136,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 }
                 tv.setText(item);
                 tv.setOnClickListener(v -> {
+                    userInfo = entity;
                     model.userSearch.setValue("");
                     hideInputMethod();
                     binding.etSearchInput.clearFocus();
@@ -191,6 +194,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         }
         this.model.recharge.setValue("0.00");
         model.resetData();
+        this.userInfo = null;
 
         Cache.ins().setNetFee(0);
         Cache.ins().setUserName("没有选择会员");
@@ -239,20 +243,72 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 结算
      */
     public void totalShop() {
-
+        if (userInfo != null) {
+            model.addOrder(
+                    Cache.ins().getNetFeeNum(),
+                    Cache.ins().getShopMoneyTotalNum(),
+                    userInfo.getSeatNumber(),
+                    userInfo.getCustomerId(),
+                    userInfo.getBonusBalance(),
+                    null,
+                    null,
+                    null,
+                    4,
+                    String.valueOf(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()),
+                    null,
+                    null,
+                    2).observe(this, this::onTotalOrderResult);
+        } else {
+            Toast.show("请先选择会员");
+        }
     }
 
     /**
      * 下订单
      */
     public void createOrder() {
-
+        if (userInfo != null) {
+            model.addOrder(
+                    Cache.ins().getNetFeeNum(),
+                    Cache.ins().getShopMoneyTotalNum(),
+                    userInfo.getSeatNumber(),
+                    userInfo.getCustomerId(),
+                    userInfo.getBonusBalance(),
+                    null,
+                    null,
+                    null,
+                    4,
+                    String.valueOf(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()),
+                    null,
+                    null,
+                    1).observe(this, this::onCreateOrderResult);
+        } else {
+            Toast.show("请先选择会员");
+        }
     }
 
     /**
      * 优惠券
      */
     public void couponUse() {
-        CouponSelect.ins().set().show();
+        if (userInfo != null) {
+            CouponSelect.ins().set().show();
+        } else {
+            Toast.show("请先选择会员");
+        }
+    }
+
+    /**
+     * 下订单返回处理
+     */
+    private void onCreateOrderResult(List<AddOrderEntity> data) {
+        Toast.show("下单成功");
+    }
+
+    /**
+     * 结算返回处理
+     */
+    private void onTotalOrderResult(List<AddOrderEntity> data) {
+
     }
 }

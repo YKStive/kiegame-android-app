@@ -45,6 +45,8 @@ public class Cache extends BaseObservable {
     private boolean paymentOffline;
     // 商品数量
     private MutableLiveData<Integer> shopSum;
+    // 商品实体列表
+    private List<ShopEntity> entities;
 
     private Cache() {
         this.token = Prefer.get(Setting.APP_NETWORK_TOKEN, "");
@@ -70,6 +72,14 @@ public class Cache extends BaseObservable {
             Cache.INS = new Cache();
         }
         return Cache.INS;
+    }
+
+    public List<ShopEntity> getEntities() {
+        return entities;
+    }
+
+    public void setEntities(List<ShopEntity> entities) {
+        this.entities = entities;
     }
 
     /**
@@ -192,6 +202,14 @@ public class Cache extends BaseObservable {
     }
 
     /**
+     * 获取网费金额, 单位:分
+     */
+    public int getNetFeeNum() {
+        Integer value = netFee.getValue();
+        return value == null ? 0 : value;
+    }
+
+    /**
      * 设置网费
      *
      * @param netFee 网费金额,单位:分
@@ -240,6 +258,24 @@ public class Cache extends BaseObservable {
             }
         }
         return cal(total);
+    }
+
+    /**
+     * 获取商品金额总计
+     *
+     * @return 返回列表中所有的商品金额总价, 单位: 分
+     */
+    public int getShopMoneyTotalNum() {
+        int total = 0;
+        List<BuyShop> value = shops.getValue();
+        if (value != null) {
+            for (BuyShop shop : value) {
+                if (shop != null && shop.isBuy()) {
+                    total += (shop.getFee() * shop.getProductBuySum());
+                }
+            }
+        }
+        return total;
     }
 
     /**

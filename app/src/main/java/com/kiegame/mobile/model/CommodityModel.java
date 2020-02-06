@@ -58,6 +58,7 @@ public class CommodityModel extends ViewModel {
                     @Override
                     public void onSuccess(List<ShopEntity> data, int total, int length) {
                         shops.setValue(data);
+                        Cache.ins().setEntities(data);
                     }
                 });
         return this.shops;
