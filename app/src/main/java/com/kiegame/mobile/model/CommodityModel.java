@@ -21,12 +21,16 @@ import java.util.List;
  */
 public class CommodityModel extends ViewModel {
 
+    public MutableLiveData<String> searchShop;
+
     private MutableLiveData<List<ShopSortEntity>> shopSort;
     private MutableLiveData<List<ShopEntity>> shops;
 
     public LoginEntity login;
 
     public CommodityModel() {
+        this.searchShop = new MutableLiveData<>();
+
         this.shopSort = new MutableLiveData<>();
         this.shops = new MutableLiveData<>();
 

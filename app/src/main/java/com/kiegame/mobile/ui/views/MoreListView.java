@@ -1,11 +1,14 @@
 package com.kiegame.mobile.ui.views;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.adapter.ShopAdapter;
 import com.kiegame.mobile.databinding.ViewMoreListLayoutBinding;
@@ -65,6 +69,29 @@ public class MoreListView extends FrameLayout {
         this.shops = new ArrayList<>();
         initSortMenu();
         initShopView();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        hideInputMethod();
+        requestFocus();
+        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 隐藏输入法
+     */
+    private void hideInputMethod() {
+        Activity activity = Game.ins().activity();
+        if (activity != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+                View focus = activity.getCurrentFocus();
+                if (focus != null) {
+                    inputMethodManager.hideSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+            }
+        }
     }
 
     /**
@@ -149,6 +176,23 @@ public class MoreListView extends FrameLayout {
             }
         }
         return index;
+    }
+
+    /**
+     * 滑动到指定商品
+     *
+     * @param protectId 商品ID
+     */
+    public void scrollToProtectId(String protectId) {
+        if (this.shops != null && !this.shops.isEmpty()) {
+            for (int i = 0; i < this.shops.size(); i++) {
+                ShopEntity shop = shops.get(i);
+                if (shop != null && protectId != null && protectId.equals(shop.getProductId())) {
+                    binding.rvContent.smoothScrollToPosition(i);
+                    break;
+                }
+            }
+        }
     }
 
     /**

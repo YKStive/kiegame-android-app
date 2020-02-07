@@ -14,6 +14,7 @@ import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
 import com.kiegame.mobile.ui.activity.ShopCarActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
+import com.kiegame.mobile.utils.Text;
 
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
                 binding.mlvShopList.update();
             }
         });
+        model.searchShop.observe(this, this::shopSearch);
     }
 
     @Override
@@ -66,6 +68,11 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
                 liveData.observe(this, this::lisShopResult);
             }
         });
+        binding.etSearchShop.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                model.searchShop.setValue("");
+            }
+        });
     }
 
     @Override
@@ -73,6 +80,25 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         model.listShopShot().observe(this, this::listShotResult);
         Cache.ins().setOnShopSumChangeListener(this, this::setShopSum);
         binding.srlLayout.autoRefresh();
+    }
+
+    /**
+     * 商品搜索
+     *
+     * @param name 商品关键字
+     */
+    private void shopSearch(String name) {
+        if (!Text.empty(name)) {
+            List<ShopEntity> shops = Cache.ins().getEntities();
+            if (shops != null && !shops.isEmpty()) {
+                for (ShopEntity shop : shops) {
+                    if (shop != null && shop.getProductName() != null && shop.getProductName().contains(name)) {
+                        binding.mlvShopList.scrollToProtectId(shop.getProductId());
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
