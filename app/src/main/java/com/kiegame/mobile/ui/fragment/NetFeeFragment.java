@@ -228,12 +228,14 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         if (this.moneyBtn != null) {
             this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
         }
-        if (view.equals(this.moneyBtn)) {
+        if (money == 0 || (view != null && view.equals(this.moneyBtn))) {
             money = 0;
             this.moneyBtn = null;
         } else {
-            this.moneyBtn = (TextView) view;
-            this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_press_border);
+            if (view != null) {
+                this.moneyBtn = (TextView) view;
+                this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_press_border);
+            }
         }
         this.model.recharge.setValue(String.format("%s.00", money));
         this.model.gabon.setValue(String.format("%s.00", money));
@@ -275,7 +277,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     public void createOrder() {
         if (userInfo != null) {
-            model.addOrder(
+            LiveData<List<AddOrderEntity>> order = model.addOrder(
                     Cache.ins().getNetFeeNum(),
                     Cache.ins().getShopMoneyTotalNum(),
                     userInfo.getSeatNumber(),
@@ -284,11 +286,14 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                     null,
                     null,
                     null,
-                    4,
+                    Cache.ins().isPaymentOnline() ? 5 : 4,
                     String.valueOf(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()),
                     null,
                     null,
-                    1).observe(this, this::onCreateOrderResult);
+                    1);
+            if (!order.hasObservers()) {
+                order.observe(this, this::onCreateOrderResult);
+            }
         } else {
             Toast.show("请先选择会员");
         }
@@ -309,6 +314,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 下订单返回处理
      */
     private void onCreateOrderResult(List<AddOrderEntity> data) {
-        Toast.show("下单成功");
+        if (data != null) {
+            this.recharge(this.moneyBtn, 0);
+            Toast.show("下单成功");
+        }
     }
 }

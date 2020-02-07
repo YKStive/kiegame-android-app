@@ -11,6 +11,7 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
@@ -131,9 +132,19 @@ public class NetFeeModel extends ViewModel {
                     buys.add(shop);
                 }
             }
+            List<ShopEntity> entities = Cache.ins().getEntities();
             for (BuyShop buy : buys) {
+                if (entities != null && !entities.isEmpty()) {
+                    for (ShopEntity shop : entities) {
+                        if (shop != null && shop.getProductId().equals(buy.getProductId())) {
+                            shop.setBuySize(shop.getBuySize() - buy.getProductBuySum());
+                            break;
+                        }
+                    }
+                }
                 shops.remove(buy);
             }
+            Cache.ins().getShopObserver().setValue(buys.size());
             order.setProductList(buys);
         }
         if (netMoney > 0) {

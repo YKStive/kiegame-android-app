@@ -295,6 +295,7 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="16dp"
+                    android:visibility="@{cache.netFeeNum == 0 ? View.GONE:View.VISIBLE}"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ll_btn_use_coupon">
@@ -497,7 +498,8 @@
                     android:paddingRight="16dp"
                     android:text="@string/go_net_fee_recharge"
                     android:textColor="@color/net_fee_option_btn"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="@{cache.netFeeNum == 0 ? View.GONE:View.VISIBLE}" />
 
                 <TextView
                     android:layout_width="wrap_content"

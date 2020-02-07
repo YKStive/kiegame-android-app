@@ -47,6 +47,8 @@ public class Cache extends BaseObservable {
     private MutableLiveData<Integer> shopSum;
     // 商品实体列表
     private List<ShopEntity> entities;
+    // 商品列表更新
+    private MutableLiveData<Integer> shopObserver;
 
     private Cache() {
         this.initialize();
@@ -67,6 +69,8 @@ public class Cache extends BaseObservable {
         this.paymentOffline = false;
         this.shopSum = new MutableLiveData<>();
         this.shopSum.postValue(0);
+        this.shopObserver = new MutableLiveData<>();
+        this.shopObserver.postValue(0);
     }
 
     /**
@@ -79,6 +83,10 @@ public class Cache extends BaseObservable {
             Cache.INS = new Cache();
         }
         return Cache.INS;
+    }
+
+    public MutableLiveData<Integer> getShopObserver() {
+        return shopObserver;
     }
 
     public List<ShopEntity> getEntities() {
@@ -211,6 +219,7 @@ public class Cache extends BaseObservable {
     /**
      * 获取网费金额, 单位:分
      */
+    @Bindable
     public int getNetFeeNum() {
         Integer value = netFee.getValue();
         return value == null ? 0 : value;
@@ -272,6 +281,7 @@ public class Cache extends BaseObservable {
      *
      * @return 返回列表中所有的商品金额总价, 单位: 分
      */
+    @Bindable
     public int getShopMoneyTotalNum() {
         int total = 0;
         List<BuyShop> value = shops.getValue();
