@@ -73,4 +73,5 @@
     <string name="coupon_service_activity">门店活动</string>
     <string name="coupon_user_coupon">客户优惠券</string>
     <string name="app_exit_login">退出登录</string>
+    <string name="app_no_shop">没有商品哦~</string>
 </resources>

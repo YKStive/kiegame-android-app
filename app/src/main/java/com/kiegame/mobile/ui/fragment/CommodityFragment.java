@@ -1,7 +1,9 @@
 package com.kiegame.mobile.ui.fragment;
 
 import android.content.Intent;
+import android.view.View;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.kiegame.mobile.R;
@@ -58,13 +60,19 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         badge = new QBadgeView(getContext())
                 .bindTarget(binding.tvBadgeNum);
         badge.setBadgeNumber(Cache.ins().getShopSum());
+        binding.srlLayout.setOnRefreshListener(refreshLayout -> {
+            LiveData<List<ShopEntity>> liveData = model.listShops();
+            if (!liveData.hasObservers()) {
+                liveData.observe(this, this::lisShopResult);
+            }
+        });
     }
 
     @Override
     protected void onData() {
         model.listShopShot().observe(this, this::listShotResult);
-        model.listShops().observe(this, this::lisShopResult);
         Cache.ins().setOnShopSumChangeListener(this, this::setShopSum);
+        binding.srlLayout.autoRefresh();
     }
 
     /**
@@ -91,6 +99,8 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
      * @param data 数据对象
      */
     private void lisShopResult(List<ShopEntity> data) {
+        binding.srlLayout.finishRefresh();
+        binding.tvShopEmpty.setVisibility((data == null || data.isEmpty()) ? View.VISIBLE : View.GONE);
         binding.mlvShopList.setShops(data);
     }
 

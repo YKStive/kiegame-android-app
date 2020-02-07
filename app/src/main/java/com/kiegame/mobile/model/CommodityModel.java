@@ -57,6 +57,21 @@ public class CommodityModel extends ViewModel {
                 .subscribe(new Subs<List<ShopEntity>>(false) {
                     @Override
                     public void onSuccess(List<ShopEntity> data, int total, int length) {
+                        List<ShopEntity> entities = Cache.ins().getEntities();
+                        if (entities != null && !entities.isEmpty()) {
+                            for (ShopEntity entity : entities) {
+                                if (entity != null) {
+                                    for (ShopEntity shop : data) {
+                                        if (shop != null) {
+                                            if (entity.getProductId().equals(shop.getProductId())) {
+                                                shop.setBuySize(entity.getBuySize());
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         shops.setValue(data);
                         Cache.ins().setEntities(data);
                     }
