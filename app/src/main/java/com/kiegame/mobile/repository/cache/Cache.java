@@ -49,6 +49,13 @@ public class Cache extends BaseObservable {
     private List<ShopEntity> entities;
 
     private Cache() {
+        this.initialize();
+    }
+
+    /**
+     * 初始化
+     */
+    public void initialize() {
         this.token = Prefer.get(Setting.APP_NETWORK_TOKEN, "");
         this.login = PreferPlus.get(Setting.USER_LOGIN_OBJECT, LoginEntity.class);
         this.netFee = new MutableLiveData<>();

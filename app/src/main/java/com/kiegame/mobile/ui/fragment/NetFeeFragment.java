@@ -2,6 +2,7 @@ package com.kiegame.mobile.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +25,12 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
+import com.kiegame.mobile.ui.activity.LoginActivity;
 import com.kiegame.mobile.ui.activity.MainActivity;
+import com.kiegame.mobile.ui.activity.ShopCarActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.utils.CouponSelect;
+import com.kiegame.mobile.utils.Menu;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 import com.youth.banner.loader.ImageLoader;
@@ -48,6 +52,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private LinearLayout list;
     private LayoutInflater inflater;
     private UserInfoEntity userInfo;
+    private Menu menu;
 
     @Override
     protected int onLayout() {
@@ -61,6 +66,14 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         binding.setFragment(this);
         binding.setCache(Cache.ins());
         model.userSearch.observe(this, this::searchUserInfoList);
+        menu = new Menu(getContext()).callback(v -> {
+            Cache.ins().initialize();
+            MainActivity activity = (MainActivity) getActivity();
+            startActivity(new Intent(activity, LoginActivity.class));
+            if (activity != null) {
+                activity.finish();
+            }
+        });
     }
 
     @Override
@@ -230,6 +243,13 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     }
 
     /**
+     * 显示菜单
+     */
+    public void showMenu() {
+        menu.show(binding.tvServiceId);
+    }
+
+    /**
      * 去购物
      */
     public void goShopping() {
@@ -244,20 +264,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     public void totalShop() {
         if (userInfo != null) {
-            model.addOrder(
-                    Cache.ins().getNetFeeNum(),
-                    Cache.ins().getShopMoneyTotalNum(),
-                    userInfo.getSeatNumber(),
-                    userInfo.getCustomerId(),
-                    userInfo.getBonusBalance(),
-                    null,
-                    null,
-                    null,
-                    4,
-                    String.valueOf(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()),
-                    null,
-                    null,
-                    2).observe(this, this::onTotalOrderResult);
+            startActivity(new Intent(getActivity(), ShopCarActivity.class));
         } else {
             Toast.show("请先选择会员");
         }
@@ -303,12 +310,5 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     private void onCreateOrderResult(List<AddOrderEntity> data) {
         Toast.show("下单成功");
-    }
-
-    /**
-     * 结算返回处理
-     */
-    private void onTotalOrderResult(List<AddOrderEntity> data) {
-
     }
 }

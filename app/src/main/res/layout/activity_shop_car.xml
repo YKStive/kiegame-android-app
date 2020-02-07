@@ -71,6 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/net_fee_address_margin_end"
             android:layout_marginBottom="@dimen/net_fee_address_margin_bottom"
+            android:text="@{cache.loginInfo.serviceName}"
             android:textColor="@color/white"
             android:textSize="@dimen/net_fee_address"
             app:layout_constraintBottom_toBottomOf="@id/tv_page_title"
