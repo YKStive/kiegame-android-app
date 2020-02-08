@@ -29,6 +29,7 @@
             android:id="@+id/tv_exit_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/shape_ripple_background"
             android:gravity="center"
             android:paddingLeft="32dp"
             android:paddingTop="10dp"

@@ -30,6 +30,7 @@ import com.kiegame.mobile.ui.activity.MainActivity;
 import com.kiegame.mobile.ui.activity.ShopCarActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.utils.CouponSelect;
+import com.kiegame.mobile.utils.DialogBox;
 import com.kiegame.mobile.utils.Menu;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
@@ -149,13 +150,20 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 }
                 tv.setText(item);
                 tv.setOnClickListener(v -> {
-                    userInfo = entity;
+                    String name = tv.getText().toString();
                     model.userSearch.setValue("");
                     hideInputMethod();
                     binding.etSearchInput.clearFocus();
-                    Cache.ins().setUserName(tv.getText().toString());
-                    model.amount.setValue(cal(entity.getAccountBalance()));
-                    model.award.setValue(cal(entity.getBonusBalance()));
+                    if (userInfo == null) {
+                        changeUserInfo(entity, name);
+                    } else {
+                        if (!userInfo.getCustomerId().equals(entity.getCustomerId())) {
+                            DialogBox.ins().text(String.format("你想将会员切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName())))
+                                    .confirm(() -> changeUserInfo(entity, name))
+                                    .cancel(null)
+                                    .show();
+                        }
+                    }
                 });
                 list.addView(view);
             }
@@ -167,6 +175,19 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 pw.dismiss();
             }
         }
+    }
+
+    /**
+     * 切换会员信息
+     *
+     * @param entity 会员信息数据对象
+     * @param name   会员 机号/身份证号/名称
+     */
+    private void changeUserInfo(UserInfoEntity entity, String name) {
+        userInfo = entity;
+        Cache.ins().setUserName(name);
+        model.amount.setValue(cal(entity.getAccountBalance()));
+        model.award.setValue(cal(entity.getBonusBalance()));
     }
 
     /**
@@ -202,15 +223,20 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 删除会员
      */
     public void deleteVipInfo() {
-        if (this.moneyBtn != null) {
-            this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
-        }
-        this.model.recharge.setValue("0.00");
-        model.resetData();
-        this.userInfo = null;
+        DialogBox.ins().text(String.format("你想删除会员 %s 吗?", Text.formatCustomName(userInfo.getCustomerName())))
+                .confirm(() -> {
+                    if (this.moneyBtn != null) {
+                        this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
+                    }
+                    this.model.recharge.setValue("0.00");
+                    model.resetData();
+                    this.userInfo = null;
 
-        Cache.ins().setNetFee(0);
-        Cache.ins().setUserName("没有选择会员");
+                    Cache.ins().setNetFee(0);
+                    Cache.ins().setUserName("没有选择会员");
+                })
+                .cancel(null)
+                .show();
     }
 
     /**

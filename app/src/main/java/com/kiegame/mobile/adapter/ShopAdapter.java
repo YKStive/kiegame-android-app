@@ -107,35 +107,25 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             }
             TextView tv = helper.getView(R.id.tv_shop_num);
             if (!Text.empty(item.getProductFlavorName()) || !Text.empty(item.getProductSpecName())) {
-                ShopDetail.ins().callback(data -> {
-                    updateShopNum(helper, item, tv, data.getProductBuySum());
-                    Cache.ins().attachShop(item, data.getProductFlavorName(), data.getProductSpecName());
-                }).set(item).show();
+                ShopDetail.ins().set(item).show();
             } else {
                 String size = tv.getText().toString();
                 int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
                 if (num > item.getBarCount()) {
                     Toast.show("不能再多了");
                 } else {
-                    updateShopNum(helper, item, tv, num);
+                    helper.setVisible(R.id.tv_btn_less, num != 0);
+                    tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
+                    if (num > 0) {
+                        tv.setText(String.valueOf(num));
+                    } else {
+                        tv.setText("");
+                    }
+                    item.setBuySize(num);
                     Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
                 }
             }
         });
-    }
-
-    /**
-     * 更新商品购买数量
-     */
-    private void updateShopNum(@NonNull BaseViewHolder helper, ShopEntity item, TextView tv, int sum) {
-        helper.setVisible(R.id.tv_btn_less, sum != 0);
-        tv.setVisibility(sum != 0 ? View.VISIBLE : View.GONE);
-        if (sum > 0) {
-            tv.setText(String.valueOf(sum));
-        } else {
-            tv.setText("");
-        }
-        item.setBuySize(sum);
     }
 
     /**

@@ -246,7 +246,7 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
             addShopToOrderList();
             Toast.show("已添加到购物车");
         } else {
-            Toast.show("请设置数量");
+            Toast.show("购买数量太少了, 再多买点吧");
         }
     }
 
@@ -254,14 +254,8 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
      * 添加商品到购物车
      */
     private void addShopToOrderList() {
-        String flavor = "";
-        String spec = "";
-        if (selectFlavor != null) {
-            flavor = selectFlavor.getText().toString();
-        }
-        if (selectNorm != null) {
-            spec = selectNorm.getText().toString();
-        }
+        String flavor = selectFlavor != null ? selectFlavor.getText().toString() : "";
+        String spec = selectNorm != null ? selectNorm.getText().toString() : "";
         Cache.ins().attachShop(shop, flavor, spec, shop.getBuySize());
         List<ShopEntity> entities = Cache.ins().getEntities();
         for (ShopEntity buy : entities) {
@@ -287,7 +281,7 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
             startActivity(new Intent(this, ShopCarActivity.class));
             finish();
         } else {
-            Toast.show("请设置数量");
+            Toast.show("购买数量太少了, 再多买点吧");
         }
     }
 }

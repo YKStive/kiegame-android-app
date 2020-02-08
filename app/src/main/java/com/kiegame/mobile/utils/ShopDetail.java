@@ -16,13 +16,14 @@ import com.bumptech.glide.Glide;
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ViewShopDetailBinding;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
-import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.ui.base.listener.OnAnimationListener;
 import com.kiegame.mobile.ui.views.FlowLayout;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 /**
  * Created by: var_rain.
@@ -39,7 +40,7 @@ public class ShopDetail {
     private TextView selectFlavor;
     private TextView selectNorm;
     private ShopEntity shop;
-    private OnShopAttachCallback callback;
+    private int buySourceSize;
 
     // 标签类型 口味
     private static final int TAG_TYPE_FLAVOR = 1;
@@ -73,16 +74,6 @@ public class ShopDetail {
     }
 
     /**
-     * 设置确认回调
-     *
-     * @param callback {@link OnShopAttachCallback}
-     */
-    public ShopDetail callback(OnShopAttachCallback callback) {
-        this.callback = callback;
-        return this;
-    }
-
-    /**
      * 设置数据
      *
      * @param data 商品数据对象
@@ -90,31 +81,47 @@ public class ShopDetail {
     public ShopDetail set(ShopEntity data) {
         if (data != null) {
             this.shop = data;
+            this.buySourceSize = shop.getBuySize();
+            data.setBuySize(1);
             Glide.with(binding.getRoot()).load(data.getProductImg()).into(binding.ivShopImage);
             binding.tvShopName.setText(data.getProductName());
             binding.tvShopNorm.setText(data.getProductSpecName());
             binding.tvShopPrice.setText(String.format("￥%s", cal(data.getSellPrice())));
             this.makeFlavorTags(data.getProductFlavorName());
             this.makeSpecTags(data.getProductSpecName());
-            binding.tvShopNum.setText("1");
+            binding.tvShopNum.setText(String.valueOf(data.getBuySize()));
+            binding.ivBtnLess.setVisibility(data.getBuySize() == 0 ? View.INVISIBLE : View.VISIBLE);
+            binding.tvShopNum.setVisibility(data.getBuySize() == 0 ? View.INVISIBLE : View.VISIBLE);
             binding.ivBtnLess.setOnClickListener(v -> this.onBtnLess());
             binding.ivBtnPlus.setOnClickListener(v -> this.onBtnPlus());
             binding.tvBtnCancel.setOnClickListener(v -> this.hide());
             binding.tvBtnOk.setOnClickListener(v -> {
-                if (this.callback != null) {
-                    String flavor = selectFlavor != null ? selectFlavor.getText().toString() : "";
-                    String norm = selectNorm != null ? selectNorm.getText().toString() : "";
-                    BuyShop buy = new BuyShop();
-                    buy.setProductId(shop.getProductId());
-                    buy.setProductFlavorName(flavor);
-                    buy.setProductSpecName(norm);
-                    buy.setProductBuySum(Integer.parseInt(binding.tvShopNum.getText().toString()));
-                    this.callback.shopAttach(buy);
+                if (shop.getBuySize() > 0) {
+                    addShopToOrderList();
+                    this.hide();
+                } else {
+                    Toast.show("购买数量太少了, 再多买点吧");
                 }
-                this.hide();
             });
         }
         return this;
+    }
+
+    /**
+     * 添加商品到购物车
+     */
+    private void addShopToOrderList() {
+        String flavor = selectFlavor != null ? selectFlavor.getText().toString() : "";
+        String spec = selectNorm != null ? selectNorm.getText().toString() : "";
+        Cache.ins().attachShop(shop, flavor, spec, shop.getBuySize());
+        List<ShopEntity> entities = Cache.ins().getEntities();
+        for (ShopEntity buy : entities) {
+            if (buy.getProductId().equals(shop.getProductId())) {
+                buy.setBuySize(buySourceSize + shop.getBuySize());
+                break;
+            }
+        }
+        Cache.ins().getShopObserver().setValue(Cache.ins().getShops().size());
     }
 
     /**
@@ -127,7 +134,13 @@ public class ShopDetail {
         if (num < 0) {
             Toast.show("不能再少了");
         } else {
-            tv.setText(String.valueOf(num));
+            if (num == 0) {
+                binding.ivBtnLess.setVisibility(View.INVISIBLE);
+                tv.setVisibility(View.INVISIBLE);
+                tv.setText("");
+            } else {
+                tv.setText(String.valueOf(num));
+            }
             shop.setBuySize(num);
         }
     }
@@ -143,9 +156,13 @@ public class ShopDetail {
         TextView tv = binding.tvShopNum;
         String size = tv.getText().toString();
         int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-        if (num > shop.getBarCount()) {
+        if (Cache.ins().shopTotal(shop.getProductId()) + num > shop.getBarCount()) {
             Toast.show("不能再多了");
         } else {
+            if (num > 0) {
+                binding.ivBtnLess.setVisibility(View.VISIBLE);
+                binding.tvShopNum.setVisibility(View.VISIBLE);
+            }
             shop.setBuySize(num);
             tv.setText(String.valueOf(num));
         }
@@ -309,17 +326,5 @@ public class ShopDetail {
         }
         this.selectFlavor = null;
         this.selectNorm = null;
-    }
-
-    /**
-     * 商品添加回调接口
-     */
-    public interface OnShopAttachCallback {
-        /**
-         * 商品添加
-         *
-         * @param data 商品对象
-         */
-        void shopAttach(BuyShop data);
     }
 }

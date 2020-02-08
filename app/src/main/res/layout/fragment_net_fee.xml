@@ -457,7 +457,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:background="@color/white"
+                    android:background="@drawable/shape_ripple_background"
                     android:gravity="center"
                     android:onClick="@{()->fragment.couponUse()}"
                     android:orientation="horizontal"
