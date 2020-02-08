@@ -59,6 +59,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     Cache.ins().updateTotalMoney();
                     Cache.ins().notifyChange();
                 });
+                helper.setVisible(R.id.iv_btn_less, item.getProductBuySum() != 0);
+                helper.setVisible(R.id.tv_shop_num, item.getProductBuySum() != 0);
                 Glide.with(helper.itemView).load(item.getShopImage()).into((ImageView) helper.getView(R.id.iv_shop_image));
                 helper.setText(R.id.tv_shop_name, item.getShopName());
                 if (!Text.empty(item.getProductFlavorName()) && !Text.empty(item.getProductSpecName())) {
