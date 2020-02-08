@@ -7,6 +7,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.kiegame.mobile.consts.Payment" />
+
         <variable
             name="user"
             type="com.kiegame.mobile.repository.entity.receive.LoginEntity" />
@@ -541,7 +543,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="15dp"
                             android:button="@drawable/selector_radio_background"
-                            android:checked="@={cache.paymentOnline}"
+                            android:checked="@{cache.payment == Payment.PAY_TYPE_ONLINE}"
+                            android:onClick="@{()->cache.setPayment(Payment.PAY_TYPE_ONLINE)}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_online"
@@ -554,7 +557,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
                             android:button="@drawable/selector_radio_background"
-                            android:checked="@={cache.paymentOffline}"
+                            android:checked="@{cache.payment == Payment.PAY_TYPE_SERVICE}"
+                            android:onClick="@{()->cache.setPayment(Payment.PAY_TYPE_SERVICE)}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_offline"

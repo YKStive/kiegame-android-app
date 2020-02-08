@@ -1,11 +1,21 @@
 package com.kiegame.mobile.ui.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -13,11 +23,14 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityShopCarBinding;
+import com.kiegame.mobile.model.ShopCarModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
+import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.CouponSelect;
+import com.kiegame.mobile.utils.DialogBox;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 
@@ -33,6 +46,11 @@ import java.util.List;
 public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 
     private BaseQuickAdapter<BuyShop, BaseViewHolder> adapter;
+    private UserInfoEntity userInfo;
+    private ShopCarModel model;
+    private PopupWindow pw;
+    private LinearLayout list;
+    private LayoutInflater inflater;
 
     @Override
     protected int onLayout() {
@@ -41,8 +59,21 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 
     @Override
     protected void onObject() {
+        model = new ViewModelProvider(this).get(ShopCarModel.class);
+        binding.setModel(model);
         binding.setActivity(this);
         binding.setCache(Cache.ins());
+        userInfo = Cache.ins().getUserInfo();
+        if (userInfo != null) {
+            String item;
+            if (Text.empty(userInfo.getSeatNumber())) {
+                item = String.format("       %s | %s", Text.formatIdCardNum(userInfo.getIdCard()), Text.formatCustomName(userInfo.getCustomerName()));
+            } else {
+                item = String.format("%s | %s | %s", userInfo.getSeatNumber(), Text.formatIdCardNum(userInfo.getIdCard()), Text.formatCustomName(userInfo.getCustomerName()));
+            }
+            model.userName.setValue(item);
+        }
+        model.searchName.observe(this, this::searchUserInfoList);
     }
 
     @Override
@@ -84,6 +115,110 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     @Override
     protected void onData() {
 
+    }
+
+    /**
+     * 搜索用户信息列表
+     *
+     * @param keywords 关键字
+     */
+    private void searchUserInfoList(String keywords) {
+        if (Text.empty(keywords) && pw != null && pw.isShowing()) {
+            pw.dismiss();
+        } else {
+            LiveData<List<UserInfoEntity>> data = model.searchUserInfos(keywords);
+            if (!data.hasObservers()) {
+                data.observe(this, this::searchUserInfosResult);
+            }
+        }
+    }
+
+    /**
+     * 查询用户数据返回处理
+     *
+     * @param data 数据对象
+     */
+    @SuppressLint("InflateParams")
+    private void searchUserInfosResult(List<UserInfoEntity> data) {
+        if (pw == null) {
+            inflater = LayoutInflater.from(this);
+            View view = inflater.inflate(R.layout.view_search_auto_fill, null, false);
+            list = view.findViewById(R.id.ll_search_list);
+            pw = new PopupWindow(this);
+            pw.setContentView(view);
+            pw.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.translucent)));
+            pw.setOutsideTouchable(false);
+            pw.setSplitTouchEnabled(true);
+        }
+        if (data != null && !data.isEmpty()) {
+            list.removeAllViews();
+            for (UserInfoEntity entity : data) {
+                View view = inflater.inflate(R.layout.item_search_user_info, null, false);
+                TextView tv = view.findViewById(R.id.tv_user_item);
+                String item;
+                if (Text.empty(entity.getSeatNumber())) {
+                    item = String.format("       %s | %s", Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
+                } else {
+                    item = String.format("%s | %s | %s", entity.getSeatNumber(), Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
+                }
+                tv.setText(item);
+                tv.setOnClickListener(v -> {
+                    String name = tv.getText().toString();
+                    model.searchName.setValue("");
+                    hideInputMethod();
+                    binding.etSearchInput.clearFocus();
+                    if (Cache.ins().getUserInfo() == null) {
+                        this.userInfo = entity;
+                        model.userName.setValue(name);
+                    } else {
+                        if (userInfo.getCustomerId().equals(Cache.ins().getUserInfo().getCustomerId())) {
+                            StringBuilder sb = new StringBuilder();
+                            if (Cache.ins().getNetFeeNum() == 0) {
+                                sb.append(String.format("你想将会员账号切换到 %s 吗? 这将使你购买的商品也记录到 %s 的会员账号下",
+                                        Text.formatCustomName(entity.getCustomerName()),
+                                        Text.formatCustomName(entity.getCustomerName())));
+                            } else {
+                                sb.append(String.format("你想将会员账号切换到 %s 吗? 这将使你充值的网费和购买的商品也记录到 %s 的会员账号下",
+                                        Text.formatCustomName(entity.getCustomerName()),
+                                        Text.formatCustomName(entity.getCustomerName())));
+                            }
+                            DialogBox.ins().text(sb.toString()).confirm(() -> {
+                                this.userInfo = entity;
+                                model.userName.setValue(name);
+                            }).cancel(null).show();
+                        } else if (!userInfo.getCustomerId().equals(entity.getCustomerId())) {
+                            DialogBox.ins().text(String.format("你想将会员账号切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName()))).confirm(() -> {
+                                this.userInfo = entity;
+                                model.userName.setValue(name);
+                            }).cancel(null).show();
+                        }
+                    }
+                });
+                list.addView(view);
+            }
+            if (!pw.isShowing()) {
+                pw.showAsDropDown(binding.llSearch);
+            }
+        } else {
+            if (pw.isShowing()) {
+                pw.dismiss();
+            }
+        }
+    }
+
+    /**
+     * 隐藏输入法
+     */
+    private void hideInputMethod() {
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null) {
+            View focus = this.getCurrentFocus();
+            if (focus != null) {
+                inputMethodManager.hideSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
     }
 
     /**
@@ -173,13 +308,21 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 使用优惠券
      */
     public void couponUse() {
-        CouponSelect.ins().set().show();
+        if (this.userInfo != null) {
+            CouponSelect.ins().set().show();
+        } else {
+            Toast.show("请先选择会员");
+        }
     }
 
     /**
      * 删除会员
      */
     public void deleteVipInfo() {
-//        Cache.ins().setUserName("没有选择会员");
+        DialogBox.ins().text(String.format("你想删除会员账号 %s 吗?", Text.formatCustomName(Cache.ins().getUserInfo().getCustomerName())))
+                .confirm(() -> {
+                    this.userInfo = null;
+                    model.userName.setValue("没有选择会员");
+                }).cancel(null).show();
     }
 }

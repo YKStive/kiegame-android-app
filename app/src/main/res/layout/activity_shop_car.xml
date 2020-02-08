@@ -7,6 +7,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.kiegame.mobile.consts.Payment" />
+
         <variable
             name="cache"
             type="com.kiegame.mobile.repository.cache.Cache" />
@@ -14,6 +16,10 @@
         <variable
             name="activity"
             type="com.kiegame.mobile.ui.activity.ShopCarActivity" />
+
+        <variable
+            name="model"
+            type="com.kiegame.mobile.model.ShopCarModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -109,6 +115,7 @@
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:lines="1"
+                android:text="@={model.searchName}"
                 android:textColor="@color/white"
                 android:textColorHint="@color/net_fee_search_input_hint"
                 android:textSize="@dimen/net_fee_search_input" />
@@ -132,7 +139,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:text="@{cache.userName}"
+                android:text="@{model.userName}"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 tools:text="B012｜510*************4612｜李某某" />
@@ -145,7 +152,7 @@
                 android:text="@string/net_fee_vip_info_delete"
                 android:textColor="#FFE100"
                 android:textSize="12sp"
-                android:visibility='@{cache.userName.equals("没有选择会员") ? View.INVISIBLE : View.VISIBLE}' />
+                android:visibility='@{model.userName.equals("没有选择会员") ? View.INVISIBLE : View.VISIBLE}' />
         </LinearLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -352,9 +359,9 @@
                         <RadioButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="15dp"
                             android:button="@drawable/selector_radio_background"
-                            android:checked="@={cache.paymentOnline}"
+                            android:checked="@{cache.payment == Payment.PAY_TYPE_ONLINE}"
+                            android:onClick="@{()->cache.setPayment(Payment.PAY_TYPE_ONLINE)}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_online"
@@ -367,7 +374,23 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="15dp"
                             android:button="@drawable/selector_radio_background"
-                            android:checked="@={cache.paymentOffline}"
+                            android:checked="@{cache.payment == Payment.PAY_TYPE_BUCKLE}"
+                            android:onClick="@{()->cache.setPayment(Payment.PAY_TYPE_BUCKLE)}"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:text="@string/net_fee_payment_type_buckle"
+                            android:textColor="@color/black_text"
+                            android:textSize="14sp"
+                            android:visibility="@{cache.netFeeNum == 0 ? View.VISIBLE : View.GONE}"
+                            tools:ignore="RtlSymmetry" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:button="@drawable/selector_radio_background"
+                            android:checked="@{cache.payment == Payment.PAY_TYPE_SERVICE}"
+                            android:onClick="@{()->cache.setPayment(Payment.PAY_TYPE_SERVICE)}"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:text="@string/net_fee_payment_type_offline"

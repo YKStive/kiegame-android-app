@@ -7,8 +7,10 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.kiegame.mobile.consts.Payment;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
+import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.utils.Prefer;
@@ -29,6 +31,8 @@ public class Cache extends BaseObservable {
     private static Cache INS;
     // 用户登录信息
     private LoginEntity login;
+    // 会员信息
+    private UserInfoEntity userInfo;
     // token
     private String token;
     // 网费
@@ -39,10 +43,8 @@ public class Cache extends BaseObservable {
     private int paymentMoney;
     // 用户上机信息
     private String userName;
-    // 在线支付
-    private boolean paymentOnline;
-    // 客维支付
-    private boolean paymentOffline;
+    // 支付类型
+    private int payment;
     // 商品数量
     private MutableLiveData<Integer> shopSum;
     // 商品实体列表
@@ -65,8 +67,7 @@ public class Cache extends BaseObservable {
         this.shops = new MutableLiveData<>();
         this.paymentMoney = 0;
         this.userName = "没有选择会员";
-        this.paymentOnline = true;
-        this.paymentOffline = false;
+        this.payment = Payment.PAY_TYPE_ONLINE;
         this.shopSum = new MutableLiveData<>();
         this.shopSum.postValue(0);
         this.shopObserver = new MutableLiveData<>();
@@ -107,6 +108,14 @@ public class Cache extends BaseObservable {
         this.shopSum.observe(owner, observer);
     }
 
+    public UserInfoEntity getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfoEntity userInfo) {
+        this.userInfo = userInfo;
+    }
+
     /**
      * 获取商品列表数量
      */
@@ -116,34 +125,22 @@ public class Cache extends BaseObservable {
     }
 
     /**
-     * 是否在线支付
+     * 获取支付类型
+     *
+     * @return {@link Payment}
      */
     @Bindable
-    public boolean isPaymentOnline() {
-        return paymentOnline;
+    public int getPayment() {
+        return payment;
     }
 
     /**
-     * 设置在线支付
+     * 设置支付类型
+     *
+     * @param payment {@link Payment}
      */
-    public void setPaymentOnline(boolean paymentOnline) {
-        this.paymentOnline = paymentOnline;
-        this.notifyChange();
-    }
-
-    /**
-     * 是否客维支付
-     */
-    @Bindable
-    public boolean isPaymentOffline() {
-        return paymentOffline;
-    }
-
-    /**
-     * 设置客维支付
-     */
-    public void setPaymentOffline(boolean paymentOffline) {
-        this.paymentOffline = paymentOffline;
+    public void setPayment(int payment) {
+        this.payment = payment;
         this.notifyChange();
     }
 

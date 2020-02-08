@@ -34,6 +34,7 @@
     <string name="net_fee_use_coupon">使用优惠券</string>
     <string name="net_fee_payment_type">支付方式</string>
     <string name="net_fee_payment_type_online">在线</string>
+    <string name="net_fee_payment_type_buckle">卡扣</string>
     <string name="net_fee_payment_type_offline">客维</string>
     <string name="net_fee_search_input_hint">输入机位号/身份证/姓名进行搜索</string>
     <string name="net_fee_vip_info">会员信息</string>

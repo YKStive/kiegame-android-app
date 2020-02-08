@@ -52,7 +52,6 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private PopupWindow pw;
     private LinearLayout list;
     private LayoutInflater inflater;
-    private UserInfoEntity userInfo;
     private Menu menu;
 
     @Override
@@ -154,11 +153,11 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                     model.userSearch.setValue("");
                     hideInputMethod();
                     binding.etSearchInput.clearFocus();
-                    if (userInfo == null) {
+                    if (Cache.ins().getUserInfo() == null) {
                         changeUserInfo(entity, name);
                     } else {
-                        if (!userInfo.getCustomerId().equals(entity.getCustomerId())) {
-                            DialogBox.ins().text(String.format("你想将会员切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName())))
+                        if (!Cache.ins().getUserInfo().getCustomerId().equals(entity.getCustomerId())) {
+                            DialogBox.ins().text(String.format("你想将会员账号切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName())))
                                     .confirm(() -> changeUserInfo(entity, name))
                                     .cancel(null)
                                     .show();
@@ -184,7 +183,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * @param name   会员 机号/身份证号/名称
      */
     private void changeUserInfo(UserInfoEntity entity, String name) {
-        userInfo = entity;
+        Cache.ins().setUserInfo(entity);
         Cache.ins().setUserName(name);
         model.amount.setValue(cal(entity.getAccountBalance()));
         model.award.setValue(cal(entity.getBonusBalance()));
@@ -223,20 +222,18 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 删除会员
      */
     public void deleteVipInfo() {
-        DialogBox.ins().text(String.format("你想删除会员 %s 吗?", Text.formatCustomName(userInfo.getCustomerName())))
+        DialogBox.ins().text(String.format("你想删除会员账号 %s 吗?", Text.formatCustomName(Cache.ins().getUserInfo().getCustomerName())))
                 .confirm(() -> {
                     if (this.moneyBtn != null) {
                         this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
                     }
                     this.model.recharge.setValue("0.00");
                     model.resetData();
-                    this.userInfo = null;
 
+                    Cache.ins().setUserInfo(null);
                     Cache.ins().setNetFee(0);
                     Cache.ins().setUserName("没有选择会员");
-                })
-                .cancel(null)
-                .show();
+                }).cancel(null).show();
     }
 
     /**
@@ -291,7 +288,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 结算
      */
     public void totalShop() {
-        if (userInfo != null) {
+        if (Cache.ins().getUserInfo() != null) {
             startActivity(new Intent(getActivity(), ShopCarActivity.class));
         } else {
             Toast.show("请先选择会员");
@@ -302,17 +299,17 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 下订单
      */
     public void createOrder() {
-        if (userInfo != null) {
+        if (Cache.ins().getUserInfo() != null) {
             LiveData<List<AddOrderEntity>> order = model.addOrder(
                     Cache.ins().getNetFeeNum(),
                     Cache.ins().getShopMoneyTotalNum(),
-                    userInfo.getSeatNumber(),
-                    userInfo.getCustomerId(),
-                    userInfo.getBonusBalance(),
+                    Cache.ins().getUserInfo().getSeatNumber(),
+                    Cache.ins().getUserInfo().getCustomerId(),
+                    Cache.ins().getUserInfo().getBonusBalance(),
                     null,
                     null,
                     null,
-                    Cache.ins().isPaymentOnline() ? 5 : 4,
+                    Cache.ins().getPayment(),
                     String.valueOf(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()),
                     null,
                     null,
@@ -329,7 +326,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 优惠券
      */
     public void couponUse() {
-        if (userInfo != null) {
+        if (Cache.ins().getUserInfo() != null) {
             CouponSelect.ins().set().show();
         } else {
             Toast.show("请先选择会员");
