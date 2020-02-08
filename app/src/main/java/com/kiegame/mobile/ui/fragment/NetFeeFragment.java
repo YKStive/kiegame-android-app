@@ -143,9 +143,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 TextView tv = view.findViewById(R.id.tv_user_item);
                 String item;
                 if (Text.empty(entity.getSeatNumber())) {
-                    item = String.format("       %s | %s", entity.getIdCard(), entity.getCustomerName());
+                    item = String.format("       %s | %s", Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
                 } else {
-                    item = String.format("%s | %s | %s", entity.getSeatNumber(), entity.getIdCard(), entity.getCustomerName());
+                    item = String.format("%s | %s | %s", entity.getSeatNumber(), Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
                 }
                 tv.setText(item);
                 tv.setOnClickListener(v -> {
