@@ -67,6 +67,10 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                     LinearLayout images = helper.getView(R.id.ll_shop_image_content);
                     images.removeAllViews();
                     for (BuyShopEntity shop : shops) {
+                        // 最多显示3个商品图标
+                        if (images.getChildCount() >= 3) {
+                            break;
+                        }
                         ImageView view = new ImageView(helper.itemView.getContext());
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Pixel.dp2px(70), Pixel.dp2px(70));
                         params.rightMargin = Pixel.dp2px(10);
@@ -97,6 +101,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
         helper.getView(R.id.iv_shop_image).setVisibility(View.INVISIBLE);
         helper.getView(R.id.tv_shop_name).setVisibility(View.GONE);
         helper.getView(R.id.tv_shop_des).setVisibility(View.GONE);
+        helper.getView(R.id.cb_shop_select).setVisibility(View.VISIBLE);
     }
 
     /**
@@ -108,6 +113,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
         helper.getView(R.id.iv_shop_image).setVisibility(View.VISIBLE);
         helper.getView(R.id.tv_shop_name).setVisibility(View.VISIBLE);
         helper.getView(R.id.tv_shop_des).setVisibility(View.VISIBLE);
+        helper.getView(R.id.cb_shop_select).setVisibility(View.VISIBLE);
     }
 
     /**
@@ -117,6 +123,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
         helper.getView(R.id.iv_pay_type_image).setVisibility(View.GONE);
         helper.getView(R.id.tv_pay_type).setVisibility(View.GONE);
         helper.getView(R.id.tv_pay_time).setVisibility(View.GONE);
+        helper.getView(R.id.cb_shop_select).setVisibility(View.VISIBLE);
         TextView tv = helper.getView(R.id.tv_payment_state);
         tv.setText(getString(R.string.order_wait_payment));
         tv.setTextColor(getResources().getColor(R.color.wait_pay_state));

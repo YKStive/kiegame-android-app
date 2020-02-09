@@ -126,6 +126,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
         helper.getView(R.id.iv_pay_type_image).setVisibility(View.GONE);
         helper.getView(R.id.tv_pay_type).setVisibility(View.GONE);
         helper.getView(R.id.tv_pay_time).setVisibility(View.GONE);
+        helper.getView(R.id.cb_shop_select).setVisibility(View.GONE);
         TextView tv = helper.getView(R.id.tv_payment_state);
         // 待支付1、支付中2、退款中3、取消订单4（最终状态）、订单完成5（最终状态）、已退款6（最终状态）
         switch (state) {
