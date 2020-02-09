@@ -279,20 +279,22 @@ public class MoreListView extends FrameLayout {
      * @param shops 商品数据
      */
     private void arrangeShops(List<ShopEntity> shops) {
-        for (int i = 0; i < shops.size(); i++) {
-            ShopEntity shop = shops.get(i);
-            ShopSortEntity menu = new ShopSortEntity();
-            menu.setProductTypeName(shop.getProductTypeName());
-            menu.setProductTypeId(shop.getProductTypeId());
-            menu.setSort(shop.getSort());
-            ShopEntity div = new ShopEntity(1);
-            if (!menus.contains(menu)) {
-                div.setProductTypeName(menu.getProductTypeName());
-                menus.add(menu);
-                index.append(index.size(), this.shops.size());
+        if (shops != null) {
+            for (int i = 0; i < shops.size(); i++) {
+                ShopEntity shop = shops.get(i);
+                ShopSortEntity menu = new ShopSortEntity();
+                menu.setProductTypeName(shop.getProductTypeName());
+                menu.setProductTypeId(shop.getProductTypeId());
+                menu.setSort(shop.getSort());
+                ShopEntity div = new ShopEntity(1);
+                if (!menus.contains(menu)) {
+                    div.setProductTypeName(menu.getProductTypeName());
+                    menus.add(menu);
+                    index.append(index.size(), this.shops.size());
+                }
+                this.shops.add(div);
+                this.shops.add(shop);
             }
-            this.shops.add(div);
-            this.shops.add(shop);
         }
     }
 }

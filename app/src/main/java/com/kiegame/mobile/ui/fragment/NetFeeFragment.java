@@ -74,6 +74,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 activity.finish();
             }
         });
+        Cache.ins().getNetFeeObserver().observe(this, integer -> this.recharge(this.moneyBtn, 0));
     }
 
     @Override
@@ -300,6 +301,11 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     public void createOrder() {
         if (Cache.ins().getUserInfo() != null) {
+            int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
+            if (totalMoney <= 0) {
+                Toast.show("没有商品或网费可以下单");
+                return;
+            }
             LiveData<List<AddOrderEntity>> order = model.addOrder(
                     Cache.ins().getNetFeeNum(),
                     Cache.ins().getShopMoneyTotalNum(),
@@ -310,7 +316,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                     null,
                     null,
                     Cache.ins().getPayment(),
-                    String.valueOf(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()),
+                    String.valueOf(totalMoney),
                     null,
                     null,
                     1);

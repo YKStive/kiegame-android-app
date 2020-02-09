@@ -79,6 +79,11 @@ public class CommodityModel extends ViewModel {
                         shops.setValue(data);
                         Cache.ins().setEntities(data);
                     }
+
+                    @Override
+                    public void onFail() {
+                        shops.setValue(null);
+                    }
                 });
         return this.shops;
     }

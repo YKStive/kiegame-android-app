@@ -433,6 +433,7 @@
                         android:inputType="text"
                         android:paddingTop="16dp"
                         android:paddingBottom="16dp"
+                        android:text="@={model.memo}"
                         android:textColor="#666666"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -507,18 +508,19 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_login_btn_background"
                 android:divider="@drawable/shape_vip_divider"
+                android:dividerPadding="10dp"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
                 android:showDividers="middle">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{()->activity.finish()}"
+                    android:onClick="@{()->activity.toRecharge()}"
                     android:paddingLeft="16dp"
+                    android:paddingTop="10dp"
                     android:paddingRight="16dp"
+                    android:paddingBottom="10dp"
                     android:text="@string/go_net_fee_recharge"
                     android:textColor="@color/net_fee_option_btn"
                     android:textSize="14sp"
@@ -527,8 +529,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="@{()->activity.totalOrder()}"
                     android:paddingLeft="16dp"
+                    android:paddingTop="10dp"
                     android:paddingRight="16dp"
+                    android:paddingBottom="10dp"
                     android:text="@string/net_fee_btn_total"
                     android:textColor="@color/net_fee_option_btn"
                     android:textSize="14sp" />
@@ -536,8 +541,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="@{()->activity.createOrder()}"
                     android:paddingLeft="16dp"
+                    android:paddingTop="10dp"
                     android:paddingRight="16dp"
+                    android:paddingBottom="10dp"
                     android:text="@string/net_fee_btn_place_an_order"
                     android:textColor="@color/net_fee_option_btn"
                     android:textSize="14sp" />

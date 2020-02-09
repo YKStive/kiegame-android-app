@@ -2,6 +2,7 @@ package com.kiegame.mobile.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +23,15 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
+import com.kiegame.mobile.consts.Payment;
 import com.kiegame.mobile.databinding.ActivityShopCarBinding;
 import com.kiegame.mobile.model.ShopCarModel;
 import com.kiegame.mobile.repository.cache.Cache;
+import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
+import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.CouponSelect;
 import com.kiegame.mobile.utils.DialogBox;
@@ -51,6 +55,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     private PopupWindow pw;
     private LinearLayout list;
     private LayoutInflater inflater;
+    private int orderType = -1;
+    private final int RESULT_CODE_SCAN = 10086;
 
     @Override
     protected int onLayout() {
@@ -324,5 +330,111 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     this.userInfo = null;
                     model.userName.setValue("没有选择会员");
                 }).cancel(null).show();
+    }
+
+    /**
+     * 去充值
+     */
+    public void toRecharge() {
+        this.finish();
+    }
+
+    /**
+     * 下订单
+     */
+    public void createOrder() {
+        if (this.userInfo != null) {
+            createOrderOrPayment(null, 1);
+        } else {
+            Toast.show("请先选择会员");
+        }
+    }
+
+    /**
+     * 结算
+     */
+    public void totalOrder() {
+        if (this.userInfo != null) {
+            switch (Cache.ins().getPayment()) {
+                case Payment.PAY_TYPE_ONLINE:
+                    // 在线支付
+                    startActivityForResult(new Intent(this, ScanActivity.class)
+                                    .putExtra(Setting.APP_SCAN_TITLE,
+                                            String.format("扫码支付%s元",
+                                                    cal(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()))),
+                            RESULT_CODE_SCAN);
+                    break;
+                case Payment.PAY_TYPE_BUCKLE:
+                    // 卡扣支付
+                    startActivityForResult(new Intent(this, ScanActivity.class)
+                                    .putExtra(Setting.APP_SCAN_TITLE,
+                                            String.format("卡扣支付%s元",
+                                                    cal(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()))),
+                            RESULT_CODE_SCAN);
+                    break;
+                case Payment.PAY_TYPE_SERVICE:
+                    // 客维支付
+                    // TODO: 2020/2/9 提示用户需要输入客维密码
+                    break;
+            }
+        } else {
+            Toast.show("请先选择会员");
+        }
+    }
+
+    /**
+     * 创建订单或结算
+     *
+     * @param buyPayPassword 支付密码
+     * @param isAddOrder     下单或结算 1: 下单 2: 结算
+     */
+    private void createOrderOrPayment(String buyPayPassword, int isAddOrder) {
+        int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
+        if (totalMoney > 0) {
+            this.orderType = isAddOrder;
+            LiveData<List<AddOrderEntity>> order = model.addOrder(
+                    Cache.ins().getNetFeeNum(),
+                    Cache.ins().getShopMoneyTotalNum(),
+                    userInfo.getSeatNumber(),
+                    userInfo.getCustomerId(),
+                    userInfo.getBonusBalance(),
+                    null,
+                    null,
+                    null,
+                    Cache.ins().getPayment(),
+                    String.valueOf(totalMoney),
+                    buyPayPassword,
+                    isAddOrder);
+            if (!order.hasObservers()) {
+                order.observe(this, this::onCreateOrderResult);
+            }
+        } else {
+            switch (isAddOrder) {
+                case 1:
+                    Toast.show("没有商品或网费可以下单");
+                    break;
+                case 2:
+                    Toast.show("没有商品或网费可以结算");
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 下订单返回处理
+     */
+    private void onCreateOrderResult(List<AddOrderEntity> data) {
+        if (data != null) {
+            this.adapter.notifyDataSetChanged();
+            Cache.ins().getNetFeeObserver().setValue(this.orderType);
+            if (orderType == 1) {
+                // 下单
+                Toast.show("下单成功");
+            } else {
+                // 结算
+                // TODO: 2020/2/9 结算成功或失败的返回信息展示
+            }
+            this.finish();
+        }
     }
 }

@@ -26,7 +26,7 @@
             type="com.kiegame.mobile.repository.cache.Cache" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.kiegame.mobile.ui.views.FocusLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
@@ -86,6 +86,8 @@
             android:layout_marginTop="@dimen/net_fee_search_margin_top"
             android:layout_marginRight="@dimen/net_fee_search_margin"
             android:background="@drawable/shape_search_input_background"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -666,10 +668,9 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_login_btn_background"
                 android:divider="@drawable/shape_vip_divider"
+                android:dividerPadding="10dp"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
                 android:showDividers="middle">
 
                 <TextView
@@ -677,7 +678,9 @@
                     android:layout_height="wrap_content"
                     android:onClick="@{()->fragment.goShopping()}"
                     android:paddingLeft="16dp"
+                    android:paddingTop="10dp"
                     android:paddingRight="16dp"
+                    android:paddingBottom="10dp"
                     android:text="@string/net_fee_btn_go_shopping"
                     android:textColor="@color/net_fee_option_btn"
                     android:textSize="14sp" />
@@ -687,7 +690,9 @@
                     android:layout_height="wrap_content"
                     android:onClick="@{()->fragment.totalShop()}"
                     android:paddingLeft="16dp"
+                    android:paddingTop="10dp"
                     android:paddingRight="16dp"
+                    android:paddingBottom="10dp"
                     android:text="@string/net_fee_btn_total"
                     android:textColor="@color/net_fee_option_btn"
                     android:textSize="14sp" />
@@ -697,11 +702,13 @@
                     android:layout_height="wrap_content"
                     android:onClick="@{()->fragment.createOrder()}"
                     android:paddingLeft="16dp"
+                    android:paddingTop="10dp"
                     android:paddingRight="16dp"
+                    android:paddingBottom="10dp"
                     android:text="@string/net_fee_btn_place_an_order"
                     android:textColor="@color/net_fee_option_btn"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.kiegame.mobile.ui.views.FocusLayout>
 </layout>

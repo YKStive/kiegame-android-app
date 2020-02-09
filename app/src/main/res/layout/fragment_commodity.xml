@@ -89,6 +89,8 @@
                     android:layout_marginRight="@dimen/net_fee_search_margin"
                     android:layout_marginBottom="@dimen/net_fee_search_margin_top"
                     android:background="@drawable/shape_search_input_background"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="@id/tv_title_background"
                     app:layout_constraintLeft_toLeftOf="parent"

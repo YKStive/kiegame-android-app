@@ -19,4 +19,6 @@ public class Setting {
     public final static String APP_NETWORK_TOKEN = "app.network.token";
     // shop
     public final static String APP_SHOP_ENTITY = "app.shop.entity";
+    // 扫码界面标题
+    public final static String APP_SCAN_TITLE = "app.scan.title";
 }

@@ -51,6 +51,8 @@ public class Cache extends BaseObservable {
     private List<ShopEntity> entities;
     // 商品列表更新
     private MutableLiveData<Integer> shopObserver;
+    // 网费充值更新
+    private MutableLiveData<Integer> netFeeObserver;
 
     private Cache() {
         this.initialize();
@@ -71,7 +73,7 @@ public class Cache extends BaseObservable {
         this.shopSum = new MutableLiveData<>();
         this.shopSum.postValue(0);
         this.shopObserver = new MutableLiveData<>();
-        this.shopObserver.postValue(0);
+        this.netFeeObserver = new MutableLiveData<>();
     }
 
     /**
@@ -88,6 +90,10 @@ public class Cache extends BaseObservable {
 
     public MutableLiveData<Integer> getShopObserver() {
         return shopObserver;
+    }
+
+    public MutableLiveData<Integer> getNetFeeObserver() {
+        return netFeeObserver;
     }
 
     public List<ShopEntity> getEntities() {
