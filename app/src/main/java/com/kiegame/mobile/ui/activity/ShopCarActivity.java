@@ -1,5 +1,6 @@
 package com.kiegame.mobile.ui.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -57,6 +58,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     private LayoutInflater inflater;
     private int orderType = -1;
     private final int RESULT_CODE_SCAN = 10086;
+    private String[] permissions;
 
     @Override
     protected int onLayout() {
@@ -80,6 +82,10 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             model.userName.setValue(item);
         }
         model.searchName.observe(this, this::searchUserInfoList);
+        permissions = new String[]{
+                Manifest.permission.CAMERA,
+                Manifest.permission.VIBRATE,
+        };
     }
 
     @Override
@@ -355,31 +361,42 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      */
     public void totalOrder() {
         if (this.userInfo != null) {
-            switch (Cache.ins().getPayment()) {
-                case Payment.PAY_TYPE_ONLINE:
-                    // 在线支付
-                    startActivityForResult(new Intent(this, ScanActivity.class)
-                                    .putExtra(Setting.APP_SCAN_TITLE,
-                                            String.format("扫码支付%s元",
-                                                    cal(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()))),
-                            RESULT_CODE_SCAN);
-                    break;
-                case Payment.PAY_TYPE_BUCKLE:
-                    // 卡扣支付
-                    startActivityForResult(new Intent(this, ScanActivity.class)
-                                    .putExtra(Setting.APP_SCAN_TITLE,
-                                            String.format("卡扣支付%s元",
-                                                    cal(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum()))),
-                            RESULT_CODE_SCAN);
-                    break;
-                case Payment.PAY_TYPE_SERVICE:
-                    // 客维支付
-                    // TODO: 2020/2/9 提示用户需要输入客维密码
-                    break;
+            int payment = Cache.ins().getPayment();
+            if (payment == Payment.PAY_TYPE_SERVICE) {
+                // 客维支付
+                // TODO: 2020/2/9 提示用户需要输入客维密码
+            } else {
+                startScanActivity(payment);
             }
         } else {
             Toast.show("请先选择会员");
         }
+    }
+
+    /**
+     * 跳转到扫码界面
+     *
+     * @param payType 支付类型
+     */
+    private void startScanActivity(int payType) {
+        requestSelfPermission(permissions, (authorize, permissions1) -> {
+            if (authorize) {
+                String value;
+                String money = cal(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum());
+                if (payType == Payment.PAY_TYPE_BUCKLE) {
+                    value = String.format("卡扣支付%s元", money);
+                } else if (payType == Payment.PAY_TYPE_ONLINE) {
+                    value = String.format("扫码支付%s元", money);
+                } else {
+                    value = "扫码支付";
+                }
+                startActivityForResult(new Intent(this, ScanActivity.class)
+                                .putExtra(Setting.APP_SCAN_TITLE, value),
+                        RESULT_CODE_SCAN);
+            } else {
+                Toast.show("相机权限授权失败");
+            }
+        });
     }
 
     /**

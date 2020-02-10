@@ -94,7 +94,10 @@ public class ShopDetail {
             binding.tvShopNum.setVisibility(data.getBuySize() == 0 ? View.INVISIBLE : View.VISIBLE);
             binding.ivBtnLess.setOnClickListener(v -> this.onBtnLess());
             binding.ivBtnPlus.setOnClickListener(v -> this.onBtnPlus());
-            binding.tvBtnCancel.setOnClickListener(v -> this.hide());
+            binding.tvBtnCancel.setOnClickListener(v -> {
+                data.setBuySize(this.buySourceSize);
+                this.hide();
+            });
             binding.tvBtnOk.setOnClickListener(v -> {
                 if (shop.getBuySize() > 0) {
                     addShopToOrderList();

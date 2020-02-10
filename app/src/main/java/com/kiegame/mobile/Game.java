@@ -10,6 +10,8 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.camera.camera2.Camera2Config;
+import androidx.camera.core.CameraXConfig;
 import androidx.multidex.MultiDexApplication;
 
 import com.kiegame.mobile.exceptions.crash.GlobalCrashCapture;
@@ -24,7 +26,7 @@ import java.util.List;
  * Created date: 2020/1/3.
  * Description: 入口
  */
-public class Game extends MultiDexApplication implements Application.ActivityLifecycleCallbacks {
+public class Game extends MultiDexApplication implements Application.ActivityLifecycleCallbacks, CameraXConfig.Provider {
 
     // 静态实例
     @SuppressLint("StaticFieldLeak")
@@ -135,5 +137,11 @@ public class Game extends MultiDexApplication implements Application.ActivityLif
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
         this.activities.remove(activity);
+    }
+
+    @NonNull
+    @Override
+    public CameraXConfig getCameraXConfig() {
+        return Camera2Config.defaultConfig();
     }
 }

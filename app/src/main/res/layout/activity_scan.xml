@@ -1,23 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <variable
+            name="activity"
+            type="com.kiegame.mobile.ui.activity.ScanActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <SurfaceView
+        <androidx.camera.view.PreviewView
             android:id="@+id/sv_camera"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="@color/black"
+            android:keepScreenOn="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/iv_scan_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_scan_box"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_scan_line"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_scan_line"
+            app:layout_constraintLeft_toLeftOf="@id/iv_scan_box"
+            app:layout_constraintRight_toRightOf="@id/iv_scan_box"
+            app:layout_constraintTop_toTopOf="@id/iv_scan_box" />
+
+        <View
+            android:id="@+id/vv_mask_top"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/translucent_black_50"
+            app:layout_constraintBottom_toTopOf="@id/iv_scan_box"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/vv_mask_bottom"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/translucent_black_50"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_scan_box" />
+
+        <View
+            android:id="@+id/vv_mask_left"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/translucent_black_50"
+            app:layout_constraintBottom_toTopOf="@id/vv_mask_bottom"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/iv_scan_box"
+            app:layout_constraintTop_toBottomOf="@id/vv_mask_top" />
+
+        <View
+            android:id="@+id/vv_mask_right"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/translucent_black_50"
+            app:layout_constraintBottom_toTopOf="@id/vv_mask_bottom"
+            app:layout_constraintLeft_toRightOf="@id/iv_scan_box"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vv_mask_top" />
+
+        <com.kiegame.mobile.ui.views.StatusBar
+            android:id="@+id/sb_status_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:onClick="@{()->activity.finish()}"
+            android:padding="16dp"
+            android:src="@drawable/ic_left_back"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sb_status_bar" />
+
+        <TextView
+            android:id="@+id/tv_scan_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_btn_back"
+            app:layout_constraintLeft_toRightOf="@id/iv_btn_back"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_btn_back"
+            tools:text="扫码支付20.00元" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
