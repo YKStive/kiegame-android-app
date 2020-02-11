@@ -40,6 +40,11 @@ public class OrderModel extends ViewModel {
                     public void onSuccess(List<BuyOrderEntity> data, int total, int length) {
                         orders.setValue(data);
                     }
+
+                    @Override
+                    public void onFail() {
+                        orders.setValue(null);
+                    }
                 });
         return this.orders;
     }

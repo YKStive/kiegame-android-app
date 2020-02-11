@@ -1,11 +1,10 @@
 package com.kiegame.mobile.adapter;
 
-import android.view.View;
-import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.viewpager.widget.PagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.List;
 
@@ -14,10 +13,10 @@ import java.util.List;
  * Created date: 2020/1/7.
  * Description: ViewPager适配器
  */
-public class OrderAdapter extends PagerAdapter {
+public class OrderAdapter extends FragmentPagerAdapter {
 
     // 页面
-    private List<View> views;
+    private List<Fragment> views;
     private String[] titles;
 
     /**
@@ -26,7 +25,8 @@ public class OrderAdapter extends PagerAdapter {
      * @param views  页面数据
      * @param titles 标题数据
      */
-    public OrderAdapter(List<View> views, String... titles) {
+    public OrderAdapter(FragmentManager fm, List<Fragment> views, String... titles) {
+        super(fm, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.views = views;
         this.titles = titles;
     }
@@ -36,21 +36,10 @@ public class OrderAdapter extends PagerAdapter {
         return views == null ? 0 : views.size();
     }
 
-    @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
-        return view == o;
-    }
-
     @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        container.addView(views.get(position));
+    public Fragment getItem(int position) {
         return views.get(position);
-    }
-
-    @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((View) object);
     }
 
     @Nullable

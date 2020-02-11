@@ -79,7 +79,7 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
     protected void onData() {
         model.listShopShot().observe(this, this::listShotResult);
         Cache.ins().setOnShopSumChangeListener(this, this::setShopSum);
-        binding.srlLayout.autoRefresh();
+        model.listShops().observe(this, this::lisShopResult);
     }
 
     /**

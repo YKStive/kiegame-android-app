@@ -6,7 +6,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -14,7 +13,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentWaitPaymentBinding;
-import com.kiegame.mobile.model.OrderModel;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyShopEntity;
 import com.kiegame.mobile.ui.base.BaseFragment;
@@ -23,6 +21,7 @@ import com.kiegame.mobile.utils.Pixel;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,8 +31,8 @@ import java.util.List;
  */
 public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding> {
 
-    private OrderModel model;
     private BaseQuickAdapter<BuyOrderEntity, BaseViewHolder> adapter;
+    private List<BuyOrderEntity> orders;
 
     @Override
     protected int onLayout() {
@@ -42,7 +41,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
 
     @Override
     protected void onObject() {
-        model = new ViewModelProvider(this).get(OrderModel.class);
+
     }
 
     @Override
@@ -56,7 +55,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
             }
         });
         binding.rvOrder.addItemDecoration(new MarginItemDecoration(10));
-        adapter = new BaseQuickAdapter<BuyOrderEntity, BaseViewHolder>(R.layout.item_order_wait_pay) {
+        adapter = new BaseQuickAdapter<BuyOrderEntity, BaseViewHolder>(R.layout.item_order_wait_pay, this.orders) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, BuyOrderEntity item) {
                 setWaitPayState(helper);
@@ -131,7 +130,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
 
     @Override
     protected void onData() {
-        model.queryOrders(1, null, null, null, null, null).observe(this, this::queryWaitPayOrderResult);
+
     }
 
     /**
@@ -139,8 +138,20 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
      *
      * @param data 数据对象
      */
-    private void queryWaitPayOrderResult(List<BuyOrderEntity> data) {
-        adapter.setNewData(data);
+    void refreshData(List<BuyOrderEntity> data) {
+        if (orders == null) {
+            orders = new ArrayList<>();
+        } else {
+            orders.clear();
+        }
+        for (BuyOrderEntity datum : data) {
+            if (datum.getPayState() == 1) {
+                orders.add(datum);
+            }
+        }
+        if (adapter != null) {
+            adapter.setNewData(orders);
+        }
     }
 
     /**

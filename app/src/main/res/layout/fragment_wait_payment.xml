@@ -36,7 +36,8 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:button="@drawable/selector_shop_select_btn" />
+                android:button="@drawable/selector_shop_select_btn"
+                android:checked="true" />
 
             <TextView
                 android:layout_width="wrap_content"

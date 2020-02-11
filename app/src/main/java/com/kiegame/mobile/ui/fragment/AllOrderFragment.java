@@ -6,7 +6,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -14,7 +13,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentAllOrderBinding;
-import com.kiegame.mobile.model.OrderModel;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyShopEntity;
 import com.kiegame.mobile.ui.base.BaseFragment;
@@ -32,8 +30,8 @@ import java.util.List;
  */
 public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
 
-    private OrderModel model;
     private BaseQuickAdapter<BuyOrderEntity, BaseViewHolder> adapter;
+    private List<BuyOrderEntity> orders;
 
     @Override
     protected int onLayout() {
@@ -42,7 +40,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
 
     @Override
     protected void onObject() {
-        model = new ViewModelProvider(this).get(OrderModel.class);
+
     }
 
     @Override
@@ -56,7 +54,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
             }
         });
         binding.rvOrder.addItemDecoration(new MarginItemDecoration(10));
-        adapter = new BaseQuickAdapter<BuyOrderEntity, BaseViewHolder>(R.layout.item_order_wait_pay) {
+        adapter = new BaseQuickAdapter<BuyOrderEntity, BaseViewHolder>(R.layout.item_order_wait_pay, this.orders) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, BuyOrderEntity item) {
                 setPayState(helper, item.getPayState());
@@ -94,7 +92,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
 
     @Override
     protected void onData() {
-        model.queryOrders(null, null, null, null, null, null).observe(this, this::queryWaitPayOrderResult);
+
     }
 
     /**
@@ -162,8 +160,12 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
      *
      * @param data 数据对象
      */
-    private void queryWaitPayOrderResult(List<BuyOrderEntity> data) {
-        adapter.setNewData(data);
+    void refreshData(List<BuyOrderEntity> data) {
+        if (adapter != null) {
+            adapter.setNewData(data);
+        } else {
+            this.orders = data;
+        }
     }
 
     /**
