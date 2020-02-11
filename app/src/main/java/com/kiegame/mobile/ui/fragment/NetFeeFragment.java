@@ -98,13 +98,15 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * @param keywords 关键字
      */
     private void searchUserInfoList(String keywords) {
-        if (Text.empty(keywords) && pw != null && pw.isShowing()) {
-            pw.dismiss();
-        } else {
-            LiveData<List<UserInfoEntity>> data = model.searchUserInfos(keywords);
-            if (!data.hasObservers()) {
-                data.observe(this, this::searchUserInfosResult);
+        if (Text.empty(keywords)) {
+            if (pw != null && pw.isShowing()) {
+                pw.dismiss();
             }
+            return;
+        }
+        LiveData<List<UserInfoEntity>> data = model.searchUserInfos(keywords);
+        if (!data.hasObservers()) {
+            data.observe(this, this::searchUserInfosResult);
         }
     }
 
@@ -290,7 +292,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     public void totalShop() {
         if (Cache.ins().getUserInfo() != null) {
-            startActivity(new Intent(getActivity(), ShopCarActivity.class));
+            if (canCreateOrderOrPayment(2)) {
+                startActivity(new Intent(getActivity(), ShopCarActivity.class));
+            }
         } else {
             Toast.show("请先选择会员");
         }
@@ -301,27 +305,25 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     public void createOrder() {
         if (Cache.ins().getUserInfo() != null) {
-            int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
-            if (totalMoney <= 0) {
-                Toast.show("没有商品或网费可以下单");
-                return;
-            }
-            LiveData<List<AddOrderEntity>> order = model.addOrder(
-                    Cache.ins().getNetFeeNum(),
-                    Cache.ins().getShopMoneyTotalNum(),
-                    Cache.ins().getUserInfo().getSeatNumber(),
-                    Cache.ins().getUserInfo().getCustomerId(),
-                    Cache.ins().getUserInfo().getBonusBalance(),
-                    null,
-                    null,
-                    null,
-                    Cache.ins().getPayment(),
-                    String.valueOf(totalMoney),
-                    null,
-                    null,
-                    1);
-            if (!order.hasObservers()) {
-                order.observe(this, this::onCreateOrderResult);
+            if (canCreateOrderOrPayment(1)) {
+                int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
+                LiveData<List<AddOrderEntity>> order = model.addOrder(
+                        Cache.ins().getNetFeeNum(),
+                        Cache.ins().getShopMoneyTotalNum(),
+                        Cache.ins().getUserInfo().getSeatNumber(),
+                        Cache.ins().getUserInfo().getCustomerId(),
+                        Cache.ins().getUserInfo().getBonusBalance(),
+                        null,
+                        null,
+                        null,
+                        Cache.ins().getPayment(),
+                        String.valueOf(totalMoney),
+                        null,
+                        null,
+                        1);
+                if (!order.hasObservers()) {
+                    order.observe(this, this::onCreateOrderResult);
+                }
             }
         } else {
             Toast.show("请先选择会员");
@@ -329,11 +331,36 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     }
 
     /**
+     * 是否可以下单
+     *
+     * @return true: 可以 false: 不可以
+     */
+    private boolean canCreateOrderOrPayment(int orderType) {
+        int money = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
+        if (money <= 0) {
+            switch (orderType) {
+                case 1:
+                    Toast.show("没有商品或网费可以下单");
+                    break;
+                case 2:
+                    Toast.show("没有商品或网费可以结算");
+                    break;
+                case 3:
+                    Toast.show("没有商品或网费可以使用优惠券");
+                    break;
+            }
+        }
+        return money > 0;
+    }
+
+    /**
      * 优惠券
      */
     public void couponUse() {
         if (Cache.ins().getUserInfo() != null) {
-            CouponSelect.ins().set().show();
+            if (canCreateOrderOrPayment(3)) {
+                CouponSelect.ins().set().show();
+            }
         } else {
             Toast.show("请先选择会员");
         }

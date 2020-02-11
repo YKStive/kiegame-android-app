@@ -2,11 +2,17 @@ package com.kiegame.mobile.ui.activity;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Vibrator;
 import android.util.DisplayMetrics;
+import android.util.SparseIntArray;
 import android.view.animation.LinearInterpolator;
 
 import androidx.camera.core.AspectRatio;
@@ -27,7 +33,6 @@ import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.Pixel;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.worker.Worker;
-import com.kiegame.mobile.zxing.BeepManager;
 import com.kiegame.mobile.zxing.QRCodeAnalyzer;
 
 import java.util.concurrent.ExecutionException;
@@ -43,6 +48,7 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
 
     private static final float TOO_DARK_LUX = 20.0f;
     private static final float BRIGHT_ENOUGH_LUX = 450.0f;
+    private final int RESULT_CODE_SCAN = 10086;
 
     private ValueAnimator animator;
     private Preview preview;
@@ -53,9 +59,12 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
     private Camera camera;
     private String title;
     private Sensor sensor;
-    private BeepManager beepManager;
     private QRCodeAnalyzer codeAnalyzer;
     private boolean takeSuccess = true;
+    private SoundPool sp;
+    private SparseIntArray sounds;
+    private float volumeRatio;
+    private Vibrator vibrator;
 
     @Override
     protected int onLayout() {
@@ -68,17 +77,16 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
         title = getIntent().getStringExtra(Setting.APP_SCAN_TITLE);
         mainExecutor = ContextCompat.getMainExecutor(this);
         captureExecutor = Executors.newSingleThreadExecutor();
-        beepManager = new BeepManager();
-        beepManager.updatePrefs();
+
         this.initializeSensorManager();
+        this.initSoundPool();
     }
 
     @Override
     protected void onView() {
         binding.tvScanTitle.setText(Text.empty(title) ? "扫码支付" : title);
         binding.svCamera.post(this::updateCamera);
-
-        this.startAnim();
+        binding.ivScanBox.post(this::startAnim);
     }
 
     @Override
@@ -108,10 +116,54 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (sp != null) {
+            sp.release();
+        }
+    }
+
+    /**
+     * 初始化声音播放器
+     */
+    private void initSoundPool() {
+        this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        AudioAttributes attributes = new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build();
+        sp = new SoundPool.Builder()
+                .setMaxStreams(5)
+                .setAudioAttributes(attributes)
+                .build();
+        sounds = new SparseIntArray();
+        sounds.put(0, sp.load(this, R.raw.beep, 1));
+        AudioManager am = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+        if (am != null) {
+            float audioMaxVolume = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            float audioCurrentVolume = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+            volumeRatio = audioCurrentVolume / audioMaxVolume;
+        }
+    }
+
+    /**
+     * 播放声音并震动
+     */
+    private void playSoundAndVibrate() {
+        if (sp != null) {
+            sp.play(sounds.get(0), volumeRatio, volumeRatio, 1, 0, 1);
+        }
+        if (vibrator != null && volumeRatio == 0.0f) {
+            vibrator.vibrate(200L);
+        }
+    }
+
     /**
      * 初始化传感器
      */
     private void initializeSensorManager() {
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager != null) {
             sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -145,7 +197,9 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
                     @Override
                     public void decodeSuccess(Result result) {
                         if (result != null) {
-                            beepManager.playBeepSoundAndVibrate();
+                            playSoundAndVibrate();
+                            Intent intent = new Intent().putExtra(Setting.APP_SCAN_CONTENT, result.getText());
+                            setResult(RESULT_CODE_SCAN, intent);
                             finish();
                         } else {
                             takeSuccess = true;
@@ -157,6 +211,11 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
                         if (takeSuccess) {
                             takeSuccess = false;
                             imageCapture.takePicture(captureExecutor, codeAnalyzer);
+                        }
+                        try {
+                            Thread.sleep(20);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -191,7 +250,7 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
      * 初始化动画
      */
     private void startAnim() {
-        animator = ValueAnimator.ofFloat(0, Pixel.measureHeight(binding.ivScanBox) - Pixel.measureHeight(binding.ivScanLine));
+        animator = ValueAnimator.ofFloat(0, binding.ivScanBox.getHeight() - Pixel.measureHeight(binding.ivScanLine));
         animator.setDuration(3000);
         animator.setInterpolator(new LinearInterpolator());
         animator.setRepeatCount(-1);

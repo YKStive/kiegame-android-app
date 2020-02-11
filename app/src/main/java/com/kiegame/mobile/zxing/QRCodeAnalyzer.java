@@ -2,6 +2,7 @@ package com.kiegame.mobile.zxing;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,12 @@ import java.util.Map;
 public abstract class QRCodeAnalyzer extends ImageCapture.OnImageCapturedCallback {
 
     private MultiFormatReader reader;
+    private int width;
+    private int height;
+    private Matrix matrix;
+    private int x;
+    private int y;
+    private int box;
 
     /**
      * 构造方法
@@ -40,22 +47,7 @@ public abstract class QRCodeAnalyzer extends ImageCapture.OnImageCapturedCallbac
 
         List<BarcodeFormat> formats = new ArrayList<>();
         formats.add(BarcodeFormat.QR_CODE);
-//        formats.add(BarcodeFormat.AZTEC);
-//        formats.add(BarcodeFormat.CODABAR);
-//        formats.add(BarcodeFormat.CODE_39);
-//        formats.add(BarcodeFormat.CODE_93);
-//        formats.add(BarcodeFormat.CODE_128);
-//        formats.add(BarcodeFormat.DATA_MATRIX);
-//        formats.add(BarcodeFormat.EAN_8);
-//        formats.add(BarcodeFormat.EAN_13);
-//        formats.add(BarcodeFormat.ITF);
-//        formats.add(BarcodeFormat.MAXICODE);
-//        formats.add(BarcodeFormat.PDF_417);
-//        formats.add(BarcodeFormat.RSS_14);
-//        formats.add(BarcodeFormat.RSS_EXPANDED);
-//        formats.add(BarcodeFormat.UPC_A);
-//        formats.add(BarcodeFormat.UPC_E);
-//        formats.add(BarcodeFormat.UPC_EAN_EXTENSION);
+        formats.add(BarcodeFormat.CODE_128);
 
         Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
         hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
@@ -70,10 +62,8 @@ public abstract class QRCodeAnalyzer extends ImageCapture.OnImageCapturedCallbac
         ByteBuffer buffer = image.getPlanes()[0].getBuffer();
         byte[] data = new byte[buffer.capacity()];
         buffer.get(data);
-        int width = image.getWidth();
-        int height = image.getHeight();
         try {
-            Result result = analyzeByteArray(data, width, height);
+            Result result = analyzeByteArray(data);
             decodeSuccess(result);
         } catch (NotFoundException e) {
             e.printStackTrace();
@@ -91,13 +81,12 @@ public abstract class QRCodeAnalyzer extends ImageCapture.OnImageCapturedCallbac
     /**
      * 解析字节数据
      *
-     * @param data   数据
-     * @param width  宽度
-     * @param height 高度
+     * @param data 数据
      * @return 识别后的数据或null
      */
-    private Result analyzeByteArray(byte[] data, int width, int height) throws NotFoundException {
-        RGBLuminanceSource source = new RGBLuminanceSource(width, height, toPixels(data, width, height));
+    private Result analyzeByteArray(byte[] data) throws NotFoundException {
+        int[] pixels = toPixels(data);
+        RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
         return reader.decodeWithState(bitmap);
     }
@@ -108,11 +97,33 @@ public abstract class QRCodeAnalyzer extends ImageCapture.OnImageCapturedCallbac
      * @param bytes 数据
      * @return 返回int数组
      */
-    private int[] toPixels(byte[] bytes, int width, int height) {
+    private int[] toPixels(byte[] bytes) {
+        Bitmap bitmap = rotateAndCropBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
         int[] pixels = new int[width * height];
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
         return pixels;
+    }
+
+    /**
+     * 旋转裁剪位图
+     *
+     * @param bitmap 源位图对象
+     * @return 返回裁剪后的位图对象
+     */
+    private Bitmap rotateAndCropBitmap(Bitmap bitmap) {
+        if (matrix == null) {
+            int height = Math.max(bitmap.getWidth(), bitmap.getHeight());
+            int width = Math.min(bitmap.getWidth(), bitmap.getHeight());
+            // 裁剪之后才旋转,所以这里要用横向的裁剪坐标,X轴和Y轴对换一下
+            y = width / 4;
+            x = (height - (width / 2)) / 2;
+            box = width / 2;
+            matrix = new Matrix();
+            matrix.setRotate(90);
+            this.width = box;
+            this.height = box;
+        }
+        return Bitmap.createBitmap(bitmap, x, y, box, box, matrix, false);
     }
 
     /**

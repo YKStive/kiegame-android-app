@@ -43,6 +43,9 @@ public class Text {
      * @return 返回格式化后的字符串
      */
     public static String formatIdCardNum(String idCardNum) {
+        if (Text.empty(idCardNum) || idCardNum.length() <= 7) {
+            return idCardNum;
+        }
         String start = idCardNum.substring(0, 3);
         String end = idCardNum.substring(idCardNum.length() - 4);
         return start + "***********" + end;
@@ -55,6 +58,9 @@ public class Text {
      * @return 返回姓氏缩写
      */
     public static String formatCustomName(String customName) {
+        if (Text.empty(customName) || customName.length() <= 1) {
+            return customName;
+        }
         StringBuilder sb = new StringBuilder(customName.substring(0, 1));
         for (int i = 0; i < customName.length() - 1; i++) {
             sb.append("某");
