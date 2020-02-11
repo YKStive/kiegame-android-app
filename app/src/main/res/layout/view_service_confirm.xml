@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <com.kiegame.mobile.ui.views.FocusLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/translucent_black_50">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.75">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="@string/app_payment_service"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/vv_divider_line_start"
+                android:layout_width="0dp"
+                android:layout_height="0.5dp"
+                android:background="#E8E8E8"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+            <TextView
+                android:id="@+id/tv_must_pay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/app_must_pay_money"
+                android:textColor="#282828"
+                android:textSize="13sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vv_divider_line_start" />
+
+            <TextView
+                android:id="@+id/tv_rmb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/net_fee_rmb"
+                android:textColor="#F43B3D"
+                android:textSize="11sp"
+                app:layout_constraintBaseline_toBaselineOf="@id/tv_must_pay"
+                app:layout_constraintBottom_toBottomOf="@id/tv_must_pay"
+                app:layout_constraintLeft_toLeftOf="@id/et_service_password"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/tv_service_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="28dp"
+                android:text="@string/app_service_password"
+                android:textColor="#282828"
+                android:textSize="13sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_must_pay" />
+
+            <TextView
+                android:id="@+id/tv_must_pay_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textColor="#F73E40"
+                app:layout_constraintBottom_toBottomOf="@id/tv_rmb"
+                app:layout_constraintLeft_toRightOf="@id/tv_rmb"
+                tools:text="32.00" />
+
+            <EditText
+                android:id="@+id/et_service_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="30dp"
+                android:background="@drawable/vector_password_input_background"
+                android:hint="@string/service_password_hint"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_service_password"
+                app:layout_constraintLeft_toRightOf="@id/tv_service_password"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_service_password" />
+
+            <TextView
+                android:id="@+id/tv_btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/shape_shop_cancel_btn_background"
+                android:paddingLeft="48dp"
+                android:paddingTop="10dp"
+                android:paddingRight="48dp"
+                android:paddingBottom="10dp"
+                android:text="@string/app_btn_cancel"
+                android:textColor="#282828"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_btn_ok"
+                app:layout_constraintTop_toBottomOf="@id/et_service_password" />
+
+            <TextView
+                android:id="@+id/tv_btn_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/shape_shop_ok_btn_background"
+                android:paddingLeft="48dp"
+                android:paddingTop="10dp"
+                android:paddingRight="48dp"
+                android:paddingBottom="10dp"
+                android:text="@string/app_btn_ok"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tv_btn_cancel"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_service_password" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.kiegame.mobile.ui.views.FocusLayout>
+</layout>

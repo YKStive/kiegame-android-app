@@ -76,4 +76,10 @@
     <string name="app_exit_login">退出登录</string>
     <string name="app_no_shop">没有商品哦~</string>
     <string name="app_scan_message">将二维码/条码放入框内即可自动扫描</string>
+    <string name="app_payment_service">客维付款</string>
+    <string name="app_must_pay_money">应付:</string>
+    <string name="app_service_password">客维密码:</string>
+    <string name="service_password_hint">输入密码</string>
+    <string name="app_pay_success">支付成功！</string>
+    <string name="app_pay_failure">支付失败！</string>
 </resources>

@@ -37,11 +37,15 @@ import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.CouponSelect;
 import com.kiegame.mobile.utils.DialogBox;
+import com.kiegame.mobile.utils.PayFailure;
+import com.kiegame.mobile.utils.PaySuccess;
+import com.kiegame.mobile.utils.ServicePay;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,6 +87,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             model.userName.setValue(item);
         }
         model.searchName.observe(this, this::searchUserInfoList);
+        model.getFailMessage().observe(this, this::onCreateOrderFailure);
         permissions = new String[]{
                 Manifest.permission.CAMERA,
                 Manifest.permission.VIBRATE,
@@ -372,7 +377,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 int payment = Cache.ins().getPayment();
                 if (payment == Payment.PAY_TYPE_SERVICE) {
                     // 客维支付
-                    // TODO: 2020/2/9 提示用户需要输入客维密码
+                    int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
+                    ServicePay.ins().money(totalMoney).confirm(password -> createOrderOrPayment(password, 2)).show();
                 } else {
                     startScanActivity(payment);
                 }
@@ -478,14 +484,66 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         if (data != null) {
             this.adapter.notifyDataSetChanged();
             Cache.ins().getNetFeeObserver().setValue(this.orderType);
+            resetShopData();
             if (orderType == 1) {
                 // 下单
                 Toast.show("下单成功");
+                this.finish();
             } else {
                 // 结算
-                // TODO: 2020/2/9 结算成功或失败的返回信息展示
+                AddOrderEntity order = data.get(0);
+                if (order != null) {
+                    String orderId = Text.empty(order.getProductOrderId()) ? order.getRechargeOrderId() : order.getProductOrderId();
+                    PaySuccess.ins().confirm(this::finish).order(orderId).show();
+                }
             }
-            this.finish();
+        } else {
+            if (orderType == 1) {
+                // 下单
+                Toast.show("下单失败");
+            } else {
+                // 结算
+                PayFailure.ins().message("未找到订单号").show();
+            }
         }
+    }
+
+    /**
+     * 错误消息
+     *
+     * @param msg 消息内容
+     */
+    private void onCreateOrderFailure(String msg) {
+        if (orderType != 1) {
+            PayFailure.ins().message(msg).show();
+        } else {
+            Toast.show(msg);
+        }
+    }
+
+    /**
+     * 重置商品数据
+     */
+    private void resetShopData() {
+        List<BuyShop> shops = Cache.ins().getShops();
+        List<BuyShop> buys = new ArrayList<>();
+        for (BuyShop shop : shops) {
+            if (shop != null && shop.isBuy()) {
+                buys.add(shop);
+            }
+        }
+        List<ShopEntity> entities = Cache.ins().getEntities();
+        for (BuyShop buy : buys) {
+            if (entities != null && !entities.isEmpty()) {
+                for (ShopEntity shop : entities) {
+                    if (shop != null && shop.getProductId().equals(buy.getProductId())) {
+                        shop.setBuySize(shop.getBuySize() - buy.getProductBuySum());
+                        break;
+                    }
+                }
+            }
+            shops.remove(buy);
+        }
+        Cache.ins().getShopObserver().setValue(buys.size());
     }
 }

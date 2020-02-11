@@ -11,7 +11,6 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
-import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
@@ -38,6 +37,7 @@ public class NetFeeModel extends ViewModel {
     private MutableLiveData<List<BannerEntity>> banner;
     private MutableLiveData<List<UserInfoEntity>> userInfos;
     private MutableLiveData<List<AddOrderEntity>> addOrder;
+    private MutableLiveData<String> failMessage;
 
     public NetFeeModel() {
         this.login = Cache.ins().getLoginInfo();
@@ -52,6 +52,7 @@ public class NetFeeModel extends ViewModel {
         this.banner = new MutableLiveData<>();
         this.userInfos = new MutableLiveData<>();
         this.addOrder = new MutableLiveData<>();
+        this.failMessage = new MutableLiveData<>();
 
         this.initData();
     }
@@ -72,6 +73,13 @@ public class NetFeeModel extends ViewModel {
      */
     public void resetData() {
         this.initData();
+    }
+
+    /**
+     * 获取错误信息
+     */
+    public LiveData<String> getFailMessage() {
+        return failMessage;
     }
 
     /**
@@ -132,19 +140,6 @@ public class NetFeeModel extends ViewModel {
                     buys.add(shop);
                 }
             }
-            List<ShopEntity> entities = Cache.ins().getEntities();
-            for (BuyShop buy : buys) {
-                if (entities != null && !entities.isEmpty()) {
-                    for (ShopEntity shop : entities) {
-                        if (shop != null && shop.getProductId().equals(buy.getProductId())) {
-                            shop.setBuySize(shop.getBuySize() - buy.getProductBuySum());
-                            break;
-                        }
-                    }
-                }
-                shops.remove(buy);
-            }
-            Cache.ins().getShopObserver().setValue(buys.size());
             order.setProductList(buys);
         }
         if (netMoney > 0) {
@@ -174,10 +169,15 @@ public class NetFeeModel extends ViewModel {
         order.setMemo(memo);
         Network.api().addOrder(order)
                 .compose(Scheduler.apply())
-                .subscribe(new Subs<List<AddOrderEntity>>() {
+                .subscribe(new Subs<List<AddOrderEntity>>(true, true) {
                     @Override
                     public void onSuccess(List<AddOrderEntity> data, int total, int length) {
                         addOrder.setValue(data);
+                    }
+
+                    @Override
+                    public void onPayFailure(String msg) {
+                        failMessage.setValue(msg);
                     }
                 });
         return this.addOrder;

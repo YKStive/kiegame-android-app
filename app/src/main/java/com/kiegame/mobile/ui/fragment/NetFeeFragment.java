@@ -24,7 +24,9 @@ import com.kiegame.mobile.model.NetFeeModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
+import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
+import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.ui.activity.LoginActivity;
 import com.kiegame.mobile.ui.activity.MainActivity;
 import com.kiegame.mobile.ui.activity.ShopCarActivity;
@@ -38,6 +40,7 @@ import com.youth.banner.loader.ImageLoader;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,6 +69,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         binding.setFragment(this);
         binding.setCache(Cache.ins());
         model.userSearch.observe(this, this::searchUserInfoList);
+        model.getFailMessage().observe(this, this::onCreateOrderFailure);
         menu = new Menu(getContext()).callback(v -> {
             Cache.ins().initialize();
             MainActivity activity = (MainActivity) getActivity();
@@ -372,7 +376,45 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private void onCreateOrderResult(List<AddOrderEntity> data) {
         if (data != null) {
             this.recharge(this.moneyBtn, 0);
+            resetShopData();
             Toast.show("下单成功");
+        } else {
+            Toast.show("下单失败");
         }
+    }
+
+    /**
+     * 下单失败
+     *
+     * @param msg 失败消息
+     */
+    private void onCreateOrderFailure(String msg) {
+        Toast.show(msg);
+    }
+
+    /**
+     * 重置商品数据
+     */
+    private void resetShopData() {
+        List<BuyShop> shops = Cache.ins().getShops();
+        List<BuyShop> buys = new ArrayList<>();
+        for (BuyShop shop : shops) {
+            if (shop != null && shop.isBuy()) {
+                buys.add(shop);
+            }
+        }
+        List<ShopEntity> entities = Cache.ins().getEntities();
+        for (BuyShop buy : buys) {
+            if (entities != null && !entities.isEmpty()) {
+                for (ShopEntity shop : entities) {
+                    if (shop != null && shop.getProductId().equals(buy.getProductId())) {
+                        shop.setBuySize(shop.getBuySize() - buy.getProductBuySum());
+                        break;
+                    }
+                }
+            }
+            shops.remove(buy);
+        }
+        Cache.ins().getShopObserver().setValue(buys.size());
     }
 }

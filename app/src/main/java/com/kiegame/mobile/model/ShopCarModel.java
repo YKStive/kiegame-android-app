@@ -10,7 +10,6 @@ import com.kiegame.mobile.repository.Subs;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
-import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
@@ -34,6 +33,7 @@ public class ShopCarModel extends ViewModel {
 
     private MutableLiveData<List<UserInfoEntity>> userInfos;
     private MutableLiveData<List<AddOrderEntity>> addOrder;
+    private MutableLiveData<String> failMessage;
 
     public ShopCarModel() {
         this.searchName = new MutableLiveData<>();
@@ -44,6 +44,7 @@ public class ShopCarModel extends ViewModel {
 
         this.userInfos = new MutableLiveData<>();
         this.addOrder = new MutableLiveData<>();
+        this.failMessage = new MutableLiveData<>();
 
         this.initialize();
     }
@@ -55,6 +56,13 @@ public class ShopCarModel extends ViewModel {
         this.searchName.setValue("");
         this.userName.setValue("没有选择会员");
         this.memo.setValue("");
+    }
+
+    /**
+     * 获取错误信息
+     */
+    public LiveData<String> getFailMessage() {
+        return failMessage;
     }
 
     /**
@@ -99,19 +107,6 @@ public class ShopCarModel extends ViewModel {
                     buys.add(shop);
                 }
             }
-            List<ShopEntity> entities = Cache.ins().getEntities();
-            for (BuyShop buy : buys) {
-                if (entities != null && !entities.isEmpty()) {
-                    for (ShopEntity shop : entities) {
-                        if (shop != null && shop.getProductId().equals(buy.getProductId())) {
-                            shop.setBuySize(shop.getBuySize() - buy.getProductBuySum());
-                            break;
-                        }
-                    }
-                }
-                shops.remove(buy);
-            }
-            Cache.ins().getShopObserver().setValue(buys.size());
             order.setProductList(buys);
         }
         if (netMoney > 0) {
@@ -141,10 +136,15 @@ public class ShopCarModel extends ViewModel {
         order.setMemo(Text.empty(memo.getValue()) ? null : memo.getValue());
         Network.api().addOrder(order)
                 .compose(Scheduler.apply())
-                .subscribe(new Subs<List<AddOrderEntity>>() {
+                .subscribe(new Subs<List<AddOrderEntity>>(true, true) {
                     @Override
                     public void onSuccess(List<AddOrderEntity> data, int total, int length) {
                         addOrder.setValue(data);
+                    }
+
+                    @Override
+                    public void onPayFailure(String msg) {
+                        failMessage.setValue(msg);
                     }
                 });
         return this.addOrder;

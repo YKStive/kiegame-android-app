@@ -26,12 +26,15 @@ public abstract class Subs<T> implements Observer<Result<T>> {
 
     // 是否显示对话框,提示信息
     private boolean isShowMsg;
+    // 是否支付接口调用
+    private boolean isPay;
 
     /**
      * 构造方法,默认显示对话框,提示信息
      */
     protected Subs() {
         this.isShowMsg = true;
+        this.isPay = false;
     }
 
     /**
@@ -41,6 +44,18 @@ public abstract class Subs<T> implements Observer<Result<T>> {
      */
     protected Subs(boolean isShowMsg) {
         this.isShowMsg = isShowMsg;
+        this.isPay = false;
+    }
+
+    /**
+     * 构造方法
+     *
+     * @param isShowMsg 是否显加载框
+     * @param isPay     是否支付接口
+     */
+    public Subs(boolean isShowMsg, boolean isPay) {
+        this.isShowMsg = isShowMsg;
+        this.isPay = isPay;
     }
 
     @Override
@@ -54,6 +69,10 @@ public abstract class Subs<T> implements Observer<Result<T>> {
     public void onNext(Result<T> data) {
         if (this.isShowMsg) {
             Loading.hide();
+        }
+        if (data.getCode() == 5001 && !data.isSuccess() && isPay) {
+            onPayFailure(data.getMessage());
+            return;
         }
         if (data.getCode() == 200 && data.isSuccess()) {
             onSuccess(data.getData(), data.getTotal(), data.getLength());
@@ -95,6 +114,15 @@ public abstract class Subs<T> implements Observer<Result<T>> {
      * @param data 返回数据
      */
     public abstract void onSuccess(T data, int total, int length);
+
+    /**
+     * 支付失败调用
+     *
+     * @param msg 失败信息
+     */
+    public void onPayFailure(String msg) {
+
+    }
 
     /**
      * 请求失败,需要时重写
