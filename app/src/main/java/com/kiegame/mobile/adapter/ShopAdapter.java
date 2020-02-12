@@ -91,7 +91,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                     tv.setText(String.valueOf(num));
                 }
                 item.setBuySize(num);
-                Cache.ins().detachShop(item.getProductId(), null, null);
+                Cache.ins().detachShop(item.getProductId());
             }
         });
     }

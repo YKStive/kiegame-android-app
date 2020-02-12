@@ -399,6 +399,37 @@ public class Cache extends BaseObservable {
      * 删除商品
      *
      * @param productId 商品ID
+     */
+    public void detachShop(String productId) {
+        List<BuyShop> value = shops.getValue();
+        // 如果商品列表不是空的
+        if (value != null && !value.isEmpty()) {
+            // 查找是否有这种商品
+            for (int i = 0; i < value.size(); i++) {
+                BuyShop buy = value.get(i);
+                // 如果找到了,判断购买数量
+                if (buy.getProductId().equals(productId)) {
+                    if (buy.getProductBuySum() <= 1) {
+                        // 如果商品数量小等于1,减一则相当于不购买,从商品列表中删除
+                        value.remove(i);
+                    } else {
+                        // 如果商品数量大于1,则减少一个商品数量
+                        value.get(i).setProductBuySum(buy.getProductBuySum() - 1);
+                    }
+                    break;
+                }
+            }
+            // 更新数据
+            this.shops.setValue(value);
+            this.updateTotalMoney();
+            this.notifyChange();
+        }
+    }
+
+    /**
+     * 删除商品
+     *
+     * @param productId 商品ID
      * @param flavor    口味
      * @param spec      规格
      */

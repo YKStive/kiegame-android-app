@@ -257,6 +257,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         }
         if (this.moneyBtn != null) {
             this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
+            this.moneyBtn.setTextColor(getResources().getColor(R.color.gray_white));
         }
         if (money == 0 || (view != null && view.equals(this.moneyBtn))) {
             money = 0;
@@ -265,6 +266,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             if (view != null) {
                 this.moneyBtn = (TextView) view;
                 this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_press_border);
+                this.moneyBtn.setTextColor(getResources().getColor(R.color.black_text));
             }
         }
         this.model.recharge.setValue(String.format("%s.00", money));

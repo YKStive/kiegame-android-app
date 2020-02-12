@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="fragment"
+            type="com.kiegame.mobile.ui.fragment.OrderFragment" />
+
+        <variable
             name="login"
             type="com.kiegame.mobile.repository.entity.receive.LoginEntity" />
     </data>
@@ -93,6 +97,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:contentDescription="@string/app_name"
+                        android:onClick="@{()->fragment.pastDay()}"
                         android:padding="@dimen/net_fee_search_padding"
                         android:src="@drawable/ic_left_back" />
 
@@ -102,7 +107,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="2020-01-12"
                         android:textColor="@color/white"
                         android:textSize="15sp"
                         tools:text="2020-01-12" />
@@ -111,6 +115,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:contentDescription="@string/app_name"
+                        android:onClick="@{()->fragment.nextDay()}"
                         android:padding="@dimen/net_fee_search_padding"
                         android:rotation="180"
                         android:src="@drawable/ic_left_back" />

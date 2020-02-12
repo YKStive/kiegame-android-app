@@ -16,8 +16,10 @@ import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.utils.Text;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -39,16 +41,20 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     private int year;
     private int month;
     private int dayOfMonth;
+    private SimpleDateFormat format;
 
     @Override
     protected int onLayout() {
         return R.layout.fragment_order;
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onObject() {
         binding.setLogin(Cache.ins().getLoginInfo());
+        binding.setFragment(this);
         model = new ViewModelProvider(this).get(OrderModel.class);
+        format = new SimpleDateFormat("yyyy-MM-dd");
         this.views = new ArrayList<>();
         this.titles = new String[]{
                 getString(R.string.order_wait_payment),
@@ -79,12 +85,8 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
         OrderAdapter adapter = new OrderAdapter(getParentFragmentManager(), views, titles);
         binding.vpOrderViews.setAdapter(adapter);
         binding.tlOrderTab.setupWithViewPager(binding.vpOrderViews);
-        binding.srlLayout.setOnRefreshListener(refreshLayout -> {
-            LiveData<List<BuyOrderEntity>> liveData = model.queryOrders(null, date, null, null, null, null);
-            if (!liveData.hasObservers()) {
-                liveData.observe(this, this::onQueryOrderResult);
-            }
-        });
+        binding.srlLayout.setOnRefreshListener(refreshLayout -> requestData());
+        binding.tvOrderCreateTime.setText(date);
         binding.tvOrderCreateTime.setOnClickListener(v -> {
             dialog.updateDate(year, month, dayOfMonth);
             dialog.show();
@@ -93,7 +95,53 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
 
     @Override
     protected void onData() {
-        model.queryOrders(null, date, null, null, null, null).observe(this, this::onQueryOrderResult);
+        requestData();
+    }
+
+    /**
+     * 请求数据
+     */
+    private void requestData() {
+        String start = String.format("%s 00:00:00", date);
+        String end = String.format("%s 23:59:59", date);
+        LiveData<List<BuyOrderEntity>> liveData = model.queryOrders(null, start, end, null, null, null);
+        if (!liveData.hasObservers()) {
+            liveData.observe(this, this::onQueryOrderResult);
+        }
+    }
+
+    /**
+     * 下一天
+     */
+    public void nextDay() {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(Objects.requireNonNull(format.parse(date)));
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            date = format.format(calendar.getTime());
+            this.splitDate(date);
+            binding.tvOrderCreateTime.setText(date);
+            binding.srlLayout.autoRefresh();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 上一天
+     */
+    public void pastDay() {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(Objects.requireNonNull(format.parse(date)));
+            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
+            date = format.format(calendar.getTime());
+            this.splitDate(date);
+            binding.tvOrderCreateTime.setText(date);
+            binding.srlLayout.autoRefresh();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -112,18 +160,16 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     /**
      * 获取当天时间
      */
-    @SuppressLint("SimpleDateFormat")
     private void toDay() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(System.currentTimeMillis());
         this.date = format.format(date);
-        splitDate();
+        this.splitDate(this.date);
     }
 
     /**
      * 拆分日期时间
      */
-    private void splitDate() {
+    private void splitDate(String date) {
         if (!Text.empty(date)) {
             String[] split = date.split("-");
             if (split.length >= 3) {

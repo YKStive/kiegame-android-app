@@ -95,6 +95,7 @@ public class ServicePay {
      * @return {@link ServicePay}
      */
     public ServicePay money(int money) {
+        binding.etServicePassword.setText("");
         binding.tvMustPayMoney.setText(cal(money));
         return this;
     }

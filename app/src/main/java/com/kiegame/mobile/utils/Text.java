@@ -58,13 +58,14 @@ public class Text {
      * @return 返回姓氏缩写
      */
     public static String formatCustomName(String customName) {
-        if (Text.empty(customName) || customName.length() <= 1) {
-            return customName;
-        }
-        StringBuilder sb = new StringBuilder(customName.substring(0, 1));
-        for (int i = 0; i < customName.length() - 1; i++) {
-            sb.append("某");
-        }
-        return sb.toString();
+//        if (Text.empty(customName) || customName.length() <= 1) {
+//            return customName;
+//        }
+//        StringBuilder sb = new StringBuilder(customName.substring(0, 1));
+//        for (int i = 0; i < customName.length() - 1; i++) {
+//            sb.append("某");
+//        }
+//        return sb.toString();
+        return customName;
     }
 }
