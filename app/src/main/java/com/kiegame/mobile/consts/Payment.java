@@ -12,5 +12,5 @@ public class Payment {
     // 客维
     public static final int PAY_TYPE_SERVICE = 4;
     // 在线
-    public static final int PAY_TYPE_ONLINE = 5;
+    public static final int PAY_TYPE_ONLINE = 1;
 }

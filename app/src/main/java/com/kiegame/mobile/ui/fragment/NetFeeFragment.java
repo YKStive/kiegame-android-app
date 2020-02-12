@@ -150,7 +150,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 TextView tv = view.findViewById(R.id.tv_user_item);
                 String item;
                 if (Text.empty(entity.getSeatNumber())) {
-                    item = String.format("       %s | %s", Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
+                    item = String.format("%s | %s", Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
                 } else {
                     item = String.format("%s | %s | %s", entity.getSeatNumber(), Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
                 }
@@ -399,24 +399,26 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     private void resetShopData() {
         List<BuyShop> shops = Cache.ins().getShops();
-        List<BuyShop> buys = new ArrayList<>();
-        for (BuyShop shop : shops) {
-            if (shop != null && shop.isBuy()) {
-                buys.add(shop);
-            }
-        }
-        List<ShopEntity> entities = Cache.ins().getEntities();
-        for (BuyShop buy : buys) {
-            if (entities != null && !entities.isEmpty()) {
-                for (ShopEntity shop : entities) {
-                    if (shop != null && shop.getProductId().equals(buy.getProductId())) {
-                        shop.setBuySize(shop.getBuySize() - buy.getProductBuySum());
-                        break;
-                    }
+        if (shops != null && !shops.isEmpty()) {
+            List<BuyShop> buys = new ArrayList<>();
+            for (BuyShop shop : shops) {
+                if (shop != null && shop.isBuy()) {
+                    buys.add(shop);
                 }
             }
-            shops.remove(buy);
+            List<ShopEntity> entities = Cache.ins().getEntities();
+            for (BuyShop buy : buys) {
+                if (entities != null && !entities.isEmpty()) {
+                    for (ShopEntity shop : entities) {
+                        if (shop != null && shop.getProductId().equals(buy.getProductId())) {
+                            shop.setBuySize(shop.getBuySize() - buy.getProductBuySum());
+                            break;
+                        }
+                    }
+                }
+                shops.remove(buy);
+            }
+            Cache.ins().getShopObserver().setValue(buys.size());
         }
-        Cache.ins().getShopObserver().setValue(buys.size());
     }
 }

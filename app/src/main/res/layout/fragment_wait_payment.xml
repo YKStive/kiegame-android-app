@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="model"
-            type="com.kiegame.mobile.model.OrderModel" />
-
-        <variable
             name="fragment"
             type="com.kiegame.mobile.ui.fragment.WaitPaymentFragment" />
     </data>
@@ -34,10 +30,10 @@
             app:layout_constraintRight_toRightOf="parent">
 
             <CheckBox
+                android:id="@+id/cb_total_all"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:button="@drawable/selector_shop_select_btn"
-                android:checked="true" />
+                android:button="@drawable/selector_shop_select_btn" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -84,6 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_login_btn_background"
+                android:onClick="@{()->fragment.totalPayClicked()}"
                 android:paddingLeft="28dp"
                 android:paddingTop="10dp"
                 android:paddingRight="28dp"

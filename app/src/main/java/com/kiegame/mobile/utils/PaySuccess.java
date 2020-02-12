@@ -3,6 +3,7 @@ package com.kiegame.mobile.utils;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import androidx.databinding.DataBindingUtil;
 
@@ -94,7 +95,12 @@ public class PaySuccess {
      * @return {@link PaySuccess}
      */
     public PaySuccess order(String order) {
-        binding.tvOrderId.setText(String.format("订单编号：%s", order));
+        if (!Text.empty(order)) {
+            binding.tvOrderId.setText(String.format("订单编号：%s", order));
+            binding.tvOrderId.setVisibility(View.VISIBLE);
+        } else {
+            binding.tvOrderId.setVisibility(View.GONE);
+        }
         return this;
     }
 

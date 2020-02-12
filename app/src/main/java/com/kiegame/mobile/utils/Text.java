@@ -52,6 +52,20 @@ public class Text {
     }
 
     /**
+     * 获取身份证号码的后四位
+     *
+     * @param idNum 身份证号码
+     * @return 返回后四位
+     */
+    public static String lastIdNum(String idNum) {
+        if (!Text.empty(idNum) && idNum.length() >= 4) {
+            return idNum.substring(idNum.length() - 4);
+        } else {
+            return idNum;
+        }
+    }
+
+    /**
      * 格式化会员名称
      *
      * @param customName 会员名

@@ -47,6 +47,33 @@ public class BuyOrderEntity {
     private String orderBaseId;
     private String operatorId;
     private List<BuyShopEntity> itemList;
+    private boolean isSelect;
+    private String idCard;
+    private String seatNumber;
+
+    public String getIdCard() {
+        return idCard;
+    }
+
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
+
+    public String getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(String seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+    }
 
     public int getOrderType() {
         return orderType;

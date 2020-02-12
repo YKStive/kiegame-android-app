@@ -77,10 +77,10 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     @Override
     protected void onView() {
         // 待支付
-        wait = new WaitPaymentFragment();
+        wait = new WaitPaymentFragment(this);
         views.add(wait);
         // 全部订单
-        all = new AllOrderFragment();
+        all = new AllOrderFragment(this);
         views.add(all);
         OrderAdapter adapter = new OrderAdapter(getParentFragmentManager(), views, titles);
         binding.vpOrderViews.setAdapter(adapter);
@@ -101,7 +101,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     /**
      * 请求数据
      */
-    private void requestData() {
+    void requestData() {
         String start = String.format("%s 00:00:00", date);
         String end = String.format("%s 23:59:59", date);
         LiveData<List<BuyOrderEntity>> liveData = model.queryOrders(null, start, end, null, null, null);

@@ -38,6 +38,15 @@ public class BuyShopEntity {
     private String sellCount;
     private int needPayAmount;
     private String productImgBig;
+    private String productDesc;
+
+    public String getProductDesc() {
+        return productDesc;
+    }
+
+    public void setProductDesc(String productDesc) {
+        this.productDesc = productDesc;
+    }
 
     public String getProductId() {
         return productId;

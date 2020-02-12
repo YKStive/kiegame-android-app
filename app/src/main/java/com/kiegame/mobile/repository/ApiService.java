@@ -11,6 +11,8 @@ import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.result.Result;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
+import com.kiegame.mobile.repository.entity.submit.CancelOrder;
+import com.kiegame.mobile.repository.entity.submit.DeleteOrder;
 import com.kiegame.mobile.repository.entity.submit.UserLogin;
 
 import java.util.List;
@@ -151,4 +153,16 @@ public interface ApiService {
             // *会员ID
             @Query("customerId") String customerId
     );
+
+    /**
+     * 取消订单
+     */
+    @POST("app/buyOrder/deletePayOrder")
+    Observable<Result<Object>> cancelOrder(@Body CancelOrder body);
+
+    /**
+     * 删除订单
+     */
+    @POST("app/buyOrder/deleteOrderBase")
+    Observable<Result<Object>> deleteOrder(@Body DeleteOrder body);
 }
