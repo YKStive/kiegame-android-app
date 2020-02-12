@@ -19,7 +19,7 @@ import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraControl;
 import androidx.camera.core.CameraSelector;
-import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
@@ -32,7 +32,6 @@ import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.Pixel;
 import com.kiegame.mobile.utils.Text;
-import com.kiegame.mobile.worker.Worker;
 import com.kiegame.mobile.zxing.QRCodeAnalyzer;
 
 import java.util.concurrent.ExecutionException;
@@ -52,19 +51,18 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
 
     private ValueAnimator animator;
     private Preview preview;
-    private ImageCapture imageCapture;
-    private Executor captureExecutor;
+    private ImageAnalysis imageAnalysis;
+    private Executor analyzeExecutor;
     private Executor mainExecutor;
     private SensorManager sensorManager;
     private Camera camera;
     private String title;
     private Sensor sensor;
-    private QRCodeAnalyzer codeAnalyzer;
-    private boolean takeSuccess = true;
     private SoundPool sp;
     private SparseIntArray sounds;
     private float volumeRatio;
     private Vibrator vibrator;
+    private boolean isSuccess = false;
 
     @Override
     protected int onLayout() {
@@ -76,7 +74,7 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
         binding.setActivity(this);
         title = getIntent().getStringExtra(Setting.APP_SCAN_TITLE);
         mainExecutor = ContextCompat.getMainExecutor(this);
-        captureExecutor = Executors.newSingleThreadExecutor();
+        analyzeExecutor = Executors.newSingleThreadExecutor();
 
         this.initializeSensorManager();
         this.initSoundPool();
@@ -188,40 +186,25 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
                         .setTargetRotation(rotation)
                         .build();
                 preview.setPreviewSurfaceProvider(binding.svCamera.getPreviewSurfaceProvider());
-                imageCapture = new ImageCapture.Builder()
-                        .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                imageAnalysis = new ImageAnalysis.Builder()
                         .setTargetAspectRatio(screenAspectRatio)
                         .setTargetRotation(rotation)
                         .build();
-                codeAnalyzer = new QRCodeAnalyzer() {
+                imageAnalysis.setAnalyzer(analyzeExecutor, new QRCodeAnalyzer() {
                     @Override
                     public void decodeSuccess(Result result) {
-                        if (result != null) {
+                        if (result != null && !isSuccess) {
+                            isSuccess = true;
                             playSoundAndVibrate();
                             Intent intent = new Intent().putExtra(Setting.APP_SCAN_CONTENT, result.getText());
                             setResult(RESULT_CODE_SCAN, intent);
                             finish();
-                        } else {
-                            takeSuccess = true;
-                        }
-                    }
-                };
-                Worker.execute(() -> {
-                    while (animator.isRunning()) {
-                        if (takeSuccess) {
-                            takeSuccess = false;
-                            imageCapture.takePicture(captureExecutor, codeAnalyzer);
-                        }
-                        try {
-                            Thread.sleep(20);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
                         }
                     }
                 });
                 if (cameraProvider != null) {
                     cameraProvider.unbindAll();
-                    camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
+                    camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis);
                 }
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
