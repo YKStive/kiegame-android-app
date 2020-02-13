@@ -54,6 +54,8 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 helper.setVisible(R.id.tv_btn_less, item.getBuySize() != 0);
                 helper.setVisible(R.id.tv_shop_num, item.getBuySize() != 0);
                 helper.setText(R.id.tv_shop_num, String.valueOf(item.getBuySize()));
+                int count = item.getBarCount() - item.getBuySize();
+                helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
                 setPlusShopClickListener(helper, item);
                 setLessShopClickListener(helper, item);
                 view.setOnClickListener(v -> v.getContext()
@@ -91,6 +93,8 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                     tv.setText(String.valueOf(num));
                 }
                 item.setBuySize(num);
+                int count = item.getBarCount() - num;
+                helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
                 Cache.ins().detachShop(item.getProductId());
             }
         });
@@ -122,6 +126,8 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                         tv.setText("");
                     }
                     item.setBuySize(num);
+                    int count = item.getBarCount() - num;
+                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
                     Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
                 }
             }

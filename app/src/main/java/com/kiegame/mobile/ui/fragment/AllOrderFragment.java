@@ -147,21 +147,18 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
         totalMoney = 0;
         totalPayType = -1;
         for (BuyOrderEntity order : buys) {
-            List<BuyShopEntity> list = order.getItemList();
-            for (BuyShopEntity buy : list) {
-                if (Text.empty(buy.getProductId())) {
-                    // 网费充值
-                    if (productOrderList.length() != 0) {
-                        productOrderList.append(",");
-                    }
-                    productOrderList.append(buy.getOrderId());
-                } else {
-                    // 商品订单
-                    if (rechargeOrderList.length() != 0) {
-                        rechargeOrderList.append(",");
-                    }
-                    rechargeOrderList.append(buy.getOrderId());
+            if (order.getOrderType() == 1) {
+                // 网费充值
+                if (rechargeOrderList.length() != 0) {
+                    rechargeOrderList.append(",");
                 }
+                rechargeOrderList.append(order.getOrderId());
+            } else {
+                // 商品订单
+                if (productOrderList.length() != 0) {
+                    productOrderList.append(",");
+                }
+                productOrderList.append(order.getOrderId());
             }
             if (totalPayType == -1) {
                 totalPayType = order.getPayType();
@@ -332,29 +329,30 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
         helper.getView(R.id.iv_shop_image).setVisibility(View.INVISIBLE);
         helper.getView(R.id.tv_shop_name).setVisibility(View.GONE);
         helper.getView(R.id.tv_shop_des).setVisibility(View.GONE);
-        helper.setText(R.id.tv_shop_total_num, String.format("共%s件", shops.size()));
         LinearLayout images = helper.getView(R.id.ll_shop_image_content);
         images.removeAllViews();
+        int count = 0;
         for (BuyShopEntity shop : shops) {
             // 最多显示3个商品图标
-            if (images.getChildCount() >= 3) {
-                break;
+            if (images.getChildCount() < 3) {
+                ImageView view = new ImageView(helper.itemView.getContext());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Pixel.dp2px(70), Pixel.dp2px(70));
+                params.rightMargin = Pixel.dp2px(10);
+                view.setLayoutParams(params);
+                view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                images.addView(view);
+                Glide.with(view).load(shop.getProductImg()).into(view);
             }
-            ImageView view = new ImageView(helper.itemView.getContext());
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Pixel.dp2px(70), Pixel.dp2px(70));
-            params.rightMargin = Pixel.dp2px(10);
-            view.setLayoutParams(params);
-            view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            images.addView(view);
-            Glide.with(view).load(shop.getProductImg()).into(view);
+            count += Integer.valueOf(shop.getSellCount());
         }
+        helper.setText(R.id.tv_shop_total_num, String.format("共%s件", count));
     }
 
     /**
      * 单商品状态
      */
     private void setSingleShopState(@NonNull BaseViewHolder helper, BuyShopEntity shop) {
-        helper.getView(R.id.tv_shop_total_num).setVisibility(View.GONE);
+        helper.getView(R.id.tv_shop_total_num).setVisibility(View.VISIBLE);
         helper.getView(R.id.nsl_shop_image_scroll).setVisibility(View.GONE);
         helper.getView(R.id.iv_shop_image).setVisibility(View.VISIBLE);
         helper.getView(R.id.tv_shop_name).setVisibility(View.VISIBLE);
@@ -362,6 +360,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
         Glide.with(helper.itemView).load(shop.getProductImg()).into((ImageView) helper.getView(R.id.iv_shop_image));
         helper.setText(R.id.tv_shop_name, shop.getProductName());
         helper.setText(R.id.tv_shop_des, String.format("商品描述: %s", shop.getProductDesc()));
+        helper.setText(R.id.tv_shop_total_num, String.format("共%s件", shop.getSellCount()));
     }
 
     /**
@@ -390,13 +389,13 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
                 tv.setTextColor(getResources().getColor(R.color.wait_pay_state));
                 break;
             case 4:
-                tv.setText("交易取消");
+                tv.setText("已取消");
                 tv.setTextColor(getResources().getColor(R.color.gray));
                 helper.getView(R.id.tv_pay_time).setVisibility(View.VISIBLE);
                 helper.setText(R.id.tv_pay_time, data.getOperateTime());
                 break;
             case 5:
-                tv.setText("交易完成");
+                tv.setText("已支付");
                 tv.setTextColor(getResources().getColor(R.color.black));
                 helper.getView(R.id.tv_pay_time).setVisibility(View.VISIBLE);
                 helper.setText(R.id.tv_pay_time, data.getOperateTime());

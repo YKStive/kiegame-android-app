@@ -114,20 +114,16 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(Pixel.dp2px(16), 0, Pixel.dp2px(16), 0);
         cleanBtnStyle(textView);
-        if (selectFlavor == null) {
-            if (type == TAG_TYPE_FLAVOR) {
+        if (type == TAG_TYPE_FLAVOR) {
+            if (selectFlavor == null) {
                 selectFlavor = textView;
                 setTextViewSelect(selectFlavor);
-            } else {
-                cleanBtnStyle(textView);
             }
         }
-        if (selectNorm == null) {
-            if (type == TAG_TYPE_NORM) {
+        if (type == TAG_TYPE_NORM) {
+            if (selectNorm == null) {
                 selectNorm = textView;
                 setTextViewSelect(selectNorm);
-            } else {
-                cleanBtnStyle(textView);
             }
         }
         textView.setTextSize(12);
