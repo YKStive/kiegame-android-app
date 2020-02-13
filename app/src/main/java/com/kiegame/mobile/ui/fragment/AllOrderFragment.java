@@ -143,7 +143,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
 
     @Override
     protected void onData() {
-
+        updateMoney();
     }
 
     /**
@@ -498,9 +498,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
         Worker.execute(() -> {
             this.money = 0;
             for (BuyOrderEntity order : this.orders) {
-                if (order.getOrderState() == 5) {
-                    this.money += order.getPayAmount();
-                }
+                this.money += order.getPayAmount();
             }
             moneyObserver.postValue(this.money);
         });

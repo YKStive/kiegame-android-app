@@ -378,7 +378,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private void onCreateOrderResult(List<AddOrderEntity> data) {
         if (data != null) {
             this.recharge(this.moneyBtn, 0);
-            resetShopData();
+            resetData();
             Cache.ins().getOrderObserver().setValue(data.size());
             Toast.show("下单成功");
         } else {
@@ -398,7 +398,18 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     /**
      * 重置商品数据
      */
-    private void resetShopData() {
+    private void resetData() {
+        // 重置金额选择
+        if (this.moneyBtn != null) {
+            this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
+        }
+        this.model.recharge.setValue("0.00");
+        model.resetData();
+        // 重置会员信息
+        Cache.ins().setUserInfo(null);
+        Cache.ins().setNetFee(0);
+        Cache.ins().setUserName("没有选择会员");
+        // 重置商品数据
         List<BuyShop> shops = Cache.ins().getShops();
         if (shops != null && !shops.isEmpty()) {
             List<BuyShop> buys = new ArrayList<>();
