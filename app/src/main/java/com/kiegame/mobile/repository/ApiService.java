@@ -6,6 +6,7 @@ import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
@@ -165,4 +166,15 @@ public interface ApiService {
      */
     @POST("app/buyOrder/deleteOrderBase")
     Observable<Result<Object>> deleteOrder(@Body DeleteOrder body);
+
+    /**
+     * 查询在线支付结果
+     */
+    @GET("app/buyOrder/swiftPayResultByOutOrderNo")
+    Observable<Result<List<PayResultEntity>>> payResult(
+            // 支付返回的单号,在线支付时需要
+            @Query("paymentPayId") String paymentPayId,
+            // 退款时需要
+            @Query("orderBaseId") String orderBaseId
+    );
 }

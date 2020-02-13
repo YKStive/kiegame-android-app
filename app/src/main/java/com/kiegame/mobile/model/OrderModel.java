@@ -11,6 +11,7 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.CancelOrder;
 import com.kiegame.mobile.repository.entity.submit.DeleteOrder;
@@ -28,6 +29,7 @@ public class OrderModel extends ViewModel {
     private MutableLiveData<Object> cancelOrder;
     private MutableLiveData<Object> deleteOrder;
     private MutableLiveData<List<AddOrderEntity>> updateOrder;
+    private MutableLiveData<List<PayResultEntity>> payResult;
     private LoginEntity login;
 
     public MutableLiveData<String> failureMessage;
@@ -37,6 +39,7 @@ public class OrderModel extends ViewModel {
         this.cancelOrder = new MutableLiveData<>();
         this.deleteOrder = new MutableLiveData<>();
         this.updateOrder = new MutableLiveData<>();
+        this.payResult = new MutableLiveData<>();
         this.login = Cache.ins().getLoginInfo();
 
         this.failureMessage = new MutableLiveData<>();
@@ -128,5 +131,20 @@ public class OrderModel extends ViewModel {
                     }
                 });
         return this.orders;
+    }
+
+    /**
+     * 查询支付结果
+     */
+    public LiveData<List<PayResultEntity>> queryPayState(String payId, String baseId) {
+        Network.api().payResult(payId, baseId)
+                .compose(Scheduler.apply())
+                .subscribe(new Subs<List<PayResultEntity>>() {
+                    @Override
+                    public void onSuccess(List<PayResultEntity> data, int total, int length) {
+                        payResult.setValue(data);
+                    }
+                });
+        return this.payResult;
     }
 }

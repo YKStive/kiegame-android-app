@@ -25,6 +25,7 @@ import com.kiegame.mobile.model.OrderModel;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyShopEntity;
+import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.activity.ScanActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
@@ -65,6 +66,10 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
     private StringBuilder rechargeOrderList;
     private StringBuilder productOrderList;
     private int totalPayType;
+    // 轮询次数记录
+    private int requestCount;
+    // 轮询类型
+    private int resultType;
 
     WaitPaymentFragment(OrderFragment fragment) {
         this.fragment = fragment;
@@ -269,8 +274,59 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
         if (data != null) {
             AddOrderEntity order = data.get(0);
             if (order != null) {
-                PaySuccess.ins().order(order.getPaymentPayId()).confirm(() -> fragment.requestData()).show();
+                if (totalPayType == Payment.PAY_TYPE_ONLINE) {
+                    queryPayResult(order.getPaymentPayId(), 1);
+                } else {
+                    PaySuccess.ins().order(order.getPaymentPayId()).confirm(() -> fragment.requestData()).show();
+                }
             }
+        }
+    }
+
+    /**
+     * 查询支付结果
+     *
+     * @param data ID
+     * @param type 类型 1 支付 2 退款
+     */
+    private void queryPayResult(String data, int type) {
+        this.resultType = type;
+        LiveData<List<PayResultEntity>> liveData;
+        if (type == 1) {
+            liveData = model.queryPayState(data, null);
+        } else {
+            liveData = model.queryPayState(null, data);
+        }
+        if (!liveData.hasObservers()) {
+            liveData.observe(this, payResultEntities -> {
+                if (payResultEntities != null) {
+                    PayResultEntity res = payResultEntities.get(0);
+                    if (res.getPayState() == 3 || res.getReturnState() == 3) {
+                        if (resultType == 2) {
+                            if (requestCount == 10) {
+                                Toast.show("退款结果请稍后查看");
+                                return;
+                            }
+                            requestCount++;
+                        }
+                        queryPayResult(resultType == 1 ? res.getPaymentPayId() : res.getOrderBaseId(), resultType);
+                    } else {
+                        if (resultType == 1) {
+                            if (res.getPayState() == 2) {
+                                PaySuccess.ins().confirm(() -> fragment.requestData()).order(res.getPaymentPayId()).show();
+                            } else if (res.getPayState() == 4) {
+                                PayFailure.ins().message("支付失败").show();
+                            }
+                        } else {
+                            if (res.getReturnState() == 4) {
+                                Toast.show("退款成功");
+                            } else if (res.getReturnState() == 5) {
+                                Toast.show("退款失败");
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 

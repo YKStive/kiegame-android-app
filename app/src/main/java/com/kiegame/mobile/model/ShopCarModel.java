@@ -10,6 +10,7 @@ import com.kiegame.mobile.repository.Subs;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
@@ -33,6 +34,7 @@ public class ShopCarModel extends ViewModel {
 
     private MutableLiveData<List<UserInfoEntity>> userInfos;
     private MutableLiveData<List<AddOrderEntity>> addOrder;
+    private MutableLiveData<List<PayResultEntity>> payResult;
     private MutableLiveData<String> failMessage;
 
     public ShopCarModel() {
@@ -44,6 +46,7 @@ public class ShopCarModel extends ViewModel {
 
         this.userInfos = new MutableLiveData<>();
         this.addOrder = new MutableLiveData<>();
+        this.payResult = new MutableLiveData<>();
         this.failMessage = new MutableLiveData<>();
 
         this.initialize();
@@ -148,5 +151,20 @@ public class ShopCarModel extends ViewModel {
                     }
                 });
         return this.addOrder;
+    }
+
+    /**
+     * 查询支付结果
+     */
+    public LiveData<List<PayResultEntity>> queryPayState(String payId) {
+        Network.api().payResult(payId, null)
+                .compose(Scheduler.apply())
+                .subscribe(new Subs<List<PayResultEntity>>() {
+                    @Override
+                    public void onSuccess(List<PayResultEntity> data, int total, int length) {
+                        payResult.setValue(data);
+                    }
+                });
+        return this.payResult;
     }
 }

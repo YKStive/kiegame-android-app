@@ -30,6 +30,7 @@ import com.kiegame.mobile.databinding.ActivityShopCarBinding;
 import com.kiegame.mobile.model.ShopCarModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
+import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
@@ -482,18 +483,21 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      */
     private void onCreateOrderResult(List<AddOrderEntity> data) {
         if (data != null) {
-            this.adapter.notifyDataSetChanged();
-            Cache.ins().getNetFeeObserver().setValue(this.orderType);
-            resetShopData();
             if (orderType == 1) {
                 // 下单
+                resetShopData();
                 Toast.show("下单成功");
                 this.finish();
             } else {
                 // 结算
                 AddOrderEntity order = data.get(0);
                 if (order != null) {
-                    PaySuccess.ins().confirm(this::finish).order(order.getPaymentPayId()).show();
+                    if (Cache.ins().getPayment() == Payment.PAY_TYPE_ONLINE) {
+                        queryPayResult(order.getPaymentPayId());
+                    } else {
+                        resetShopData();
+                        PaySuccess.ins().confirm(this::finish).order(order.getPaymentPayId()).show();
+                    }
                 }
             }
         } else {
@@ -504,6 +508,30 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 // 结算
                 PayFailure.ins().message("未找到订单号").show();
             }
+        }
+    }
+
+    /**
+     * 查询支付结果
+     *
+     * @param payId 支付ID
+     */
+    private void queryPayResult(String payId) {
+        LiveData<List<PayResultEntity>> liveData = model.queryPayState(payId);
+        if (!liveData.hasObservers()) {
+            liveData.observe(this, payResultEntities -> {
+                if (payResultEntities != null) {
+                    PayResultEntity res = payResultEntities.get(0);
+                    if (res.getPayState() == 2) {
+                        resetShopData();
+                        PaySuccess.ins().confirm(this::finish).order(res.getPaymentPayId()).show();
+                    } else if (res.getPayState() == 4) {
+                        PayFailure.ins().message("支付失败").show();
+                    } else {
+                        queryPayResult(res.getPaymentPayId());
+                    }
+                }
+            });
         }
     }
 
@@ -546,5 +574,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             }
             Cache.ins().getShopObserver().setValue(buys.size());
         }
+        this.adapter.notifyDataSetChanged();
+        Cache.ins().getNetFeeObserver().setValue(this.orderType);
+        Cache.ins().getOrderObserver().setValue(this.orderType);
     }
 }

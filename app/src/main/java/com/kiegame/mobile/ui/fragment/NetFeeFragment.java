@@ -379,6 +379,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         if (data != null) {
             this.recharge(this.moneyBtn, 0);
             resetShopData();
+            Cache.ins().getOrderObserver().setValue(data.size());
             Toast.show("下单成功");
         } else {
             Toast.show("下单失败");

@@ -71,6 +71,8 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             binding.tvOrderCreateTime.setText(date);
             binding.srlLayout.autoRefresh();
         }, year, month, dayOfMonth);
+
+        Cache.ins().getOrderObserver().observe(this, integer -> requestData());
     }
 
     @SuppressLint("InflateParams")
