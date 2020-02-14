@@ -250,11 +250,11 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * @param money 金额数量
      */
     public void recharge(View view, int money) {
-        String userNameValue = Cache.ins().getUserName();
-        if (userNameValue == null || userNameValue.equals("没有选择会员")) {
-            Toast.show("请先选择会员");
-            return;
-        }
+//        String userNameValue = Cache.ins().getUserName();
+//        if (userNameValue == null || userNameValue.equals("没有选择会员")) {
+//            Toast.show("请先选择会员");
+//            return;
+//        }
         if (this.moneyBtn != null) {
             this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
             this.moneyBtn.setTextColor(getResources().getColor(R.color.gray_white));
@@ -430,6 +430,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 }
                 shops.remove(buy);
             }
+            Cache.ins().setShops(shops);
             Cache.ins().getShopObserver().setValue(buys.size());
         }
     }

@@ -261,13 +261,13 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 增加
      */
     public void plus(ImageView less, TextView tv, BuyShop data) {
-        if (data.getMax() <= 0) {
+        if (data.getShopType() == 1 && data.getMax() <= 0) {
             Toast.show("这种商品已经售空了");
             return;
         }
         String size = tv.getText().toString();
         int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-        if (Cache.ins().shopTotal(data.getProductId()) > data.getMax()) {
+        if (data.getShopType() == 1 && Cache.ins().shopTotal(data.getProductId()) > data.getMax()) {
             Toast.show("不能再多了");
         } else {
             less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
@@ -485,8 +485,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         if (data != null) {
             if (orderType == 1) {
                 // 下单
-                resetShopData();
                 Toast.show("下单成功");
+                resetShopData();
                 this.finish();
             } else {
                 // 结算
@@ -572,6 +572,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 }
                 shops.remove(buy);
             }
+            Cache.ins().setShops(shops);
             Cache.ins().getShopObserver().setValue(buys.size());
         }
         this.adapter.notifyDataSetChanged();

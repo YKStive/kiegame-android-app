@@ -194,14 +194,14 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
      * 增加
      */
     public void plus() {
-        if (shop.getBarCount() <= 0) {
+        if (shop.getProductVariety() == 1 && shop.getBarCount() <= 0) {
             Toast.show("这种商品已经售空了");
             return;
         }
         TextView tv = binding.tvShopNum;
         String size = tv.getText().toString();
         int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-        if (Cache.ins().shopTotal(shop.getProductId()) + num > shop.getBarCount()) {
+        if (shop.getProductVariety() == 1 && Cache.ins().shopTotal(shop.getProductId()) + num > shop.getBarCount()) {
             Toast.show("不能再多了");
         } else {
             if (num > 0) {

@@ -31,6 +31,16 @@ public class BuyShop {
     private boolean isBuy;
     // -最大数量
     private int max;
+    // -商品类型 1 固装 2 自制
+    private int shopType;
+
+    public int getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(int shopType) {
+        this.shopType = shopType;
+    }
 
     public int getMax() {
         return max;
