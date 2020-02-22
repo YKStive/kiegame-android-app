@@ -24,9 +24,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.consts.Payment;
 import com.kiegame.mobile.databinding.ActivityShopCarBinding;
+import com.kiegame.mobile.model.CouponModel;
 import com.kiegame.mobile.model.ShopCarModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
@@ -65,6 +67,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     private int orderType = -1;
     private final int RESULT_CODE_SCAN = 10086;
     private String[] permissions;
+    private int pwHeight;
+    private CouponModel couponModel;
 
     @Override
     protected int onLayout() {
@@ -74,10 +78,12 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     @Override
     protected void onObject() {
         model = new ViewModelProvider(this).get(ShopCarModel.class);
+        couponModel = new ViewModelProvider(this).get(CouponModel.class);
         binding.setModel(model);
         binding.setActivity(this);
         binding.setCache(Cache.ins());
         userInfo = Cache.ins().getUserInfo();
+        pwHeight = (int) (Game.ins().metrics(true).heightPixels * 0.3f);
         if (userInfo != null) {
             String item;
             if (Text.empty(userInfo.getSeatNumber())) {
@@ -168,7 +174,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             pw = new PopupWindow(this);
             pw.setContentView(view);
             pw.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-            pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            pw.setHeight(pwHeight);
             pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.translucent)));
             pw.setOutsideTouchable(false);
             pw.setSplitTouchEnabled(true);
@@ -331,11 +337,39 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     public void couponUse() {
         if (this.userInfo != null) {
             if (canCreateOrderOrPayment(3)) {
-                CouponSelect.ins().set().show();
+                CouponSelect.ins()
+                        .bind(this)
+                        .model(couponModel)
+                        .set(userInfo.getCustomerId(), this.getProductIds())
+                        .callback((service, customer) -> {
+                            System.out.println("service : " + service);
+                            System.out.println("customer: " + customer);
+                        })
+                        .show();
             }
         } else {
             Toast.show("请先选择会员");
         }
+    }
+
+    /**
+     * 获取商品列表的ID,以逗号间隔
+     *
+     * @return 返回商品列表的ID字符串或null
+     */
+    private String getProductIds() {
+        List<ShopEntity> shops = Cache.ins().getEntities();
+        if (shops != null && !shops.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ShopEntity shop : shops) {
+                if (sb.length() != 0) {
+                    sb.append(",");
+                }
+                sb.append(shop.getProductId());
+            }
+            return sb.toString();
+        }
+        return null;
     }
 
     /**

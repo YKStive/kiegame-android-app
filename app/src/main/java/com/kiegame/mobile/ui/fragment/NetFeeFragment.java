@@ -18,8 +18,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentNetFeeBinding;
+import com.kiegame.mobile.model.CouponModel;
 import com.kiegame.mobile.model.NetFeeModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
@@ -56,6 +58,8 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private LinearLayout list;
     private LayoutInflater inflater;
     private Menu menu;
+    private int pwHeight;
+    private CouponModel couponModel;
 
     @Override
     protected int onLayout() {
@@ -65,9 +69,11 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     @Override
     protected void onObject() {
         model = new ViewModelProvider(this).get(NetFeeModel.class);
+        couponModel = new ViewModelProvider(this).get(CouponModel.class);
         binding.setModel(model);
         binding.setFragment(this);
         binding.setCache(Cache.ins());
+        pwHeight = (int) (Game.ins().metrics(true).heightPixels * 0.3f);
         model.userSearch.observe(this, this::searchUserInfoList);
         model.getFailMessage().observe(this, this::onCreateOrderFailure);
         menu = new Menu(getContext()).callback(v -> {
@@ -138,7 +144,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             pw = new PopupWindow(this.getContext());
             pw.setContentView(view);
             pw.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-            pw.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            pw.setHeight(pwHeight);
             pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.translucent)));
             pw.setOutsideTouchable(false);
             pw.setSplitTouchEnabled(true);
@@ -365,7 +371,15 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     public void couponUse() {
         if (Cache.ins().getUserInfo() != null) {
             if (canCreateOrderOrPayment(3)) {
-                CouponSelect.ins().set().show();
+                CouponSelect.ins()
+                        .bind(this)
+                        .model(couponModel)
+                        .set(Cache.ins().getUserInfo().getCustomerId(), null)
+                        .callback((service, customer) -> {
+                            System.out.println("service : " + service);
+                            System.out.println("customer: " + customer);
+                        })
+                        .show();
             }
         } else {
             Toast.show("请先选择会员");

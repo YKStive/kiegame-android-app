@@ -121,38 +121,27 @@ public interface ApiService {
     Observable<Result<List<AddOrderEntity>>> updateOrderPay(@Body AddOrder body);
 
     /**
-     * 门店网费活动查询
+     * 门店活动查询
      */
-    @GET("app/activity/listServiceRechargeActivity")
-    Observable<Result<List<ActivityEntity>>> rechargeActivity(
+    @GET("app/activity/listActivityByService")
+    Observable<Result<List<ActivityEntity>>> listActivityByService(
             // *门店ID
             @Query("serviceId") String serviceId,
-            // 赠送形式 1:卡券 2:立即使用(APP传2)
-            @Query("giveType") Integer giveType
+            // 产品ID
+            @Query("productId") String productId
     );
 
     /**
      * 门店产品活动查询
      */
-    @GET("app/activity/listServiceProductActivity")
-    Observable<Result<List<ActivityEntity>>> productActivity(
-            // *门店ID
-            @Query("serviceId") String serviceId,
-            // 赠送形式
-            @Query("giveType") Integer giveType,
-            // *产品ID
-            @Query("productId") String productId
-    );
-
-    /**
-     * 门店用户卡券查询
-     */
-    @GET("app/activity/listServiceCustomerActivity")
-    Observable<Result<List<ActivityEntity>>> customerActivity(
+    @GET("app/activityCard/listActivityCardResultByTime")
+    Observable<Result<List<ActivityEntity>>> listActivityCardResultByTime(
+            // *会员ID
+            @Query("customerId") String customerId,
             // 门店ID
             @Query("serviceId") String serviceId,
-            // *会员ID
-            @Query("customerId") String customerId
+            // 产品ID
+            @Query("productId") String productId
     );
 
     /**

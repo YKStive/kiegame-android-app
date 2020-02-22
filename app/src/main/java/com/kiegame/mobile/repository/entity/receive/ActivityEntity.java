@@ -1,22 +1,25 @@
 package com.kiegame.mobile.repository.entity.receive;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Created by: var_rain.
  * Created date: 2020/1/28.
- * Description: 充值活动返回
+ * Description: 活动/卡券返回数据对象
  */
 public class ActivityEntity {
 
-    private int activityId;
+    private String activityId;
     private String activityName;
     private String activityImg;
-    private int activityTarget;
-    private int activityType;
+    private Integer activityTarget;
+    private Integer activityType;
     private String activityRule;
     private String customerId;
     private String customerName;
     private String serviceId;
     private String serviceName;
+    private String productId;
     // 卡卷状态(1已生成 2 未使用 3已使用)
     private Integer cardState;
     private String activityCardResultId;
@@ -30,12 +33,14 @@ public class ActivityEntity {
     private Integer giveType;
     private String giveRule;
     private String cardDesc;
+    private String useScopeServiceId;
+    private String useScopeServiceName;
 
-    public int getActivityId() {
+    public String getActivityId() {
         return activityId;
     }
 
-    public void setActivityId(int activityId) {
+    public void setActivityId(String activityId) {
         this.activityId = activityId;
     }
 
@@ -55,19 +60,19 @@ public class ActivityEntity {
         this.activityImg = activityImg;
     }
 
-    public int getActivityTarget() {
+    public Integer getActivityTarget() {
         return activityTarget;
     }
 
-    public void setActivityTarget(int activityTarget) {
+    public void setActivityTarget(Integer activityTarget) {
         this.activityTarget = activityTarget;
     }
 
-    public int getActivityType() {
+    public Integer getActivityType() {
         return activityType;
     }
 
-    public void setActivityType(int activityType) {
+    public void setActivityType(Integer activityType) {
         this.activityType = activityType;
     }
 
@@ -109,6 +114,14 @@ public class ActivityEntity {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public Integer getCardState() {
@@ -205,5 +218,53 @@ public class ActivityEntity {
 
     public void setCardDesc(String cardDesc) {
         this.cardDesc = cardDesc;
+    }
+
+    public String getUseScopeServiceId() {
+        return useScopeServiceId;
+    }
+
+    public void setUseScopeServiceId(String useScopeServiceId) {
+        this.useScopeServiceId = useScopeServiceId;
+    }
+
+    public String getUseScopeServiceName() {
+        return useScopeServiceName;
+    }
+
+    public void setUseScopeServiceName(String useScopeServiceName) {
+        this.useScopeServiceName = useScopeServiceName;
+    }
+
+    @NotNull
+    @Override
+    public String toString() {
+        return "ActivityEntity{" +
+                "activityId='" + activityId + '\'' +
+                ", activityName='" + activityName + '\'' +
+                ", activityImg='" + activityImg + '\'' +
+                ", activityTarget=" + activityTarget +
+                ", activityType=" + activityType +
+                ", activityRule='" + activityRule + '\'' +
+                ", customerId='" + customerId + '\'' +
+                ", customerName='" + customerName + '\'' +
+                ", serviceId='" + serviceId + '\'' +
+                ", serviceName='" + serviceName + '\'' +
+                ", productId='" + productId + '\'' +
+                ", cardState=" + cardState +
+                ", activityCardResultId='" + activityCardResultId + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", timingType=" + timingType +
+                ", timingStart=" + timingStart +
+                ", timingEnd=" + timingEnd +
+                ", timingStartTime='" + timingStartTime + '\'' +
+                ", timingEndTime='" + timingEndTime + '\'' +
+                ", giveType=" + giveType +
+                ", giveRule='" + giveRule + '\'' +
+                ", cardDesc='" + cardDesc + '\'' +
+                ", useScopeServiceId='" + useScopeServiceId + '\'' +
+                ", useScopeServiceName='" + useScopeServiceName + '\'' +
+                '}';
     }
 }

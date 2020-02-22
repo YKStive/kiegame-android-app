@@ -82,4 +82,5 @@
     <string name="service_password_hint">输入密码</string>
     <string name="app_pay_success">支付成功！</string>
     <string name="app_pay_failure">支付失败！</string>
+    <string name="app_no_coupons">暂无可用优惠券~</string>
 </resources>
