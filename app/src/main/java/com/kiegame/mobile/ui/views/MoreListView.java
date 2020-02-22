@@ -46,6 +46,7 @@ public class MoreListView extends FrameLayout {
     private ShopAdapter shopAdapter;
     private SparseIntArray index;
     private boolean isScrollUp;
+    private boolean isTouch;
 
     public MoreListView(@NonNull Context context) {
         super(context);
@@ -67,6 +68,7 @@ public class MoreListView extends FrameLayout {
         this.index = new SparseIntArray();
         this.menus = new ArrayList<>();
         this.shops = new ArrayList<>();
+        this.isTouch = false;
         initSortMenu();
         initShopView();
     }
@@ -98,7 +100,14 @@ public class MoreListView extends FrameLayout {
      * 初始化商品列表
      */
     private void initShopView() {
-        binding.rvContent.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        binding.rvContent.setLayoutManager(new LinearLayoutManager(this.getContext()) {
+            @Override
+            public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
+                ProductScroller scroller = new ProductScroller(recyclerView.getContext());
+                scroller.setTargetPosition(position);
+                startSmoothScroll(scroller);
+            }
+        });
         shopAdapter = new ShopAdapter(shops);
         binding.rvContent.setAdapter(shopAdapter);
         binding.rvContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -107,6 +116,14 @@ public class MoreListView extends FrameLayout {
                 super.onScrolled(recyclerView, dx, dy);
                 isScrollUp = dy > 0;
                 scrollStartOrEnd(recyclerView);
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && isTouch) {
+                    isTouch = false;
+                }
             }
         });
         binding.rvContent.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
@@ -117,7 +134,9 @@ public class MoreListView extends FrameLayout {
 
             @Override
             public void onChildViewDetachedFromWindow(@NonNull View view) {
-                changeScrollMenuItem(view);
+                if (!isTouch) {
+                    changeScrollMenuItem(view);
+                }
             }
         });
     }
@@ -142,7 +161,14 @@ public class MoreListView extends FrameLayout {
      * 初始化分类列表
      */
     private void initSortMenu() {
-        binding.rvMenu.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        binding.rvMenu.setLayoutManager(new LinearLayoutManager(this.getContext()) {
+            @Override
+            public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
+                ProductScroller scroller = new ProductScroller(recyclerView.getContext());
+                scroller.setTargetPosition(position);
+                startSmoothScroll(scroller);
+            }
+        });
         menuAdapter = new BaseQuickAdapter<ShopSortEntity, BaseViewHolder>(R.layout.item_more_list_menu, menus) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, ShopSortEntity item) {
@@ -154,8 +180,9 @@ public class MoreListView extends FrameLayout {
             }
         };
         menuAdapter.setOnItemClickListener((adapter, view, position) -> {
-            setMenuItemStyle((LinearLayout) view);
+            isTouch = true;
             binding.rvContent.smoothScrollToPosition(index.get(position));
+            setMenuItemStyle((LinearLayout) view);
         });
         binding.rvMenu.setAdapter(menuAdapter);
     }
