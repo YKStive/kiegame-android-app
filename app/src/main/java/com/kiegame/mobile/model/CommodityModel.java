@@ -56,7 +56,7 @@ public class CommodityModel extends ViewModel {
      * 查询商品
      */
     public LiveData<List<ShopEntity>> listShops() {
-        Network.api().queryShops(login.getServiceId(), null, null, null)
+        Network.api().queryShops(login.getServiceId(), null, null, null, 1)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<ShopEntity>>(false) {
                     @Override

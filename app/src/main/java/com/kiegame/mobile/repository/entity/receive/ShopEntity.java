@@ -63,6 +63,16 @@ public class ShopEntity implements MultiItemEntity, Serializable {
     private String serviceProductId;
     private String barcode;
     private int commissionAmount;
+    // 是否打印小票（1 是2 否）
+    private Integer isPrintTicket;
+    // 是否打印标签（1 是2 否）
+    private Integer isPrintLabel;
+    // 是否支持在线支付（1 是2 否）
+    private Integer isAllowOnlinePay;
+    // 是否支持卡扣（1 是2 否）
+    private Integer isAllowPayByCard;
+    // 是否支持客维（1 是2 否）
+    private Integer isAllowPayByService;
 
     public final static int CONTENT = 0;
     public final static int TITLE = 1;
@@ -308,6 +318,46 @@ public class ShopEntity implements MultiItemEntity, Serializable {
 
     public void setBuyDescription(String buyDescription) {
         this.buyDescription = buyDescription;
+    }
+
+    public Integer getIsPrintTicket() {
+        return isPrintTicket;
+    }
+
+    public void setIsPrintTicket(Integer isPrintTicket) {
+        this.isPrintTicket = isPrintTicket;
+    }
+
+    public Integer getIsPrintLabel() {
+        return isPrintLabel;
+    }
+
+    public void setIsPrintLabel(Integer isPrintLabel) {
+        this.isPrintLabel = isPrintLabel;
+    }
+
+    public Integer getIsAllowOnlinePay() {
+        return isAllowOnlinePay;
+    }
+
+    public void setIsAllowOnlinePay(Integer isAllowOnlinePay) {
+        this.isAllowOnlinePay = isAllowOnlinePay;
+    }
+
+    public Integer getIsAllowPayByCard() {
+        return isAllowPayByCard;
+    }
+
+    public void setIsAllowPayByCard(Integer isAllowPayByCard) {
+        this.isAllowPayByCard = isAllowPayByCard;
+    }
+
+    public Integer getIsAllowPayByService() {
+        return isAllowPayByService;
+    }
+
+    public void setIsAllowPayByService(Integer isAllowPayByService) {
+        this.isAllowPayByService = isAllowPayByService;
     }
 
     @Override

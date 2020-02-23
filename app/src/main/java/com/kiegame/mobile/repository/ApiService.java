@@ -86,7 +86,9 @@ public interface ApiService {
             // 名称
             @Query("productName") String productName,
             // 标签ID
-            @Query("productTagId") String productTagId
+            @Query("productTagId") String productTagId,
+            // *是否移动端 (固定 1)
+            @Query("isMobile") Integer isMobile
     );
 
     /**

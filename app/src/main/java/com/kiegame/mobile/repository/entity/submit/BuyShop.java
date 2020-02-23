@@ -20,7 +20,7 @@ public class BuyShop {
     // 产品优惠类型
     private int productDiscountType;
     // 产品优惠ID
-    private int productDiscountId;
+    private String productDiscountId;
     // -费用/金额
     private int fee;
     // -商品图片
@@ -126,11 +126,11 @@ public class BuyShop {
         this.productDiscountType = productDiscountType;
     }
 
-    public int getProductDiscountId() {
+    public String getProductDiscountId() {
         return productDiscountId;
     }
 
-    public void setProductDiscountId(int productDiscountId) {
+    public void setProductDiscountId(String productDiscountId) {
         this.productDiscountId = productDiscountId;
     }
 
