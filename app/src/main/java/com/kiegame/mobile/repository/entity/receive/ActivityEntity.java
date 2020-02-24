@@ -2,6 +2,9 @@ package com.kiegame.mobile.repository.entity.receive;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * Created by: var_rain.
  * Created date: 2020/1/28.
@@ -234,6 +237,66 @@ public class ActivityEntity {
 
     public void setUseScopeServiceName(String useScopeServiceName) {
         this.useScopeServiceName = useScopeServiceName;
+    }
+
+    /**
+     * 获取充送优惠券的充送上限
+     *
+     * @return 返回金额 分
+     */
+    public int getActivityMoneyMax() {
+        if (this.activityRule != null) {
+            String[] split = this.activityRule.split("#");
+            if (split.length >= 2) {
+                int money = Integer.parseInt(split[0]);
+                BigDecimal source = new BigDecimal(money);
+                BigDecimal ratio = new BigDecimal("100");
+                return source.multiply(ratio).intValue();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 获取充送优惠金额
+     *
+     * @return 返回金额的字符串形式
+     */
+    public String getActivityMoney() {
+        if (this.activityRule != null) {
+            String[] split = this.activityRule.split("#");
+            if (split.length >= 2) {
+                return split[1];
+            }
+        }
+        return this.activityRule;
+    }
+
+    /**
+     * 获取优惠折扣率
+     *
+     * @return 返回 0-1 {@link BigDecimal}
+     */
+    public BigDecimal getActivityRatio() {
+        if (this.activityRule != null) {
+            BigDecimal decimal = new BigDecimal(this.activityRule);
+            BigDecimal ratio = new BigDecimal("100");
+            return decimal.divide(ratio, 2, RoundingMode.HALF_UP);
+        }
+        return new BigDecimal("0");
+    }
+
+    /**
+     * 获取充值折扣率字符串
+     *
+     * @return 返回 x折 的形式
+     */
+    public String getActivityRatioString() {
+        if (this.activityRule != null) {
+            String rpl = this.activityRule.replace("0", "");
+            return String.format("%s折", rpl);
+        }
+        return "折扣";
     }
 
     @NotNull

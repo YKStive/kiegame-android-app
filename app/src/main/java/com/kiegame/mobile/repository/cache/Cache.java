@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.kiegame.mobile.consts.Payment;
+import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
@@ -55,6 +56,12 @@ public class Cache extends BaseObservable {
     private MutableLiveData<Integer> netFeeObserver;
     // 订单列表更新
     private MutableLiveData<Integer> orderObserver;
+    // 网费优惠
+    private ActivityEntity netFeeCoupon;
+    // 商品优惠
+    private ActivityEntity productCoupon;
+    // 产品优惠金额
+    private int productCouponMoney;
 
     private Cache() {
         this.initialize();
@@ -77,6 +84,9 @@ public class Cache extends BaseObservable {
         this.shopObserver = new MutableLiveData<>();
         this.netFeeObserver = new MutableLiveData<>();
         this.orderObserver = new MutableLiveData<>();
+        this.setNetFeeCoupon(null);
+        this.setProductCoupon(null);
+        this.productCouponMoney = 0;
     }
 
     /**
@@ -89,6 +99,82 @@ public class Cache extends BaseObservable {
             Cache.INS = new Cache();
         }
         return Cache.INS;
+    }
+
+    /**
+     * 获取网费优惠活动
+     *
+     * @return {@link ActivityEntity}
+     */
+    @Bindable
+    public ActivityEntity getNetFeeCoupon() {
+        return netFeeCoupon;
+    }
+
+    /**
+     * 设置网费优惠活动对象
+     *
+     * @param netFeeCoupon {@link ActivityEntity}
+     */
+    public void setNetFeeCoupon(ActivityEntity netFeeCoupon) {
+        this.netFeeCoupon = netFeeCoupon;
+        this.notifyChange();
+    }
+
+    /**
+     * 获取商品优惠券
+     *
+     * @return {@link ActivityEntity}
+     */
+    @Bindable
+    public ActivityEntity getProductCoupon() {
+        return productCoupon;
+    }
+
+    /**
+     * 是否有这种商品
+     *
+     * @param productId 商品ID
+     * @return true: 有 false: 没有
+     */
+    public boolean hasShop(String productId) {
+        List<BuyShop> value = shops.getValue();
+        if (value != null) {
+            for (BuyShop buy : value) {
+                if (buy.getProductId().equals(productId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 设置商品优惠券数据
+     *
+     * @param productCoupon {@link ActivityEntity}
+     */
+    public void setProductCoupon(ActivityEntity productCoupon) {
+        this.productCoupon = productCoupon;
+        List<BuyShop> buys = shops.getValue();
+        if (buys != null) {
+            int money = 0;
+            for (BuyShop buy : buys) {
+                buy.setProductDiscountId(null);
+                buy.setProductDiscountType(null);
+                if (productCoupon != null && money == 0) {
+                    if (buy.getProductId().equals(productCoupon.getProductId()) && buy.isBuy()) {
+                        buy.setProductDiscountType(productCoupon.getActivityType());
+                        buy.setProductDiscountId(productCoupon.getActivityId());
+                        money = new BigDecimal(buy.getFee()).multiply(productCoupon.getActivityRatio()).intValue();
+                    }
+                }
+            }
+            productCouponMoney = money;
+            shops.setValue(buys);
+            updateTotalMoney();
+        }
+        this.notifyChange();
     }
 
     /**
@@ -227,7 +313,7 @@ public class Cache extends BaseObservable {
             }
             this.shopSum.setValue(shopSum);
         }
-        this.paymentMoney = money;
+        this.paymentMoney = money - productCouponMoney;
     }
 
     /**
@@ -317,7 +403,7 @@ public class Cache extends BaseObservable {
                 }
             }
         }
-        return total;
+        return total - productCouponMoney;
     }
 
     /**

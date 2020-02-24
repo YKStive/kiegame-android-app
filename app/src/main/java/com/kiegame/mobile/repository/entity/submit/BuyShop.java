@@ -18,7 +18,7 @@ public class BuyShop {
     // *产品数量
     private int productBuySum;
     // 产品优惠类型
-    private int productDiscountType;
+    private Integer productDiscountType;
     // 产品优惠ID
     private String productDiscountId;
     // -费用/金额
@@ -118,11 +118,11 @@ public class BuyShop {
         this.productBuySum = productBuySum;
     }
 
-    public int getProductDiscountType() {
+    public Integer getProductDiscountType() {
         return productDiscountType;
     }
 
-    public void setProductDiscountType(int productDiscountType) {
+    public void setProductDiscountType(Integer productDiscountType) {
         this.productDiscountType = productDiscountType;
     }
 

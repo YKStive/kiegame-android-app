@@ -24,6 +24,7 @@ import com.kiegame.mobile.databinding.FragmentNetFeeBinding;
 import com.kiegame.mobile.model.CouponModel;
 import com.kiegame.mobile.model.NetFeeModel;
 import com.kiegame.mobile.repository.cache.Cache;
+import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
@@ -277,7 +278,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         }
         this.model.recharge.setValue(String.format("%s.00", money));
         this.model.gabon.setValue(String.format("%s.00", money));
+        this.model.bonus.setValue("0.00");
 
+        Cache.ins().setNetFeeCoupon(null);
         // 此处扩大100倍为了总计时计算
         Cache.ins().setNetFee(money * 100);
     }
@@ -318,6 +321,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     public void createOrder() {
         if (Cache.ins().getUserInfo() != null) {
             if (canCreateOrderOrPayment(1)) {
+                ActivityEntity coupon = Cache.ins().getNetFeeCoupon();
                 int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
                 LiveData<List<AddOrderEntity>> order = model.addOrder(
                         Cache.ins().getNetFeeNum(),
@@ -325,9 +329,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                         Cache.ins().getUserInfo().getSeatNumber(),
                         Cache.ins().getUserInfo().getCustomerId(),
                         Cache.ins().getUserInfo().getBonusBalance(),
-                        null,
-                        null,
-                        null,
+                        coupon == null ? null : coupon.getActivityType(),
+                        coupon == null ? null : (coupon.getActivityCardResultId() == null ? coupon.getActivityId() : coupon.getActivityCardResultId()),
+                        coupon == null ? null : new BigDecimal(coupon.getActivityMoney()).multiply(new BigDecimal("100")).intValue(),
                         Cache.ins().getPayment(),
                         String.valueOf(totalMoney),
                         null,
@@ -375,9 +379,23 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                         .bind(this)
                         .model(couponModel)
                         .set(Cache.ins().getUserInfo().getCustomerId(), null)
-                        .callback((service, customer) -> {
-                            System.out.println("service : " + service);
-                            System.out.println("customer: " + customer);
+                        .type(1)
+                        .callback(data -> {
+                            if (data != null) {
+                                if (data.getActivityType() == 1) {
+                                    if (Cache.ins().getNetFeeNum() < data.getActivityMoneyMax()) {
+                                        Toast.show("当前交易金额无法使用此优惠券");
+                                        return;
+                                    }
+                                    this.model.bonus.setValue(String.format("%s.00", data.getActivityMoney()));
+                                } else {
+                                    Toast.show("当前交易无法使用此优惠券");
+                                    return;
+                                }
+                            } else {
+                                this.model.bonus.setValue("0.00");
+                            }
+                            Cache.ins().setNetFeeCoupon(data);
                         })
                         .show();
             }
@@ -413,11 +431,14 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 重置商品数据
      */
     private void resetData() {
+        Cache.ins().setNetFeeCoupon(null);
+        Cache.ins().setProductCoupon(null);
         // 重置金额选择
         if (this.moneyBtn != null) {
             this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
         }
         this.model.recharge.setValue("0.00");
+        this.model.bonus.setValue("0.00");
         model.resetData();
         // 重置会员信息
         Cache.ins().setUserInfo(null);

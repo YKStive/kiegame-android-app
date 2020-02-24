@@ -52,6 +52,7 @@ public class CouponSelect {
     private String customerId;
     private String productId;
     private boolean isSuccess;
+    private int type;
 
     /**
      * 构造方法
@@ -136,14 +137,14 @@ public class CouponSelect {
             binding.clRoot.setOnClickListener(v -> this.hide());
             binding.tvCloseBtn.setOnClickListener(v -> {
                 if (callback != null) {
-                    callback.onCouponUse(null, null);
+                    callback.onCouponUse(null);
                 }
                 this.hide();
             });
             binding.tlCouponTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
-                    adapter.setNewData(tab.getPosition() == 0 ? customerCoupons : serviceActivities);
+                    adapter.setNewData(tab.getPosition() != 0 ? customerCoupons : serviceActivities);
                     adapter.notifyDataSetChanged();
                 }
 
@@ -164,40 +165,31 @@ public class CouponSelect {
         adapter = new BaseQuickAdapter<ActivityEntity, BaseViewHolder>(R.layout.item_coupon) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, ActivityEntity item) {
+                if (item.getActivityType() == 1) {
+                    helper.getView(R.id.tv_coupon_ratio).setVisibility(View.INVISIBLE);
+                    helper.getView(R.id.tv_rmb).setVisibility(View.VISIBLE);
+                    helper.getView(R.id.tv_coupon_price).setVisibility(View.VISIBLE);
+                    helper.setText(R.id.tv_coupon_price, item.getActivityMoney());
+                } else {
+                    helper.getView(R.id.tv_coupon_ratio).setVisibility(View.VISIBLE);
+                    helper.getView(R.id.tv_rmb).setVisibility(View.INVISIBLE);
+                    helper.getView(R.id.tv_coupon_price).setVisibility(View.INVISIBLE);
+                    helper.setText(R.id.tv_coupon_price, "");
+                    helper.setText(R.id.tv_coupon_ratio, item.getActivityRatioString());
+                }
                 helper.getView(R.id.iv_coupon_image).setOnClickListener(v -> {
                     if (callback != null) {
-                        if (binding.tlCouponTab.getSelectedTabPosition() == 0) {
-                            callback.onCouponUse(item, null);
-                        } else {
-                            callback.onCouponUse(null, item);
-                        }
+                        callback.onCouponUse(item);
                         hide();
                     }
                 });
                 helper.setText(R.id.tv_coupon_date, String.format("有效期%s-%s", cleanDate(item.getStartTime()), cleanDate(item.getEndTime())));
-                helper.setText(R.id.tv_coupon_price, calPrice(item.getActivityRule()));
                 helper.setText(R.id.tv_coupon_rule, item.getActivityName());
             }
         };
         adapter.setEmptyView(createEmptyView());
         this.binding.rvContent.setLayoutManager(new LinearLayoutManager(binding.getRoot().getContext()));
         this.binding.rvContent.setAdapter(adapter);
-    }
-
-    /**
-     * 根据优惠规则获取优惠金额
-     *
-     * @param rule 优惠规则
-     * @return 返回优惠金额
-     */
-    private String calPrice(String rule) {
-        if (rule != null) {
-            String[] split = rule.split("#");
-            if (split.length >= 2) {
-                return split[1];
-            }
-        }
-        return rule;
     }
 
     /**
@@ -267,6 +259,17 @@ public class CouponSelect {
     }
 
     /**
+     * 设置数据类型
+     *
+     * @param type 1: 网费 2: 商品
+     * @return {@link CouponSelect}
+     */
+    public CouponSelect type(int type) {
+        this.type = type;
+        return this;
+    }
+
+    /**
      * 设置数据
      */
     public CouponSelect set(String customerId, String productId) {
@@ -293,11 +296,15 @@ public class CouponSelect {
             this.isSuccess = false;
             this.serviceActivities.clear();
             this.customerCoupons.clear();
-            TabLayout.Tab tab = binding.tlCouponTab.getTabAt(0);
-            if (tab != null) {
-                tab.select();
-            }
+            selectTab();
             this.moveAnimator.start();
+        }
+    }
+
+    private void selectTab() {
+        TabLayout.Tab tab = binding.tlCouponTab.getTabAt(0);
+        if (tab != null) {
+            tab.select();
         }
     }
 
@@ -316,8 +323,14 @@ public class CouponSelect {
      * @param data 数据对象
      */
     private void serviceResult(List<ActivityEntity> data) {
-        serviceActivities = data;
-        adapter.notifyDataSetChanged();
+        if (data != null && !data.isEmpty()) {
+            for (ActivityEntity datum : data) {
+                if (datum.getActivityType() == type) {
+                    serviceActivities.add(datum);
+                }
+            }
+        }
+        adapter.setNewData(serviceActivities);
         if (isSuccess) {
             binding.clLoading.setVisibility(View.GONE);
         } else {
@@ -331,7 +344,13 @@ public class CouponSelect {
      * @param data 数据对象
      */
     private void customerResult(List<ActivityEntity> data) {
-        customerCoupons = data;
+        if (data != null && !data.isEmpty()) {
+            for (ActivityEntity datum : data) {
+                if (datum.getActivityType() == type) {
+                    customerCoupons.add(datum);
+                }
+            }
+        }
         if (isSuccess) {
             binding.clLoading.setVisibility(View.GONE);
         } else {
@@ -347,6 +366,6 @@ public class CouponSelect {
         /**
          * 优惠卷使用回调方法
          */
-        void onCouponUse(ActivityEntity service, ActivityEntity customer);
+        void onCouponUse(ActivityEntity data);
     }
 }

@@ -31,6 +31,7 @@ import com.kiegame.mobile.databinding.ActivityShopCarBinding;
 import com.kiegame.mobile.model.CouponModel;
 import com.kiegame.mobile.model.ShopCarModel;
 import com.kiegame.mobile.repository.cache.Cache;
+import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
@@ -92,6 +93,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 item = String.format("%s | %s | %s", userInfo.getSeatNumber(), Text.formatIdCardNum(userInfo.getIdCard()), Text.formatCustomName(userInfo.getCustomerName()));
             }
             model.userName.setValue(item);
+        } else {
+            Cache.ins().setProductCoupon(null);
         }
         model.searchName.observe(this, this::searchUserInfoList);
         model.getFailMessage().observe(this, this::onCreateOrderFailure);
@@ -112,6 +115,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 cb.setOnClickListener(v -> {
                     cb.setChecked(!item.isBuy());
                     item.setBuy(!item.isBuy());
+                    Cache.ins().setProductCoupon(null);
                     Cache.ins().updateTotalMoney();
                     Cache.ins().notifyChange();
                 });
@@ -140,6 +144,14 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     @Override
     protected void onData() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Cache.ins().getUserInfo() == null) {
+            Cache.ins().setProductCoupon(null);
+        }
     }
 
     /**
@@ -198,6 +210,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     binding.etSearchInput.clearFocus();
                     if (Cache.ins().getUserInfo() == null) {
                         this.userInfo = entity;
+                        Cache.ins().setProductCoupon(null);
                         model.userName.setValue(name);
                     } else {
                         if (userInfo.getCustomerId().equals(Cache.ins().getUserInfo().getCustomerId())) {
@@ -300,6 +313,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         if (num < 0) {
             Toast.show("不能再少了");
         } else {
+            Cache.ins().setProductCoupon(null);
             less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setText(num == 0 ? "" : String.valueOf(num));
@@ -341,9 +355,19 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                         .bind(this)
                         .model(couponModel)
                         .set(userInfo.getCustomerId(), this.getProductIds())
-                        .callback((service, customer) -> {
-                            System.out.println("service : " + service);
-                            System.out.println("customer: " + customer);
+                        .type(2)
+                        .callback(data -> {
+                            if (data != null) {
+                                if (data.getActivityType() != 2) {
+                                    Toast.show("当前交易不支持此优惠券");
+                                    return;
+                                }
+                                if (!Cache.ins().hasShop(data.getProductId())) {
+                                    Toast.show("没有商品可使用此优惠券");
+                                    return;
+                                }
+                            }
+                            Cache.ins().setProductCoupon(data);
                         })
                         .show();
             }
@@ -468,6 +492,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      */
     private void createOrderOrPayment(String buyPayPassword, int isAddOrder) {
         if (canCreateOrderOrPayment(isAddOrder)) {
+            ActivityEntity coupon = Cache.ins().getNetFeeCoupon();
             int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
             this.orderType = isAddOrder;
             LiveData<List<AddOrderEntity>> order = model.addOrder(
@@ -476,9 +501,9 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     userInfo.getSeatNumber(),
                     userInfo.getCustomerId(),
                     userInfo.getBonusBalance(),
-                    null,
-                    null,
-                    null,
+                    coupon == null ? null : coupon.getActivityType(),
+                    coupon == null ? null : (coupon.getActivityCardResultId() == null ? coupon.getActivityId() : coupon.getActivityCardResultId()),
+                    coupon == null ? null : new BigDecimal(coupon.getActivityMoney()).multiply(new BigDecimal("100")).intValue(),
                     Cache.ins().getPayment(),
                     String.valueOf(totalMoney),
                     buyPayPassword,
@@ -586,6 +611,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 重置商品数据
      */
     private void resetShopData() {
+        Cache.ins().setNetFeeCoupon(null);
+        Cache.ins().setProductCoupon(null);
         List<BuyShop> shops = Cache.ins().getShops();
         if (shops != null && !shops.isEmpty()) {
             List<BuyShop> buys = new ArrayList<>();
