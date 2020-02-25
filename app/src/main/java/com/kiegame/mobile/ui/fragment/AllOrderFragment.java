@@ -85,6 +85,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
     @Override
     protected void onObject() {
         model = new ViewModelProvider(this).get(OrderModel.class);
+        orders = new ArrayList<>();
         this.moneyObserver = new MutableLiveData<>();
         this.moneyObserver.observe(this, integer -> {
             if (integer != null) {
@@ -483,9 +484,6 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
      * @param data 数据对象
      */
     void refreshData(List<BuyOrderEntity> data) {
-        if (this.orders == null) {
-            this.orders = new ArrayList<>();
-        }
         this.orders.clear();
         this.orders.addAll(data);
         if (adapter != null) {
@@ -500,8 +498,10 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
     private void updateMoney() {
         Worker.execute(() -> {
             this.money = 0;
-            for (BuyOrderEntity order : this.orders) {
-                this.money += order.getPayAmount();
+            if (this.orders != null) {
+                for (BuyOrderEntity order : this.orders) {
+                    this.money += order.getPayAmount();
+                }
             }
             moneyObserver.postValue(this.money);
         });

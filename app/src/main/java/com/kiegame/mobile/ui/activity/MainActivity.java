@@ -73,6 +73,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
         views.add(inflater.inflate(R.layout.view_order, null));
         ViewAdapter adapter = new ViewAdapter(views);
         binding.vpViews.setAdapter(adapter);
+        binding.vpViews.setOffscreenPageLimit(2);
         binding.vpViews.addOnPageChangeListener(this);
 
         selectBtn = (TextView) binding.clNavBar.getChildAt(0);

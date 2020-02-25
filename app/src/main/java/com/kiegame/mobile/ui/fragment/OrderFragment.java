@@ -86,6 +86,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
         views.add(all);
         OrderAdapter adapter = new OrderAdapter(getParentFragmentManager(), views, titles);
         binding.vpOrderViews.setAdapter(adapter);
+        binding.vpOrderViews.setOffscreenPageLimit(2);
         binding.tlOrderTab.setupWithViewPager(binding.vpOrderViews);
         binding.srlLayout.setOnRefreshListener(refreshLayout -> requestData());
         binding.tvOrderCreateTime.setText(date);

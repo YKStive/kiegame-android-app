@@ -87,6 +87,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
     protected void onObject() {
         model = new ViewModelProvider(this).get(OrderModel.class);
         binding.setFragment(this);
+        orders = new ArrayList<>();
         this.moneyObserver = new MutableLiveData<>();
         this.selectObserver = new MutableLiveData<>();
         this.moneyObserver.observe(this, integer -> {
@@ -490,11 +491,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
      * @param data 数据对象
      */
     void refreshData(List<BuyOrderEntity> data) {
-        if (orders == null) {
-            orders = new ArrayList<>();
-        } else {
-            orders.clear();
-        }
+        orders.clear();
         for (BuyOrderEntity datum : data) {
             if (datum.getOrderState() == 1) {
                 orders.add(datum);
