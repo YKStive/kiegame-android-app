@@ -85,7 +85,10 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 activity.finish();
             }
         });
-        Cache.ins().getNetFeeObserver().observe(this, integer -> this.recharge(this.moneyBtn, 0));
+        Cache.ins().getNetFeeObserver().observe(this, integer -> {
+            this.recharge(this.moneyBtn, 0);
+            this.resetData();
+        });
     }
 
     @Override
