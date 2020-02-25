@@ -290,6 +290,9 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
         StringBuilder sb = new StringBuilder();
         if (orders != null && !orders.isEmpty()) {
             for (BuyShopEntity order : orders) {
+                if (sb.length() != 0) {
+                    sb.append(",");
+                }
                 sb.append(order.getOrderDetailId());
             }
         }

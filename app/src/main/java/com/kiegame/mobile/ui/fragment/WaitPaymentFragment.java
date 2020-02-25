@@ -358,6 +358,9 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
         StringBuilder sb = new StringBuilder();
         if (orders != null && !orders.isEmpty()) {
             for (BuyShopEntity order : orders) {
+                if (sb.length() != 0) {
+                    sb.append(",");
+                }
                 sb.append(order.getOrderDetailId());
             }
         }
