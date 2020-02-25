@@ -50,9 +50,15 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         binding.setFragment(this);
         binding.setModel(this.model);
         Cache.ins().getShopObserver().observe(this, integer -> {
-            LiveData<List<ShopEntity>> liveData = model.listShops();
-            if (!liveData.hasObservers()) {
-                liveData.observe(this, this::lisShopResult);
+            if (integer != null) {
+                if (integer == -1) {
+                    binding.mlvShopList.update();
+                } else {
+                    LiveData<List<ShopEntity>> liveData = model.listShops();
+                    if (!liveData.hasObservers()) {
+                        liveData.observe(this, this::lisShopResult);
+                    }
+                }
             }
         });
         model.searchShop.observe(this, this::shopSearch);

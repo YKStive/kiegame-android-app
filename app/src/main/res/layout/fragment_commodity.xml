@@ -153,9 +153,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginBottom="16dp"
-                    android:backgroundTint="@color/white"
                     android:onClick="@{()->fragment.startShopCarActivity()}"
                     android:src="@drawable/ic_shop_car"
+                    app:backgroundTint="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent" />
 

@@ -124,7 +124,7 @@ public class ShopDetail {
                 break;
             }
         }
-        Cache.ins().getShopObserver().setValue(Cache.ins().getShops().size());
+        Cache.ins().getShopObserver().setValue(-1);
     }
 
     /**
