@@ -63,7 +63,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
 
         toDay();
 
-        dialog = new DatePickerDialog(Objects.requireNonNull(getActivity()), (view, year, month, dayOfMonth) -> {
+        dialog = new DatePickerDialog(Objects.requireNonNull(getActivity()), R.style.AppTheme_DatePickerDialog, (view, year, month, dayOfMonth) -> {
             this.year = year;
             this.month = month;
             this.dayOfMonth = dayOfMonth;
@@ -124,6 +124,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             this.splitDate(date);
             binding.tvOrderCreateTime.setText(date);
             binding.srlLayout.autoRefresh();
+            calendar.clear();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -141,6 +142,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             this.splitDate(date);
             binding.tvOrderCreateTime.setText(date);
             binding.srlLayout.autoRefresh();
+            calendar.clear();
         } catch (ParseException e) {
             e.printStackTrace();
         }
