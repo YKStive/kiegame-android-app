@@ -87,6 +87,7 @@ public class Cache extends BaseObservable {
         this.setNetFeeCoupon(null);
         this.setProductCoupon(null);
         this.productCouponMoney = 0;
+        this.setUserInfo(null);
     }
 
     /**
