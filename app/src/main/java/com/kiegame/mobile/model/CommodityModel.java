@@ -23,7 +23,8 @@ public class CommodityModel extends ViewModel {
 
     public MutableLiveData<String> searchShop;
 
-    private MutableLiveData<List<ShopSortEntity>> shopSort;
+    private MutableLiveData<List<ShopSortEntity>> shopType;
+    private MutableLiveData<List<ShopSortEntity>> shopTag;
     private MutableLiveData<List<ShopEntity>> shops;
 
     public LoginEntity login;
@@ -31,7 +32,8 @@ public class CommodityModel extends ViewModel {
     public CommodityModel() {
         this.searchShop = new MutableLiveData<>();
 
-        this.shopSort = new MutableLiveData<>();
+        this.shopType = new MutableLiveData<>();
+        this.shopTag = new MutableLiveData<>();
         this.shops = new MutableLiveData<>();
 
         this.login = Cache.ins().getLoginInfo();
@@ -40,44 +42,43 @@ public class CommodityModel extends ViewModel {
     /**
      * 商品分类
      */
-    public LiveData<List<ShopSortEntity>> listShopShot() {
+    public LiveData<List<ShopSortEntity>> listShopType() {
+        Network.api().listType()
+                .compose(Scheduler.apply())
+                .subscribe(new Subs<List<ShopSortEntity>>(false) {
+                    @Override
+                    public void onSuccess(List<ShopSortEntity> data, int total, int length) {
+                        shopType.setValue(data);
+                    }
+                });
+        return this.shopType;
+    }
+
+    /**
+     * 商品标签
+     */
+    public LiveData<List<ShopSortEntity>> listShopTag() {
         Network.api().listTag(1)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<ShopSortEntity>>(false) {
                     @Override
                     public void onSuccess(List<ShopSortEntity> data, int total, int length) {
-                        shopSort.setValue(data);
+                        shopTag.setValue(data);
                     }
                 });
-        return this.shopSort;
+        return this.shopTag;
     }
 
     /**
      * 查询商品
      */
-    public LiveData<List<ShopEntity>> listShops() {
-        Network.api().queryShops(login.getServiceId(), null, null, null, 1)
+    public LiveData<List<ShopEntity>> listShops(String productTypeId, String productName, String productTagId, boolean isShowLoading) {
+        Network.api().queryShops(login.getServiceId(), productTypeId, productName, productTagId, 1)
                 .compose(Scheduler.apply())
-                .subscribe(new Subs<List<ShopEntity>>(false) {
+                .subscribe(new Subs<List<ShopEntity>>(isShowLoading) {
                     @Override
                     public void onSuccess(List<ShopEntity> data, int total, int length) {
-                        List<ShopEntity> entities = Cache.ins().getEntities();
-                        if (entities != null && !entities.isEmpty()) {
-                            for (ShopEntity entity : entities) {
-                                if (entity != null) {
-                                    for (ShopEntity shop : data) {
-                                        if (shop != null) {
-                                            if (entity.getProductId().equals(shop.getProductId())) {
-                                                shop.setBuySize(entity.getBuySize());
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
                         shops.setValue(data);
-                        Cache.ins().setEntities(data);
                     }
 
                     @Override

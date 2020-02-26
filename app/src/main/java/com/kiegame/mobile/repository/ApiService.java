@@ -69,6 +69,12 @@ public interface ApiService {
     /**
      * 售卖商品分类查询
      */
+    @GET("app/typeBase/listTypeBase")
+    Observable<Result<List<ShopSortEntity>>> listType();
+
+    /**
+     * 售卖商品标签查询
+     */
     @GET("app/tagBase/listTagBase")
     Observable<Result<List<ShopSortEntity>>> listTag(
             @Query("tagType") Integer tagType

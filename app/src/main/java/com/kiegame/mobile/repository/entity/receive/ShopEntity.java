@@ -78,7 +78,6 @@ public class ShopEntity implements MultiItemEntity, Serializable {
     public final static int TITLE = 1;
 
     private int itemType;
-    private int buySize;
     private String buyFlavor;
     private String buyNorm;
     private String buyDescription;
@@ -288,14 +287,6 @@ public class ShopEntity implements MultiItemEntity, Serializable {
         this.commissionAmount = commissionAmount;
     }
 
-    public int getBuySize() {
-        return buySize;
-    }
-
-    public void setBuySize(int buySize) {
-        this.buySize = buySize;
-    }
-
     public String getBuyFlavor() {
         return buyFlavor;
     }
@@ -365,8 +356,7 @@ public class ShopEntity implements MultiItemEntity, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ShopEntity that = (ShopEntity) o;
-        return buySize == that.buySize &&
-                Objects.equals(productId, that.productId) &&
+        return Objects.equals(productId, that.productId) &&
                 Objects.equals(productName, that.productName) &&
                 Objects.equals(buyFlavor, that.buyFlavor) &&
                 Objects.equals(buyNorm, that.buyNorm) &&
@@ -375,6 +365,6 @@ public class ShopEntity implements MultiItemEntity, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, productName, buySize, buyFlavor, buyNorm, buyDescription);
+        return Objects.hash(productId, productName, buyFlavor, buyNorm, buyDescription);
     }
 }

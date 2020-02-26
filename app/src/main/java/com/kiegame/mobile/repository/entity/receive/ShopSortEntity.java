@@ -17,7 +17,7 @@ public class ShopSortEntity {
 
     private String productTypeName;
     private String productTagName;
-    private int sort;
+    private Integer sort;
     private String productTypeId;
     private String productTagId;
 
@@ -29,11 +29,11 @@ public class ShopSortEntity {
         this.productTypeName = productTypeName;
     }
 
-    public int getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(int sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 

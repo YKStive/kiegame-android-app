@@ -34,7 +34,6 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
-import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.settings.Setting;
@@ -286,20 +285,13 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         }
         String size = tv.getText().toString();
         int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-        if (data.getShopType() == 1 && Cache.ins().shopTotal(data.getProductId()) > data.getMax()) {
+        if (data.getShopType() == 1 && Cache.ins().getShopSumById(data.getProductId()) > data.getMax()) {
             Toast.show("不能再多了");
         } else {
             less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setText(String.valueOf(num));
             Cache.ins().attachShop(data, data.getProductFlavorName(), data.getProductSpecName(), 1);
-            List<ShopEntity> entities = Cache.ins().getEntities();
-            for (ShopEntity buy : entities) {
-                if (buy.getProductId().equals(data.getProductId())) {
-                    buy.setBuySize(buy.getBuySize() + 1);
-                    break;
-                }
-            }
         }
         adapter.notifyDataSetChanged();
     }
@@ -318,13 +310,6 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setText(num == 0 ? "" : String.valueOf(num));
             Cache.ins().detachShop(data.getProductId(), data.getProductFlavorName(), data.getProductSpecName());
-            List<ShopEntity> entities = Cache.ins().getEntities();
-            for (ShopEntity buy : entities) {
-                if (buy.getProductId().equals(data.getProductId())) {
-                    buy.setBuySize(buy.getBuySize() - 1);
-                    break;
-                }
-            }
         }
         adapter.notifyDataSetChanged();
         if (Cache.ins().getShopSum() <= 0) {
@@ -382,10 +367,10 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * @return 返回商品列表的ID字符串或null
      */
     private String getProductIds() {
-        List<ShopEntity> shops = Cache.ins().getEntities();
+        List<BuyShop> shops = Cache.ins().getShops();
         if (shops != null && !shops.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            for (ShopEntity shop : shops) {
+            for (BuyShop shop : shops) {
                 if (sb.length() != 0) {
                     sb.append(",");
                 }
@@ -621,16 +606,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     buys.add(shop);
                 }
             }
-            List<ShopEntity> entities = Cache.ins().getEntities();
             for (BuyShop buy : buys) {
-                if (entities != null && !entities.isEmpty()) {
-                    for (ShopEntity shop : entities) {
-                        if (shop != null && shop.getProductId().equals(buy.getProductId())) {
-                            shop.setBuySize(shop.getBuySize() - buy.getProductBuySum());
-                            break;
-                        }
-                    }
-                }
+                Cache.ins().setShopSumById(buy.getProductId(), Cache.ins().getShopSumById(buy.getProductId()) - buy.getProductBuySum());
                 shops.remove(buy);
             }
             Cache.ins().setShops(shops);

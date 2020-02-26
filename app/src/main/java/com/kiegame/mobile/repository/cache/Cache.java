@@ -20,7 +20,9 @@ import com.kiegame.mobile.utils.PreferPlus;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by: var_rain.
@@ -48,8 +50,6 @@ public class Cache extends BaseObservable {
     private int payment;
     // 商品数量
     private MutableLiveData<Integer> shopSum;
-    // 商品实体列表
-    private List<ShopEntity> entities;
     // 商品列表更新
     private MutableLiveData<Integer> shopObserver;
     // 网费充值更新
@@ -62,8 +62,11 @@ public class Cache extends BaseObservable {
     private ActivityEntity productCoupon;
     // 产品优惠金额
     private int productCouponMoney;
+    // 记录商品的购买数量
+    private Map<String, Integer> buySum;
 
     private Cache() {
+        this.buySum = new HashMap<>();
         this.initialize();
     }
 
@@ -200,17 +203,28 @@ public class Cache extends BaseObservable {
     }
 
     /**
-     * 获取全部商品数据
+     * 根据商品ID获取商品数量
+     *
+     * @param productId 商品ID
+     * @return 返回数量
      */
-    public List<ShopEntity> getEntities() {
-        return entities;
+    public int getShopSumById(String productId) {
+        Integer src = buySum.get(productId);
+        return src == null ? 0 : src;
     }
 
     /**
-     * 设置商品数据
+     * 根据商品ID设置商品数量
+     *
+     * @param productId 商品ID
+     * @param sum       数量
      */
-    public void setEntities(List<ShopEntity> entities) {
-        this.entities = entities;
+    public void setShopSumById(String productId, int sum) {
+        if (sum == 0) {
+            buySum.remove(productId);
+        } else {
+            buySum.put(productId, sum);
+        }
     }
 
     /**
@@ -283,16 +297,6 @@ public class Cache extends BaseObservable {
     @Bindable
     public String getPaymentMoney() {
         return cal(paymentMoney);
-    }
-
-    /**
-     * 设置支付金额合计,单位: 分
-     *
-     * @param paymentMoney 支付金额,单位: 分
-     */
-    public void setPaymentMoney(int paymentMoney) {
-        this.paymentMoney = paymentMoney;
-        this.notifyChange();
     }
 
     /**
@@ -442,6 +446,11 @@ public class Cache extends BaseObservable {
                     && buy.getProductFlavorName().equals(flavor)
                     && buy.getProductSpecName().equals(spec)) {
                 buy.setProductBuySum(buy.getProductBuySum() + sum);
+                Integer srcSum = buySum.get(buy.getProductId());
+                if (srcSum != null) {
+                    int shopSum = srcSum + sum;
+                    buySum.put(buy.getProductId(), shopSum);
+                }
                 hasShop = true;
                 break;
             }
@@ -459,6 +468,7 @@ public class Cache extends BaseObservable {
             shop.setFee(data.getSellPrice());
             shop.setMax(data.getBarCount());
             value.add(shop);
+            buySum.put(shop.getProductId(), sum);
         }
         // 更新数据
         this.shops.setValue(value);
@@ -491,6 +501,11 @@ public class Cache extends BaseObservable {
                     && buy.getProductFlavorName().equals(flavor)
                     && buy.getProductSpecName().equals(spec)) {
                 buy.setProductBuySum(buy.getProductBuySum() + sum);
+                Integer srcSum = buySum.get(buy.getProductId());
+                if (srcSum != null) {
+                    int shopSum = srcSum + sum;
+                    buySum.put(buy.getProductId(), shopSum);
+                }
                 hasShop = true;
                 break;
             }
@@ -498,6 +513,7 @@ public class Cache extends BaseObservable {
         // 如果没找到就新建一个并添加到商品列表中
         if (!hasShop) {
             value.add(data);
+            buySum.put(data.getProductId(), sum);
         }
         // 更新数据
         this.shops.setValue(value);
@@ -525,6 +541,15 @@ public class Cache extends BaseObservable {
                     } else {
                         // 如果商品数量大于1,则减少一个商品数量
                         value.get(i).setProductBuySum(buy.getProductBuySum() - 1);
+                    }
+                    Integer srcSum = buySum.get(productId);
+                    if (srcSum != null) {
+                        srcSum -= 1;
+                        if (srcSum == 0) {
+                            buySum.remove(productId);
+                        } else {
+                            buySum.put(productId, srcSum);
+                        }
                     }
                     break;
                 }
@@ -564,6 +589,15 @@ public class Cache extends BaseObservable {
                         // 如果商品数量大于1,则减少一个商品数量
                         value.get(i).setProductBuySum(buy.getProductBuySum() - 1);
                     }
+                    Integer srcSum = buySum.get(productId);
+                    if (srcSum != null) {
+                        srcSum -= 1;
+                        if (srcSum == 0) {
+                            buySum.remove(productId);
+                        } else {
+                            buySum.put(productId, srcSum);
+                        }
+                    }
                     break;
                 }
             }
@@ -572,26 +606,6 @@ public class Cache extends BaseObservable {
             this.updateTotalMoney();
             this.notifyChange();
         }
-    }
-
-    /**
-     * 获取商品总数
-     *
-     * @param productId 商品ID
-     * @return 返回商品列表中的该商品总数
-     */
-    public int shopTotal(String productId) {
-        List<BuyShop> value = shops.getValue();
-        if (value != null && !value.isEmpty()) {
-            int sum = 0;
-            for (BuyShop buy : value) {
-                if (buy.getProductId().equals(productId)) {
-                    sum += buy.getProductBuySum();
-                }
-            }
-            return sum;
-        }
-        return 0;
     }
 
     /**

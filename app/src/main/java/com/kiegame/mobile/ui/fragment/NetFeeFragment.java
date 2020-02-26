@@ -27,7 +27,6 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
-import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.ui.activity.LoginActivity;
@@ -456,16 +455,8 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                     buys.add(shop);
                 }
             }
-            List<ShopEntity> entities = Cache.ins().getEntities();
             for (BuyShop buy : buys) {
-                if (entities != null && !entities.isEmpty()) {
-                    for (ShopEntity shop : entities) {
-                        if (shop != null && shop.getProductId().equals(buy.getProductId())) {
-                            shop.setBuySize(shop.getBuySize() - buy.getProductBuySum());
-                            break;
-                        }
-                    }
-                }
+                Cache.ins().setShopSumById(buy.getProductId(), Cache.ins().getShopSumById(buy.getProductId()) - buy.getProductBuySum());
                 shops.remove(buy);
             }
             Cache.ins().setShops(shops);

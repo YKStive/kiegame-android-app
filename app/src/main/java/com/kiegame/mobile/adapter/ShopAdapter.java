@@ -46,17 +46,18 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
     protected void convert(@NonNull BaseViewHolder helper, ShopEntity item) {
         switch (helper.getItemViewType()) {
             case ShopEntity.CONTENT:
+                int sum = Cache.ins().getShopSumById(item.getProductId());
                 ImageView view = helper.getView(R.id.iv_shop_image);
                 Glide.with(helper.itemView).load(item.getProductImg()).into(view);
                 helper.setText(R.id.tv_shop_name, item.getProductName());
                 helper.setText(R.id.tv_shop_norm, item.getProductSpecName());
                 helper.setText(R.id.tv_shop_money, cal(item.getSellPrice()));
-                helper.setVisible(R.id.tv_btn_less, item.getBuySize() != 0);
-                helper.setVisible(R.id.tv_shop_num, item.getBuySize() != 0);
-                helper.setText(R.id.tv_shop_num, String.valueOf(item.getBuySize()));
+                helper.setText(R.id.tv_shop_num, String.valueOf(sum));
+                helper.setVisible(R.id.tv_btn_less, sum != 0);
+                helper.setVisible(R.id.tv_shop_num, sum != 0);
                 helper.setVisible(R.id.tv_bar_count, item.getProductVariety() == 1);
                 if (item.getProductVariety() == 1) {
-                    int count = item.getBarCount() - item.getBuySize();
+                    int count = item.getBarCount() - sum;
                     helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
                 }
                 setPlusShopClickListener(helper, item);
@@ -95,7 +96,6 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 } else {
                     tv.setText(String.valueOf(num));
                 }
-                item.setBuySize(num);
                 if (item.getProductVariety() == 1) {
                     int count = item.getBarCount() - num;
                     helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
@@ -130,7 +130,6 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                     } else {
                         tv.setText("");
                     }
-                    item.setBuySize(num);
                     if (item.getProductVariety() == 1) {
                         int count = item.getBarCount() - num;
                         helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));

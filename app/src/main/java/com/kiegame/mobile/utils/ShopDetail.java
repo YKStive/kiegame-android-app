@@ -23,7 +23,6 @@ import com.kiegame.mobile.ui.views.FlowLayout;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 /**
  * Created by: var_rain.
@@ -81,25 +80,21 @@ public class ShopDetail {
     public ShopDetail set(ShopEntity data) {
         if (data != null) {
             this.shop = data;
-            this.buySourceSize = shop.getBuySize();
-            data.setBuySize(1);
+            this.buySourceSize = 1;
             Glide.with(binding.getRoot()).load(data.getProductImg()).into(binding.ivShopImage);
             binding.tvShopName.setText(data.getProductName());
             binding.tvShopNorm.setText(data.getProductSpecName());
             binding.tvShopPrice.setText(String.format("￥%s", cal(data.getSellPrice())));
             this.makeFlavorTags(data.getProductFlavorName());
             this.makeSpecTags(data.getProductSpecName());
-            binding.tvShopNum.setText(String.valueOf(data.getBuySize()));
-            binding.ivBtnLess.setVisibility(data.getBuySize() == 0 ? View.INVISIBLE : View.VISIBLE);
-            binding.tvShopNum.setVisibility(data.getBuySize() == 0 ? View.INVISIBLE : View.VISIBLE);
+            binding.tvShopNum.setText(String.valueOf(this.buySourceSize));
+            binding.ivBtnLess.setVisibility(this.buySourceSize == 0 ? View.INVISIBLE : View.VISIBLE);
+            binding.tvShopNum.setVisibility(this.buySourceSize == 0 ? View.INVISIBLE : View.VISIBLE);
             binding.ivBtnLess.setOnClickListener(v -> this.onBtnLess());
             binding.ivBtnPlus.setOnClickListener(v -> this.onBtnPlus());
-            binding.tvBtnCancel.setOnClickListener(v -> {
-                data.setBuySize(this.buySourceSize);
-                this.hide();
-            });
+            binding.tvBtnCancel.setOnClickListener(v -> this.hide());
             binding.tvBtnOk.setOnClickListener(v -> {
-                if (shop.getBuySize() > 0) {
+                if (this.buySourceSize > 0) {
                     addShopToOrderList();
                     this.hide();
                 } else {
@@ -116,14 +111,7 @@ public class ShopDetail {
     private void addShopToOrderList() {
         String flavor = selectFlavor != null ? selectFlavor.getText().toString() : "";
         String spec = selectNorm != null ? selectNorm.getText().toString() : "";
-        Cache.ins().attachShop(shop, flavor, spec, shop.getBuySize());
-        List<ShopEntity> entities = Cache.ins().getEntities();
-        for (ShopEntity buy : entities) {
-            if (buy.getProductId().equals(shop.getProductId())) {
-                buy.setBuySize(buySourceSize + shop.getBuySize());
-                break;
-            }
-        }
+        Cache.ins().attachShop(shop, flavor, spec, this.buySourceSize);
         Cache.ins().getShopObserver().setValue(-1);
     }
 
@@ -144,7 +132,7 @@ public class ShopDetail {
             } else {
                 tv.setText(String.valueOf(num));
             }
-            shop.setBuySize(num);
+            this.buySourceSize = num;
         }
     }
 
@@ -159,14 +147,14 @@ public class ShopDetail {
         TextView tv = binding.tvShopNum;
         String size = tv.getText().toString();
         int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-        if (shop.getProductVariety() == 1 && Cache.ins().shopTotal(shop.getProductId()) + num > shop.getBarCount()) {
+        if (shop.getProductVariety() == 1 && Cache.ins().getShopSumById(shop.getProductId()) + num > shop.getBarCount()) {
             Toast.show("不能再多了");
         } else {
             if (num > 0) {
                 binding.ivBtnLess.setVisibility(View.VISIBLE);
                 binding.tvShopNum.setVisibility(View.VISIBLE);
             }
-            shop.setBuySize(num);
+            this.buySourceSize = num;
             tv.setText(String.valueOf(num));
         }
     }
