@@ -363,7 +363,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                                     return;
                                 }
                                 if (!Cache.ins().hasShop(data.getProductId())) {
-                                    Toast.show("没有商品可使用此优惠券");
+                                    Toast.show("购物车中没有商品可使用此优惠券");
                                     return;
                                 }
                             }
