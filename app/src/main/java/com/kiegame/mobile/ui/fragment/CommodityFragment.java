@@ -102,7 +102,10 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
                 if (index == 0) {
                     setMenuItemStyle(helper.getView(R.id.ll_item_root));
                 }
-                helper.setText(R.id.tv_item_menu, item.getProductTypeName() == null ? item.getProductTagName() : item.getProductTypeName());
+                String menuName = item.getProductTypeName() == null ? item.getProductTagName() : item.getProductTypeName();
+                TextView menu = helper.getView(R.id.tv_item_menu);
+                menu.setLetterSpacing(menuName.length() == 2 ? 0.4f : 0.05f);
+                menu.setText(menuName);
             }
         };
         menuAdapter.setOnItemClickListener((adapter, view, position) -> {
