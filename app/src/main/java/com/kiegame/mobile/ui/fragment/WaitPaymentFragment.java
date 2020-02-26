@@ -483,6 +483,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
      */
     private void onDeleteOrCancelOrderResult(Object object) {
         this.fragment.requestData();
+        Toast.show("取消成功");
     }
 
     /**

@@ -15,6 +15,7 @@ import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
 import com.kiegame.mobile.ui.activity.ShopCarActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.utils.Text;
+import com.kiegame.mobile.utils.Toast;
 
 import java.util.List;
 
@@ -141,6 +142,10 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
      * 跳转到购物车
      */
     public void startShopCarActivity() {
-        startActivity(new Intent(getActivity(), ShopCarActivity.class));
+        if (badge.getBadgeNumber() > 0) {
+            startActivity(new Intent(getActivity(), ShopCarActivity.class));
+        } else {
+            Toast.show("请选择商品");
+        }
     }
 }

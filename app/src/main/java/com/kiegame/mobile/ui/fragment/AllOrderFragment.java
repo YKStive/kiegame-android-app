@@ -278,6 +278,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
             queryPayResult(this.baseOrderId, 2);
         } else {
             this.fragment.requestData();
+            Toast.show("取消成功");
         }
     }
 

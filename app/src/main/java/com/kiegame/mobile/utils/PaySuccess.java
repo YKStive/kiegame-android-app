@@ -1,6 +1,7 @@
 package com.kiegame.mobile.utils;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,7 @@ public class PaySuccess {
             public void onAnimationStart(Animator animation) {
                 InjectView.ins().inject(binding.getRoot());
                 isShowing = true;
+                startCountdown();
             }
 
             @Override
@@ -70,6 +72,20 @@ public class PaySuccess {
                 }
             }
         });
+    }
+
+    /**
+     * 开始倒计时3秒后退出
+     */
+    private void startCountdown() {
+        ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f).setDuration(3000);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation, boolean isReverse) {
+                hide();
+            }
+        });
+        animator.start();
     }
 
     /**
