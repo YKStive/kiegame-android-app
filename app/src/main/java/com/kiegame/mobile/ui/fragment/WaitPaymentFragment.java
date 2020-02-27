@@ -184,7 +184,11 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                     this.buys.add(order);
                 }
             }
-            totalShops();
+            if (this.buys.size() != 0) {
+                totalShops();
+            } else {
+                Toast.show("没有选择需要支付的订单");
+            }
         }).cancel(null).show();
     }
 

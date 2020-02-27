@@ -24,6 +24,7 @@ public class PaySuccess {
     private ViewPaymentSuccessBinding binding;
     private ValueAnimator animator;
     private boolean isShowing;
+    private OnClickListener onClickListener;
 
     /**
      * 构造方法
@@ -82,6 +83,9 @@ public class PaySuccess {
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation, boolean isReverse) {
+                if (onClickListener != null) {
+                    onClickListener.onClick();
+                }
                 hide();
             }
         });
@@ -95,6 +99,7 @@ public class PaySuccess {
      * @return {@link PaySuccess}
      */
     public PaySuccess confirm(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
         binding.clRoot.setOnClickListener(v -> {
             if (onClickListener != null) {
                 onClickListener.onClick();

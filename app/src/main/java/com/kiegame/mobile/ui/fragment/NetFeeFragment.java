@@ -163,7 +163,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 } else {
                     item = String.format("%s | %s | %s", entity.getSeatNumber(), Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
                 }
-                tv.setText(item);
+                tv.setText(Text.zoomCustomInfo(item));
                 tv.setOnClickListener(v -> {
                     String name = tv.getText().toString();
                     model.userSearch.setValue("");
@@ -291,7 +291,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 显示菜单
      */
     public void showMenu() {
-        menu.show(binding.tvServiceId);
+        menu.show(binding.ivExitBtn);
     }
 
     /**

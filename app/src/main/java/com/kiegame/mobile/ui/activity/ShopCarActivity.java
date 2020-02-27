@@ -87,11 +87,11 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         if (userInfo != null) {
             String item;
             if (Text.empty(userInfo.getSeatNumber())) {
-                item = String.format("       %s | %s", Text.formatIdCardNum(userInfo.getIdCard()), Text.formatCustomName(userInfo.getCustomerName()));
+                item = String.format("%s | %s", Text.formatIdCardNum(userInfo.getIdCard()), Text.formatCustomName(userInfo.getCustomerName()));
             } else {
                 item = String.format("%s | %s | %s", userInfo.getSeatNumber(), Text.formatIdCardNum(userInfo.getIdCard()), Text.formatCustomName(userInfo.getCustomerName()));
             }
-            model.userName.setValue(item);
+            model.userName.setValue(Text.zoomCustomInfo(item));
         } else {
             Cache.ins().setProductCoupon(null);
         }

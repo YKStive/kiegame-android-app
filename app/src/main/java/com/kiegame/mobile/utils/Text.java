@@ -66,6 +66,23 @@ public class Text {
     }
 
     /**
+     * 字符串长度大于30则自动缩减
+     *
+     * @param info 会员信息
+     * @return 缩减后的会员信息或原信息
+     */
+    public static String zoomCustomInfo(String info) {
+        if (!Text.empty(info)) {
+            if (info.length() > 30) {
+                String start = info.substring(0, info.indexOf('*'));
+                String end = info.substring(info.lastIndexOf('*'));
+                return String.format("%s****%s", start, end);
+            }
+        }
+        return info;
+    }
+
+    /**
      * 格式化会员名称
      *
      * @param customName 会员名

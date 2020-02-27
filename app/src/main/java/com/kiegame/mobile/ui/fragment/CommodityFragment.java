@@ -26,7 +26,6 @@ import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import q.rorbin.badgeview.Badge;
@@ -221,7 +220,7 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         this.isTypeDone = true;
         this.types.clear();
         this.types.addAll(data);
-        Collections.sort(this.types, (o1, o2) -> o1.getSort().compareTo(o2.getSort()));
+//        Collections.sort(this.types, (o1, o2) -> o1.getSort().compareTo(o2.getSort()));
         sortMenuData();
     }
 
@@ -234,7 +233,7 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         this.isTagDone = true;
         this.tags.clear();
         this.tags.addAll(data);
-        Collections.sort(this.tags, (o1, o2) -> o1.getSort().compareTo(o2.getSort()));
+//        Collections.sort(this.tags, (o1, o2) -> o1.getSort().compareTo(o2.getSort()));
         sortMenuData();
     }
 

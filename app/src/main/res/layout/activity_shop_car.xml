@@ -137,11 +137,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:ellipsize="end"
                 android:gravity="center_vertical"
-                android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:singleLine="true"
                 android:text="@{model.userName}"
                 android:textColor="@color/white"
                 android:textSize="14sp"
@@ -268,7 +267,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="36dp"
                         android:layout_weight="1"
-                        android:gravity="center_vertical"
+                        android:gravity="center_vertical|end"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:text='@{cache.productCoupon != null ? cache.productCoupon.activityName : ""}'
@@ -284,6 +283,7 @@
                         android:paddingRight="10dp"
                         android:textColor="#FF1A1A"
                         android:textSize="14sp"
+                        android:visibility="gone"
                         tools:text="-￥3" />
 
                     <ImageView

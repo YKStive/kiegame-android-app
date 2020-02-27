@@ -73,9 +73,9 @@
     <dimen name="net_fee_divider_line_margin_start">16dp</dimen>
     <dimen name="net_fee_divider_line_margin_top">12dp</dimen>
     <dimen name="net_fee_amount_margin_top">15sp</dimen>
-    <dimen name="net_fee_amount_padding_left_right">20dp</dimen>
-    <dimen name="net_fee_amount_padding_top_bottom">10dp</dimen>
-    <dimen name="net_fee_amount">15sp</dimen>
+    <dimen name="net_fee_amount_padding_left_right">16dp</dimen>
+    <dimen name="net_fee_amount_padding_top_bottom">8dp</dimen>
+    <dimen name="net_fee_amount">14sp</dimen>
     <dimen name="net_fee_divider_line_center_margin_top">16dp</dimen>
     <dimen name="net_fee_divider_line_center_height">10dp</dimen>
     <dimen name="net_fee_btn_use_coupon_padding">16dp</dimen>
