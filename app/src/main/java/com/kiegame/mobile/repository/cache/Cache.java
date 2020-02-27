@@ -169,7 +169,7 @@ public class Cache extends BaseObservable {
                 if (productCoupon != null && money == 0) {
                     if (buy.getProductId().equals(productCoupon.getProductId()) && buy.isBuy()) {
                         buy.setProductDiscountType(productCoupon.getActivityType());
-                        buy.setProductDiscountId(productCoupon.getActivityId());
+                        buy.setProductDiscountId(productCoupon.getActivityType() == 1 ? productCoupon.getActivityId() : productCoupon.getActivityCardResultId());
                         money = buy.getFee() - (new BigDecimal(buy.getFee()).multiply(productCoupon.getActivityRatio()).intValue());
                     }
                 }

@@ -332,7 +332,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                         Cache.ins().getUserInfo().getCustomerId(),
                         Cache.ins().getUserInfo().getBonusBalance(),
                         coupon == null ? null : coupon.getActivityType(),
-                        coupon == null ? null : (coupon.getActivityCardResultId() == null ? coupon.getActivityId() : coupon.getActivityCardResultId()),
+                        coupon == null ? null : (coupon.getActivityType() == 1 ? coupon.getActivityId() : coupon.getActivityCardResultId()),
                         coupon == null ? null : new BigDecimal(coupon.getActivityMoney()).multiply(new BigDecimal("100")).intValue(),
                         Cache.ins().getPayment(),
                         String.valueOf(totalMoney),
