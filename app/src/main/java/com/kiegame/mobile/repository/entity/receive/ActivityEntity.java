@@ -25,6 +25,8 @@ public class ActivityEntity {
     private String productId;
     // 卡卷状态(1已生成 2 未使用 3已使用)
     private Integer cardState;
+    // 1 活动 2 卡券
+    private Integer discountType;
     private String activityCardResultId;
     private String startTime;
     private String endTime;
@@ -237,6 +239,14 @@ public class ActivityEntity {
 
     public void setUseScopeServiceName(String useScopeServiceName) {
         this.useScopeServiceName = useScopeServiceName;
+    }
+
+    public Integer getDiscountType() {
+        return discountType;
+    }
+
+    public void setDiscountType(Integer discountType) {
+        this.discountType = discountType;
     }
 
     /**
