@@ -48,7 +48,13 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
     protected void onObject() {
         binding.setActivity(this);
         shop = (ShopEntity) getIntent().getSerializableExtra(Setting.APP_SHOP_ENTITY);
-        buySourceSize = 0;
+        if (shop != null) {
+            if (shop.getProductVariety() == 1) {
+                buySourceSize = shop.getBarCount() - Cache.ins().getShopSumById(shop.getProductId()) >= 1 ? 1 : 0;
+            } else {
+                buySourceSize = 1;
+            }
+        }
     }
 
     @Override
@@ -59,6 +65,9 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         binding.tvShopDes.setText(shop.getProductDesc());
         binding.tvShopPrice.setText(cal(shop.getSellPrice()));
         binding.tvShopBuyInfo.setText(shop.getProductName());
+        binding.tvShopNum.setText(String.valueOf(buySourceSize));
+        binding.tvShopNum.setVisibility(buySourceSize != 0 ? View.VISIBLE : View.INVISIBLE);
+        binding.tvBtnLess.setVisibility(buySourceSize != 0 ? View.VISIBLE : View.INVISIBLE);
         makeFlavorTags(shop.getProductFlavorName());
         makeSpecTags(shop.getProductSpecName());
     }

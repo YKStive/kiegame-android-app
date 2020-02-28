@@ -242,7 +242,10 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
      */
     private synchronized void sortMenuData() {
         if (isTagDone && isTypeDone) {
+            ShopSortEntity ss = new ShopSortEntity();
+            ss.setProductTypeName("全部");
             this.menus.clear();
+            this.menus.add(ss);
             this.menus.addAll(this.types);
             this.menus.addAll(this.tags);
             this.menuAdapter.notifyDataSetChanged();

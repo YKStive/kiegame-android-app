@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +20,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseItemDraggableAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.callback.ItemDragAndSwipeCallback;
+import com.chad.library.adapter.base.listener.OnItemSwipeListener;
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.consts.Payment;
@@ -58,7 +63,7 @@ import java.util.List;
  */
 public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 
-    private BaseQuickAdapter<BuyShop, BaseViewHolder> adapter;
+    private BaseItemDraggableAdapter<BuyShop, BaseViewHolder> adapter;
     private UserInfoEntity userInfo;
     private ShopCarModel model;
     private PopupWindow pw;
@@ -69,6 +74,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     private String[] permissions;
     private int pwHeight;
     private CouponModel couponModel;
+    private BuyShop delete;
 
     @Override
     protected int onLayout() {
@@ -106,7 +112,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     @Override
     protected void onView() {
         setShopListVisible();
-        adapter = new BaseQuickAdapter<BuyShop, BaseViewHolder>(R.layout.item_shop_car_shop, Cache.ins().getShops()) {
+        adapter = new BaseItemDraggableAdapter<BuyShop, BaseViewHolder>(R.layout.item_shop_car_shop, Cache.ins().getShops()) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, BuyShop item) {
                 CheckBox cb = helper.getView(R.id.cb_shop_select);
@@ -136,7 +142,45 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 less.setOnClickListener(v -> less(less, tv, item));
             }
         };
-        binding.rvShopLayout.setLayoutManager(new LinearLayoutManager(this));
+        OnItemSwipeListener onItemSwipeListener = new OnItemSwipeListener() {
+            @Override
+            public void onItemSwipeStart(RecyclerView.ViewHolder viewHolder, int i) {
+                List<BuyShop> shops = Cache.ins().getShops();
+                if (shops != null) {
+                    delete = shops.get(i);
+                }
+            }
+
+            @Override
+            public void clearView(RecyclerView.ViewHolder viewHolder, int i) {
+
+            }
+
+            @Override
+            public void onItemSwiped(RecyclerView.ViewHolder viewHolder, int i) {
+                if (delete != null) {
+                    Cache.ins().setShopSumById(delete.getProductId(), Cache.ins().getShopSumById(delete.getProductId()) - delete.getProductBuySum());
+                }
+                Cache.ins().setProductCoupon(null);
+                Cache.ins().updateTotalMoney();
+                Cache.ins().notifyChange();
+            }
+
+            @Override
+            public void onItemSwipeMoving(Canvas canvas, RecyclerView.ViewHolder viewHolder, float v, float v1, boolean b) {
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemDragAndSwipeCallback(adapter));
+        itemTouchHelper.attachToRecyclerView(binding.rvShopLayout);
+        adapter.enableSwipeItem();
+        adapter.setOnItemSwipeListener(onItemSwipeListener);
+        binding.rvShopLayout.setLayoutManager(new LinearLayoutManager(this) {
+            @Override
+            public boolean canScrollHorizontally() {
+                return false;
+            }
+        });
         binding.rvShopLayout.setAdapter(adapter);
     }
 

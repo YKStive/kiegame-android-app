@@ -468,7 +468,8 @@ public class Cache extends BaseObservable {
             shop.setFee(data.getSellPrice());
             shop.setMax(data.getBarCount());
             value.add(shop);
-            buySum.put(shop.getProductId(), sum);
+            Integer count = buySum.get(shop.getProductId());
+            buySum.put(shop.getProductId(), count == null ? sum : count + sum);
         }
         // 更新数据
         this.shops.setValue(value);
@@ -513,7 +514,8 @@ public class Cache extends BaseObservable {
         // 如果没找到就新建一个并添加到商品列表中
         if (!hasShop) {
             value.add(data);
-            buySum.put(data.getProductId(), sum);
+            Integer count = buySum.get(data.getProductId());
+            buySum.put(data.getProductId(), count == null ? sum : count + sum);
         }
         // 更新数据
         this.shops.setValue(value);

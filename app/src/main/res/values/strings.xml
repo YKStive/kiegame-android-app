@@ -52,6 +52,7 @@
     <string name="order_all">全部</string>
     <string name="money_10">10.00</string>
     <string name="money_20">20.00</string>
+    <string name="money_30">30.00</string>
     <string name="money_50">50.00</string>
     <string name="money_100">100.00</string>
     <string name="zero">0</string>
@@ -83,4 +84,7 @@
     <string name="app_pay_success">支付成功！</string>
     <string name="app_pay_failure">支付失败！</string>
     <string name="app_no_coupons">暂无可用优惠券~</string>
+    <string name="net_fee_select_or_input_money">选择或输入金额</string>
+    <string name="app_input_recharge_monet_title">输入充值金额</string>
+    <string name="app_tv_input_name">充值金额(元) :</string>
 </resources>

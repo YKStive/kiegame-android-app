@@ -35,6 +35,7 @@ import com.kiegame.mobile.ui.activity.ShopCarActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.utils.CouponSelect;
 import com.kiegame.mobile.utils.DialogBox;
+import com.kiegame.mobile.utils.InputBox;
 import com.kiegame.mobile.utils.Menu;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
@@ -131,6 +132,16 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private void queryBannerResult(List<BannerEntity> data) {
         binding.bnBanner.setImages(data);
         binding.bnBanner.start();
+    }
+
+    /**
+     * 显示输入充值金额对话框
+     */
+    public void showInputMoney() {
+        InputBox.ins().confirm(money -> {
+            this.recharge(this.moneyBtn, 0);
+            this.recharge(this.moneyBtn, money);
+        }).show();
     }
 
     /**
