@@ -61,10 +61,10 @@ public class NetFeeModel extends ViewModel {
      * 初始化用户数据
      */
     private void initData() {
-        this.amount.setValue("0");
-        this.award.setValue("0");
-        this.gabon.setValue("0");
-        this.bonus.setValue("0");
+        this.amount.setValue("0.00");
+        this.award.setValue("0.00");
+        this.gabon.setValue("0.00");
+        this.bonus.setValue("0.00");
         this.recharge.setValue("0.00");
     }
 

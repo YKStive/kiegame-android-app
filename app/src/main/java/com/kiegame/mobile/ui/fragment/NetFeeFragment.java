@@ -242,6 +242,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 .confirm(() -> {
                     if (this.moneyBtn != null) {
                         this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
+                        this.moneyBtn.setTextColor(getResources().getColor(R.color.gray_white));
                     }
                     this.model.recharge.setValue("0.00");
                     model.resetData();
