@@ -37,6 +37,7 @@ public class BuyOrderEntity {
     private int payState;
     private String operatorName;
     private String customerName;
+    private Integer discountAmount;
     private int orderState;
     private int customerType;
     private int payType;
@@ -50,6 +51,14 @@ public class BuyOrderEntity {
     private boolean isSelect;
     private String idCard;
     private String seatNumber;
+
+    public Integer getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Integer discountAmount) {
+        this.discountAmount = discountAmount;
+    }
 
     public String getIdCard() {
         return idCard;
@@ -209,5 +218,9 @@ public class BuyOrderEntity {
 
     public void setItemList(List<BuyShopEntity> itemList) {
         this.itemList = itemList;
+    }
+
+    public int getTotalAmount() {
+        return discountAmount != null ? this.payAmount - this.discountAmount : this.payAmount;
     }
 }

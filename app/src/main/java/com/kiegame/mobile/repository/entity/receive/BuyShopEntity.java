@@ -29,7 +29,7 @@ public class BuyShopEntity {
     private String orderId;
     private String productSpecName;
     private String productImg;
-    private int discountAmount;
+    private Integer discountAmount;
     private String sellPrice;
     private String productName;
     private String orderDetailId;
@@ -88,11 +88,11 @@ public class BuyShopEntity {
         this.productImg = productImg;
     }
 
-    public int getDiscountAmount() {
+    public Integer getDiscountAmount() {
         return discountAmount;
     }
 
-    public void setDiscountAmount(int discountAmount) {
+    public void setDiscountAmount(Integer discountAmount) {
         this.discountAmount = discountAmount;
     }
 

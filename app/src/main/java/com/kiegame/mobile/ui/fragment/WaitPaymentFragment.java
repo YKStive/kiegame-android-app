@@ -141,7 +141,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                 helper.setVisible(R.id.iv_pay_type_image, !Text.empty(payName));
                 helper.setVisible(R.id.tv_pay_type, !Text.empty(payName));
                 helper.setText(R.id.tv_user_name, getUserName(item));
-                helper.setText(R.id.tv_shop_total_money, String.format("¥%s", cal(item.getOrderAmount())));
+                helper.setText(R.id.tv_shop_total_money, String.format("¥%s", cal(item.getTotalAmount())));
                 helper.setChecked(R.id.cb_shop_select, item.isSelect());
                 helper.getView(R.id.cb_shop_select).setOnClickListener(v -> {
                     item.setSelect(((CheckBox) v).isChecked());
@@ -222,7 +222,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                     return;
                 }
             }
-            totalMoney += order.getPayAmount();
+            totalMoney += order.getTotalAmount();
         }
         selectPayType();
     }
@@ -517,7 +517,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
             this.money = 0;
             for (BuyOrderEntity order : this.orders) {
                 if (order.isSelect()) {
-                    this.money += order.getPayAmount();
+                    this.money += order.getTotalAmount();
                 } else {
                     all = false;
                 }
