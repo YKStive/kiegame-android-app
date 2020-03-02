@@ -39,7 +39,7 @@ public interface ApiService {
     /**
      * 用户登录
      */
-    @POST("/app/login/userLogin")
+    @POST("app/login/userLogin")
     Observable<Result<List<LoginEntity>>> userLogin(@Body UserLogin body);
 
     /**
