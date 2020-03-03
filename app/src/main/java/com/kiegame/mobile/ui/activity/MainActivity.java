@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.adapter.ViewAdapter;
 import com.kiegame.mobile.databinding.ActivityMainBinding;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.ui.base.BaseActivity;
 
 import java.util.ArrayList;
@@ -59,6 +60,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
 
         this.pressColor = this.getResources().getColor(R.color.main_nav_btn_press);
         this.noneColor = this.getResources().getColor(R.color.main_nav_btn_none);
+
+        Cache.ins().getMainPageObserver().observe(this, page -> {
+            if (page != null) {
+                binding.vpViews.setCurrentItem(page);
+            }
+        });
     }
 
     @SuppressLint("InflateParams")

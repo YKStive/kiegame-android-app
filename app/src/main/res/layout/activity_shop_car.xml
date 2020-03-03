@@ -528,8 +528,7 @@
                     android:paddingBottom="10dp"
                     android:text="@string/go_net_fee_recharge"
                     android:textColor="@color/net_fee_option_btn"
-                    android:textSize="14sp"
-                    android:visibility="@{cache.shops != null &amp;&amp; cache.shops.size() == 1 ? View.GONE:View.VISIBLE}" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:layout_width="wrap_content"

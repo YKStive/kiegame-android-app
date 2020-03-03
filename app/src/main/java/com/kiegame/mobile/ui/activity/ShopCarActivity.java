@@ -440,6 +440,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 去充值
      */
     public void toRecharge() {
+        Cache.ins().getMainPageObserver().setValue(0);
         this.finish();
     }
 
@@ -580,10 +581,10 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 // 结算
                 AddOrderEntity order = data.get(0);
                 if (order != null) {
+                    resetShopData();
                     if (Cache.ins().getPayment() == Payment.PAY_TYPE_ONLINE) {
                         queryPayResult(order.getPaymentPayId());
                     } else {
-                        resetShopData();
                         PaySuccess.ins().confirm(this::finish).order(order.getPaymentPayId()).show();
                     }
                 }
@@ -611,7 +612,6 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 if (payResultEntities != null) {
                     PayResultEntity res = payResultEntities.get(0);
                     if (res.getPayState() == 2) {
-                        resetShopData();
                         PaySuccess.ins().confirm(this::finish).order(res.getPaymentPayId()).show();
                     } else if (res.getPayState() == 4) {
                         PayFailure.ins().message("支付失败").show();

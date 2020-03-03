@@ -56,6 +56,8 @@ public class Cache extends BaseObservable {
     private MutableLiveData<Integer> netFeeObserver;
     // 订单列表更新
     private MutableLiveData<Integer> orderObserver;
+    // 首页页面更新
+    private MutableLiveData<Integer> mainPageObserver;
     // 网费优惠
     private ActivityEntity netFeeCoupon;
     // 商品优惠
@@ -67,6 +69,13 @@ public class Cache extends BaseObservable {
 
     private Cache() {
         this.buySum = new HashMap<>();
+        this.shopSum = new MutableLiveData<>();
+        this.shopObserver = new MutableLiveData<>();
+        this.netFeeObserver = new MutableLiveData<>();
+        this.orderObserver = new MutableLiveData<>();
+        this.mainPageObserver = new MutableLiveData<>();
+        this.netFee = new MutableLiveData<>();
+        this.shops = new MutableLiveData<>();
         this.initialize();
     }
 
@@ -76,17 +85,11 @@ public class Cache extends BaseObservable {
     public void initialize() {
         this.token = Prefer.get(Setting.APP_NETWORK_TOKEN, "");
         this.login = PreferPlus.get(Setting.USER_LOGIN_OBJECT, LoginEntity.class);
-        this.netFee = new MutableLiveData<>();
         this.netFee.postValue(0);
-        this.shops = new MutableLiveData<>();
         this.paymentMoney = 0;
         this.userName = "没有选择会员";
         this.payment = Payment.PAY_TYPE_ONLINE;
-        this.shopSum = new MutableLiveData<>();
         this.shopSum.postValue(0);
-        this.shopObserver = new MutableLiveData<>();
-        this.netFeeObserver = new MutableLiveData<>();
-        this.orderObserver = new MutableLiveData<>();
         this.setNetFeeCoupon(null);
         this.setProductCoupon(null);
         this.productCouponMoney = 0;
@@ -200,6 +203,13 @@ public class Cache extends BaseObservable {
      */
     public MutableLiveData<Integer> getNetFeeObserver() {
         return netFeeObserver;
+    }
+
+    /**
+     * 获取首页页面更新
+     */
+    public MutableLiveData<Integer> getMainPageObserver() {
+        return mainPageObserver;
     }
 
     /**

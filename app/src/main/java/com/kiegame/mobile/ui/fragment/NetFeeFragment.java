@@ -1,5 +1,6 @@
 package com.kiegame.mobile.ui.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
+import com.kiegame.mobile.consts.Payment;
 import com.kiegame.mobile.databinding.FragmentNetFeeBinding;
 import com.kiegame.mobile.model.CouponModel;
 import com.kiegame.mobile.model.NetFeeModel;
@@ -27,16 +30,21 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
+import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
+import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.activity.LoginActivity;
 import com.kiegame.mobile.ui.activity.MainActivity;
-import com.kiegame.mobile.ui.activity.ShopCarActivity;
+import com.kiegame.mobile.ui.activity.ScanActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.utils.CouponSelect;
 import com.kiegame.mobile.utils.DialogBox;
 import com.kiegame.mobile.utils.InputBox;
 import com.kiegame.mobile.utils.Menu;
+import com.kiegame.mobile.utils.PayFailure;
+import com.kiegame.mobile.utils.PaySuccess;
+import com.kiegame.mobile.utils.ServicePay;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 import com.youth.banner.loader.ImageLoader;
@@ -61,6 +69,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private Menu menu;
     private int pwHeight;
     private CouponModel couponModel;
+    private final int RESULT_CODE_SCAN = 10086;
+    private String[] permissions;
+    private int orderType = -1;
 
     @Override
     protected int onLayout() {
@@ -89,6 +100,10 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             this.recharge(this.moneyBtn, 0);
             this.resetData();
         });
+        permissions = new String[]{
+                Manifest.permission.CAMERA,
+                Manifest.permission.VIBRATE,
+        };
     }
 
     @Override
@@ -322,10 +337,54 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     public void totalShop() {
         if (Cache.ins().getUserInfo() != null) {
             if (canCreateOrderOrPayment(2)) {
-                startActivity(new Intent(getActivity(), ShopCarActivity.class));
+                int payment = Cache.ins().getPayment();
+                if (payment == Payment.PAY_TYPE_SERVICE) {
+                    // 客维支付
+                    int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
+                    ServicePay.ins().money(totalMoney).confirm(password -> createOrderOrPayment(password, 2)).show();
+                } else {
+                    startScanActivity(payment);
+                }
             }
         } else {
             Toast.show("请先选择会员");
+        }
+    }
+
+    /**
+     * 跳转到扫码界面
+     *
+     * @param payType 支付类型
+     */
+    private void startScanActivity(int payType) {
+        requestSelfPermission(permissions, (authorize, permissions1) -> {
+            if (authorize) {
+                String value;
+                String money = cal(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum());
+                if (payType == Payment.PAY_TYPE_BUCKLE) {
+                    value = String.format("卡扣支付%s元", money);
+                } else if (payType == Payment.PAY_TYPE_ONLINE) {
+                    value = String.format("扫码支付%s元", money);
+                } else {
+                    value = "扫码支付";
+                }
+                startActivityForResult(new Intent(getActivity(), ScanActivity.class)
+                                .putExtra(Setting.APP_SCAN_TITLE, value),
+                        RESULT_CODE_SCAN);
+            } else {
+                Toast.show("相机权限授权失败");
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            String password = data.getStringExtra(Setting.APP_SCAN_CONTENT);
+            if (!Text.empty(password)) {
+                createOrderOrPayment(password, 2);
+            }
         }
     }
 
@@ -335,28 +394,64 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     public void createOrder() {
         if (Cache.ins().getUserInfo() != null) {
             if (canCreateOrderOrPayment(1)) {
-                ActivityEntity coupon = Cache.ins().getNetFeeCoupon();
-                int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
-                LiveData<List<AddOrderEntity>> order = model.addOrder(
-                        Cache.ins().getNetFeeNum(),
-                        Cache.ins().getShopMoneyTotalNum(),
-                        Cache.ins().getUserInfo().getSeatNumber(),
-                        Cache.ins().getUserInfo().getCustomerId(),
-                        Cache.ins().getUserInfo().getBonusBalance(),
-                        coupon == null ? null : coupon.getDiscountType(),
-                        coupon == null ? null : (coupon.getDiscountType() == 1 ? coupon.getActivityId() : coupon.getActivityCardResultId()),
-                        coupon == null ? null : new BigDecimal(coupon.getActivityMoney()).multiply(new BigDecimal("100")).intValue(),
-                        Cache.ins().getPayment(),
-                        String.valueOf(totalMoney),
-                        null,
-                        null,
-                        1);
-                if (!order.hasObservers()) {
-                    order.observe(this, this::onCreateOrderResult);
-                }
+                createOrderOrPayment(null, 1);
             }
         } else {
             Toast.show("请先选择会员");
+        }
+    }
+
+    /**
+     * 创建订单或结算
+     *
+     * @param buyPayPassword 支付密码
+     * @param isAddOrder     下单或结算 1: 下单 2: 结算
+     */
+    private void createOrderOrPayment(String buyPayPassword, int isAddOrder) {
+        if (canCreateOrderOrPayment(isAddOrder)) {
+            ActivityEntity coupon = Cache.ins().getNetFeeCoupon();
+            int totalMoney = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
+            this.orderType = isAddOrder;
+            LiveData<List<AddOrderEntity>> order = model.addOrder(
+                    Cache.ins().getNetFeeNum(),
+                    Cache.ins().getShopMoneyTotalNum(),
+                    Cache.ins().getUserInfo().getSeatNumber(),
+                    Cache.ins().getUserInfo().getCustomerId(),
+                    Cache.ins().getUserInfo().getBonusBalance(),
+                    coupon == null ? null : coupon.getDiscountType(),
+                    coupon == null ? null : (coupon.getDiscountType() == 1 ? coupon.getActivityId() : coupon.getActivityCardResultId()),
+                    coupon == null ? null : new BigDecimal(coupon.getActivityMoney()).multiply(new BigDecimal("100")).intValue(),
+                    Cache.ins().getPayment(),
+                    String.valueOf(totalMoney),
+                    null,
+                    buyPayPassword,
+                    isAddOrder);
+            if (!order.hasObservers()) {
+                order.observe(this, this::onCreateOrderResult);
+            }
+        }
+    }
+
+    /**
+     * 查询支付结果
+     *
+     * @param payId 支付ID
+     */
+    private void queryPayResult(String payId) {
+        LiveData<List<PayResultEntity>> liveData = model.queryPayState(payId);
+        if (!liveData.hasObservers()) {
+            liveData.observe(this, payResultEntities -> {
+                if (payResultEntities != null) {
+                    PayResultEntity res = payResultEntities.get(0);
+                    if (res.getPayState() == 2) {
+                        PaySuccess.ins().confirm(null).order(res.getPaymentPayId()).show();
+                    } else if (res.getPayState() == 4) {
+                        PayFailure.ins().message("支付失败").show();
+                    } else {
+                        queryPayResult(res.getPaymentPayId());
+                    }
+                }
+            });
         }
     }
 
@@ -423,12 +518,34 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     private void onCreateOrderResult(List<AddOrderEntity> data) {
         if (data != null) {
-            this.recharge(this.moneyBtn, 0);
-            resetData();
-            Cache.ins().getOrderObserver().setValue(data.size());
-            Toast.show("下单成功");
+            if (orderType == 1) {
+                // 下单
+                this.recharge(this.moneyBtn, 0);
+                resetData();
+                Cache.ins().getOrderObserver().setValue(data.size());
+                Toast.show("下单成功");
+            } else {
+                // 结算
+                AddOrderEntity order = data.get(0);
+                if (order != null) {
+                    this.recharge(this.moneyBtn, 0);
+                    resetData();
+                    Cache.ins().getOrderObserver().setValue(data.size());
+                    if (Cache.ins().getPayment() == Payment.PAY_TYPE_ONLINE) {
+                        queryPayResult(order.getPaymentPayId());
+                    } else {
+                        PaySuccess.ins().confirm(null).order(order.getPaymentPayId()).show();
+                    }
+                }
+            }
         } else {
-            Toast.show("下单失败");
+            if (orderType == 1) {
+                // 下单
+                Toast.show("下单失败");
+            } else {
+                // 结算
+                PayFailure.ins().message("未找到订单号").show();
+            }
         }
     }
 
