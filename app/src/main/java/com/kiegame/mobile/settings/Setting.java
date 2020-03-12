@@ -23,4 +23,6 @@ public class Setting {
     public final static String APP_SCAN_TITLE = "app.scan.title";
     // 扫码内容
     public final static String APP_SCAN_CONTENT = "app.scan.content";
+    // 测试地址
+    public final static String APP_HOST_TEST = "app.host.test";
 }

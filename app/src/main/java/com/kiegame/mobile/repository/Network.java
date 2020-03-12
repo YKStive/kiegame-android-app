@@ -18,14 +18,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Network {
 
     /* 网络接口 */
-    private static ApiService api;
+    private static ApiService API;
+    private static String BASE_URL = ApiService.BASE_URL;
 
     /**
      * 初始化方法,需要在{@link android.app.Application} 中初始化
      */
     public static void init() {
         OkHttpClient client = Network.initHttpClient();
-        Network.api = Network.initApiService(client);
+        Network.API = Network.initApiService(client);
     }
 
     /**
@@ -52,7 +53,7 @@ public class Network {
      */
     private static ApiService initApiService(OkHttpClient client) {
         return new Retrofit.Builder()
-                .baseUrl(ApiService.BASE_URL)
+                .baseUrl(BASE_URL)
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -61,11 +62,21 @@ public class Network {
     }
 
     /**
+     * 改变地址
+     *
+     * @param host 地址
+     */
+    public static void change(String host) {
+        Network.BASE_URL = host;
+        Network.init();
+    }
+
+    /**
      * 获取网路接口
      *
      * @return 返回一个ApiService接口对象
      */
     public static ApiService api() {
-        return Network.api;
+        return Network.API;
     }
 }

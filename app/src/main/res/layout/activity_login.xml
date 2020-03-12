@@ -105,6 +105,7 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/iv_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/login_logo_margin_bottom"
@@ -123,9 +124,10 @@
             android:thumb="@drawable/shape_switch_thumb"
             android:track="@drawable/shape_switch_trace"
             app:layout_constraintLeft_toLeftOf="@id/ll_password_input"
-            app:layout_constraintTop_toBottomOf="@id/ll_password_input" />
+            app:layout_constraintTop_toBottomOf="@id/ll_address_input" />
 
         <TextView
+            android:id="@+id/tv_keep_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_keep_password"
@@ -134,6 +136,70 @@
             app:layout_constraintBottom_toBottomOf="@id/switch_keep_password"
             app:layout_constraintLeft_toRightOf="@id/switch_keep_password"
             app:layout_constraintTop_toTopOf="@id/switch_keep_password" />
+
+        <Switch
+            android:id="@+id/switch_test_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="@dimen/login_keep_password_switch_margin_top"
+            android:checked="false"
+            android:thumb="@drawable/shape_switch_thumb"
+            android:track="@drawable/shape_switch_trace"
+            android:visibility="gone"
+            app:layout_constraintLeft_toRightOf="@id/tv_keep_text"
+            app:layout_constraintTop_toBottomOf="@id/ll_address_input" />
+
+        <TextView
+            android:id="@+id/tv_test_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_test_mode"
+            android:textColor="@color/login_keep_password"
+            android:textSize="@dimen/login_keep_password"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/switch_keep_password"
+            app:layout_constraintLeft_toRightOf="@id/switch_test_mode"
+            app:layout_constraintTop_toTopOf="@id/switch_keep_password" />
+
+        <LinearLayout
+            android:id="@+id/ll_address_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/login_input_margin"
+            android:layout_marginTop="22dp"
+            android:layout_marginRight="@dimen/login_input_margin"
+            android:background="@drawable/shape_login_input_background"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_password_input">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/login_input_icon_padding"
+                android:src="@drawable/ic_password" />
+
+            <EditText
+                android:id="@+id/et_address"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/login_input_address_hint"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textColorHint="@color/login_input_hint"
+                android:textSize="@dimen/login_input_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
