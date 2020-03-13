@@ -58,7 +58,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 helper.setVisible(R.id.tv_bar_count, item.getProductVariety() == 1);
                 if (item.getProductVariety() == 1) {
                     int count = item.getBarCount() - sum;
-                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
+                    helper.setText(R.id.tv_bar_count, count <= 10 ? (count == 0 ? "已售空" : String.format("剩余: %s件", count)) : "");
                 }
                 setPlusShopClickListener(helper, item);
                 setLessShopClickListener(helper, item);
