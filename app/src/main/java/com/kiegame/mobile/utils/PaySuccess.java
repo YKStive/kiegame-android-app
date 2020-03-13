@@ -57,12 +57,14 @@ public class PaySuccess {
                 this.binding.getRoot().setAlpha((Float) animation.getAnimatedValue());
             }
         });
-        this.animator.addListener(new OnAnimationListener() {
+        this.animator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animation) {
-                InjectView.ins().inject(binding.getRoot());
-                isShowing = true;
-                startCountdown();
+            public void onAnimationStart(Animator animation, boolean isReverse) {
+                if (!isReverse) {
+                    InjectView.ins().inject(binding.getRoot());
+                    isShowing = true;
+                    startCountdown();
+                }
             }
 
             @Override

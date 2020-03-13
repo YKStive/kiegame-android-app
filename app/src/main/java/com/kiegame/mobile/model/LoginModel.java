@@ -37,10 +37,10 @@ public class LoginModel extends ViewModel {
     /**
      * 登录
      */
-    public LiveData<LoginEntity> login() {
+    public LiveData<LoginEntity> login(String username, String password) {
         UserLogin bean = new UserLogin();
-        bean.setLoginCode(username.getValue());
-        bean.setLoginPass(password.getValue());
+        bean.setLoginCode(username == null ? this.username.getValue() : username);
+        bean.setLoginPass(password == null ? this.password.getValue() : password);
         bean.setLoginType(1);
         Network.api().userLogin(bean)
                 .compose(Scheduler.apply())

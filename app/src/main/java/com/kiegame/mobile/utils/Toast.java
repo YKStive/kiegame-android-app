@@ -25,6 +25,7 @@ public class Toast {
      * @param text 字符串
      */
     public static void show(String text) {
+//        android.widget.Toast.makeText(Game.ins(), text, TOAST_DURATION_SHORT).show();
         ToastView.INS.showToast(text, Gravity.CENTER, Toast.TOAST_DURATION_SHORT);
     }
 
@@ -35,6 +36,7 @@ public class Toast {
      */
     public static void show(@StringRes int id) {
         ToastView.INS.showToast(Game.ins().getString(id), Gravity.CENTER, TOAST_DURATION_SHORT);
+//        android.widget.Toast.makeText(Game.ins(), Game.ins().getString(id), TOAST_DURATION_SHORT).show();
     }
 
     /**
@@ -44,6 +46,7 @@ public class Toast {
      * @param args 格式化参数
      */
     public static void show(@StringRes int id, Object... args) {
+//        android.widget.Toast.makeText(Game.ins(), Game.ins().getString(id, args), TOAST_DURATION_SHORT).show();
         ToastView.INS.showToast(Game.ins().getString(id, args), Gravity.CENTER, TOAST_DURATION_SHORT);
     }
 

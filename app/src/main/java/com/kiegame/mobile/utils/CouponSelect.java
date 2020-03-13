@@ -1,6 +1,7 @@
 package com.kiegame.mobile.utils;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -89,7 +90,7 @@ public class CouponSelect {
                 this.binding.vvBackground.setAlpha((Float) animation.getAnimatedValue());
             }
         });
-        this.alphaAnimator.addListener(new OnAnimationListener() {
+        this.alphaAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation, boolean isReverse) {
                 if (isReverse) {
@@ -105,11 +106,13 @@ public class CouponSelect {
                 this.binding.clContent.setTranslationY((Float) animation.getAnimatedValue());
             }
         });
-        this.moveAnimator.addListener(new OnAnimationListener() {
+        this.moveAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationStart(Animator animation) {
-                InjectView.ins().inject(binding.getRoot());
-                isShowing = true;
+            public void onAnimationStart(Animator animation, boolean isReverse) {
+                if (!isReverse) {
+                    InjectView.ins().inject(binding.getRoot());
+                    isShowing = true;
+                }
             }
 
             @Override

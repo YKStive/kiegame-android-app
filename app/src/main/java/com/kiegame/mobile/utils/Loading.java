@@ -1,12 +1,12 @@
 package com.kiegame.mobile.utils;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.view.View;
 
 import com.kiegame.mobile.R;
-import com.kiegame.mobile.ui.base.listener.OnAnimationListener;
 
 /**
  * Created by: var_rain.
@@ -35,11 +35,13 @@ public class Loading {
                     Loading.view.setAlpha((Float) animation.getAnimatedValue());
                 }
             });
-            Loading.animator.addListener(new OnAnimationListener() {
+            Loading.animator.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationStart(Animator animation) {
-                    InjectView.ins().inject(Loading.view);
-                    Loading.isShowing = true;
+                public void onAnimationStart(Animator animation, boolean isReverse) {
+                    if (!isReverse) {
+                        InjectView.ins().inject(Loading.view);
+                        Loading.isShowing = true;
+                    }
                 }
 
                 @Override

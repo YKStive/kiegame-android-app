@@ -29,7 +29,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
 
     private LoginModel model;
     private ValueAnimator switchShow;
-    private ValueAnimator hostShow;
+    private long touchTime;
 
     @Override
     protected int onLayout() {
@@ -46,25 +46,17 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
 
     @Override
     protected void onView() {
-        binding.ivLogo.setOnLongClickListener(v -> {
-            if (binding.switchTestMode.getVisibility() == View.GONE) {
-                switchShow.start();
-            } else {
-                switchShow.reverse();
+        binding.ivLogo.setOnClickListener(v -> {
+            long now = System.currentTimeMillis();
+            if (now - touchTime < 800) {
+                if (binding.switchTestMode.getVisibility() == View.GONE) {
+                    switchShow.start();
+                } else {
+                    switchShow.reverse();
+                }
             }
-            return false;
+            touchTime = System.currentTimeMillis();
         });
-        binding.switchTestMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                hostShow.start();
-            } else {
-                hostShow.reverse();
-            }
-        });
-        String host = Prefer.get(Setting.APP_HOST_TEST, "");
-        if (!Text.empty(host)) {
-            binding.etAddress.setText(host);
-        }
     }
 
     @Override
@@ -102,37 +94,19 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
                 }
             }
         });
-        hostShow = ValueAnimator.ofFloat(0.0f, 1.0f);
-        hostShow.setDuration(200);
-        hostShow.addUpdateListener(animation -> binding.llAddressInput.setAlpha((Float) animation.getAnimatedValue()));
-        hostShow.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation, boolean isReverse) {
-                binding.llAddressInput.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
-                if (isReverse) {
-                    binding.llAddressInput.setVisibility(View.GONE);
-                }
-            }
-        });
     }
 
     /**
      * 登录事件处理
      */
     public void login() {
-        if (binding.switchTestMode.isChecked()) {
-            String host = binding.etAddress.getText().toString();
-            if (!Text.empty(host)) {
-                Prefer.put(Setting.APP_HOST_TEST, host);
-                Network.change(host);
-            }
-        }
         String account = model.username.getValue();
         String password = model.password.getValue();
+        if (binding.switchTestMode.isChecked()) {
+            Network.change("http://10.168.1.200:9000/");
+            account = "cjx1";
+            password = "123456";
+        }
         if (Text.empty(account)) {
             Toast.show("请填写登录账号");
             return;
@@ -141,7 +115,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
             Toast.show("请填写登录密码");
             return;
         }
-        model.login().observe(this, this::loginResult);
+        model.login(account, password).observe(this, this::loginResult);
     }
 
     /**
