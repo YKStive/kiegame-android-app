@@ -1,7 +1,9 @@
 package com.kiegame.mobile.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -88,6 +90,7 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         model.searchShop.observe(this, this::shopSearch);
     }
 
+    @SuppressLint("InflateParams")
     @Override
     protected void onView() {
         badge = new QBadgeView(getContext())
@@ -97,16 +100,26 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         menuAdapter = new BaseQuickAdapter<ShopSortEntity, BaseViewHolder>(R.layout.item_more_list_menu, menus) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, ShopSortEntity item) {
-                int index = menus.indexOf(item);
-                if (index == 0) {
-                    setMenuItemStyle(helper.getView(R.id.ll_item_root));
-                }
+//                int index = menus.indexOf(item);
+//                if (index == 0) {
+//                    setMenuItemStyle(helper.getView(R.id.ll_item_root));
+//                }
                 String menuName = item.getProductTypeName() == null ? item.getProductTagName() : item.getProductTypeName();
                 TextView menu = helper.getView(R.id.tv_item_menu);
                 menu.setLetterSpacing(menuName.length() == 2 ? 0.4f : 0.05f);
                 menu.setText(menuName);
             }
         };
+        View header = LayoutInflater.from(getContext()).inflate(R.layout.item_more_list_menu, null, false);
+        TextView menu = header.findViewById(R.id.tv_item_menu);
+        menu.setLetterSpacing(0.4f);
+        menu.setText("全部");
+        header.setOnClickListener(v -> {
+            setMenuItemStyle((LinearLayout) v);
+            queryShops(null, null, null);
+        });
+        setMenuItemStyle((LinearLayout) header);
+        menuAdapter.addHeaderView(header);
         menuAdapter.setOnItemClickListener((adapter, view, position) -> {
             setMenuItemStyle((LinearLayout) view);
             if (position < this.menus.size()) {
@@ -242,20 +255,18 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
      */
     private synchronized void sortMenuData() {
         if (isTagDone && isTypeDone) {
-            ShopSortEntity ss = new ShopSortEntity();
-            ss.setProductTypeName("全部");
             this.menus.clear();
-            this.menus.add(ss);
             this.menus.addAll(this.types);
             this.menus.addAll(this.tags);
             this.menuAdapter.notifyDataSetChanged();
-            ShopSortEntity sort = this.menus.get(0);
-            if (sort != null) {
-                productName = sort.getProductTypeName() == null ? sort.getProductTagName() : sort.getProductTypeName();
-                productTagId = sort.getProductTagId();
-                productTypeId = sort.getProductTypeId();
-                queryShops(productTypeId, null, productTagId, false);
-            }
+//            ShopSortEntity sort = this.menus.get(0);
+//            if (sort != null) {
+//                productName = sort.getProductTypeName() == null ? sort.getProductTagName() : sort.getProductTypeName();
+//                productTagId = sort.getProductTagId();
+//                productTypeId = sort.getProductTypeId();
+//                queryShops(productTypeId, null, productTagId, false);
+//            }
+            queryShops(null, null, null, false);
         }
         binding.tvShopEmpty.setVisibility(this.menus.size() == 0 ? View.VISIBLE : View.GONE);
     }

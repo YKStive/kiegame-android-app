@@ -33,13 +33,12 @@
 
         <ImageView
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="95dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/app_name"
             android:scaleType="fitXY"
             android:src="@drawable/ic_net_fee_recharge_background"
-            app:layout_constraintBottom_toBottomOf="@id/cl_vip_info"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -132,222 +131,236 @@
                 android:textSize="@dimen/net_fee_search_input" />
         </LinearLayout>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_banner_card"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/net_fee_banner_height"
-            android:layout_marginTop="@dimen/net_fee_banner_margin_top"
-            app:cardBackgroundColor="@color/translucent"
-            app:cardCornerRadius="@dimen/net_fee_banner_card_radius"
-            app:cardElevation="0dp"
-            app:cardMaxElevation="0dp"
-            app:layout_constraintLeft_toLeftOf="@id/ll_search"
-            app:layout_constraintRight_toRightOf="@id/ll_search"
-            app:layout_constraintTop_toBottomOf="@id/ll_search">
-
-            <com.youth.banner.Banner
-                android:id="@+id/bn_banner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:delay_time="3000"
-                app:indicator_drawable_selected="@drawable/ic_dot_press"
-                app:indicator_drawable_unselected="@drawable/ic_dot_none"
-                app:is_auto_play="true" />
-        </androidx.cardview.widget.CardView>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_vip_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/net_fee_vip_info_margin_top"
-            android:background="@drawable/ic_vip_box"
-            app:layout_constraintLeft_toLeftOf="@id/ll_search"
-            app:layout_constraintRight_toRightOf="@id/ll_search"
-            app:layout_constraintTop_toBottomOf="@id/cv_banner_card">
-
-            <TextView
-                android:id="@+id/tv_vip_info_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/net_fee_vip_info_text_margin"
-                android:drawableStart="@drawable/ic_vip"
-                android:drawablePadding="@dimen/net_fee_vip_info_drawable_padding"
-                android:text="@string/net_fee_vip_info"
-                android:textColor="@color/net_fee_vip_info_text"
-                android:textSize="@dimen/net_fee_vip_info_text"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <LinearLayout
-                android:id="@+id/ll_vip_info"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/net_fee_vip_info_margin"
-                android:background="@drawable/shape_vip_info_border"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="@dimen/net_fee_vip_info_padding"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_vip_info_text">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:text="@{cache.userName}"
-                    android:textColor="@color/net_fee_vip_info"
-                    android:textSize="@dimen/net_fee_vip_info"
-                    tools:text="B012｜510*************4612｜李某某" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_vip_btn_background"
-                    android:onClick="@{()->fragment.deleteVipInfo()}"
-                    android:paddingLeft="@dimen/net_fee_vip_info_delete_padding_left_right"
-                    android:paddingTop="@dimen/net_fee_vip_info_delete_padding_top_bottom"
-                    android:paddingRight="@dimen/net_fee_vip_info_delete_padding_left_right"
-                    android:paddingBottom="@dimen/net_fee_vip_info_delete_padding_top_bottom"
-                    android:text="@string/net_fee_vip_info_delete"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/net_fee_vip_info_btn_delete"
-                    android:visibility='@{cache.userName.equals("没有选择会员") ? View.INVISIBLE : View.VISIBLE}' />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:baselineAligned="false"
-                android:divider="@drawable/shape_vip_divider"
-                android:orientation="horizontal"
-                android:showDividers="middle"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_vip_info">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/net_fee_principal_balance_padding_top_bottom"
-                    android:paddingBottom="@dimen/net_fee_principal_balance_padding_top_bottom">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/net_fee_vip_principal_balance"
-                        android:textColor="@color/net_fee_balance_text"
-                        android:textSize="@dimen/net_fee_balance_text" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{model.amount}"
-                        android:textColor="@color/net_fee_balance"
-                        android:textSize="@dimen/net_fee_balance"
-                        tools:text="5.00" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/net_fee_principal_balance_padding_top_bottom"
-                    android:paddingBottom="@dimen/net_fee_principal_balance_padding_top_bottom">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/net_fee_vip_award_amount"
-                        android:textColor="@color/net_fee_balance_text"
-                        android:textSize="@dimen/net_fee_balance_text" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{model.award}"
-                        android:textColor="@color/net_fee_balance"
-                        android:textSize="@dimen/net_fee_balance"
-                        tools:text="10.00" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/net_fee_principal_balance_padding_top_bottom"
-                    android:paddingBottom="@dimen/net_fee_principal_balance_padding_top_bottom">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/net_fee_vip_gabon"
-                        android:textColor="@color/net_fee_balance_text"
-                        android:textSize="@dimen/net_fee_balance_text" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{model.gabon}"
-                        android:textColor="@color/net_fee_balance"
-                        android:textSize="@dimen/net_fee_balance"
-                        tools:text="100.00" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/net_fee_principal_balance_padding_top_bottom"
-                    android:paddingBottom="@dimen/net_fee_principal_balance_padding_top_bottom">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/net_fee_vip_bonus"
-                        android:textColor="@color/net_fee_balance_text"
-                        android:textSize="@dimen/net_fee_balance_text" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{model.bonus}"
-                        android:textColor="@color/net_fee_balance"
-                        android:textSize="@dimen/net_fee_balance"
-                        tools:text="30.00" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#F2F2F2"
+            android:layout_marginTop="@dimen/net_fee_banner_margin_top"
+            android:background="@color/translucent"
+            android:fillViewport="true"
             android:scrollbars="none"
             app:layout_constraintBottom_toTopOf="@id/ll_total"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_vip_info">
+            app:layout_constraintTop_toBottomOf="@id/ll_search">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#F2F2F2">
+                android:background="@color/translucent">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_banner_card"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/net_fee_banner_height"
+                    android:layout_marginLeft="@dimen/net_fee_search_margin"
+                    android:layout_marginRight="@dimen/net_fee_search_margin"
+                    app:cardBackgroundColor="@color/translucent"
+                    app:cardCornerRadius="@dimen/net_fee_banner_card_radius"
+                    app:cardElevation="0dp"
+                    app:cardMaxElevation="0dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.youth.banner.Banner
+                        android:id="@+id/bn_banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:delay_time="3000"
+                        app:indicator_drawable_selected="@drawable/ic_dot_press"
+                        app:indicator_drawable_unselected="@drawable/ic_dot_none"
+                        app:is_auto_play="true" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_vip_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/net_fee_search_margin"
+                    android:layout_marginTop="@dimen/net_fee_vip_info_margin_top"
+                    android:layout_marginRight="@dimen/net_fee_search_margin"
+                    android:background="@drawable/ic_vip_box"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cv_banner_card">
+
+                    <TextView
+                        android:id="@+id/tv_vip_info_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/net_fee_vip_info_text_margin"
+                        android:drawableStart="@drawable/ic_vip"
+                        android:drawablePadding="@dimen/net_fee_vip_info_drawable_padding"
+                        android:text="@string/net_fee_vip_info"
+                        android:textColor="@color/net_fee_vip_info_text"
+                        android:textSize="@dimen/net_fee_vip_info_text"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_vip_info"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/net_fee_vip_info_margin"
+                        android:background="@drawable/shape_vip_info_border"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/net_fee_vip_info_padding"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_vip_info_text">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:singleLine="true"
+                            android:text="@{cache.userName}"
+                            android:textColor="@color/net_fee_vip_info"
+                            android:textSize="@dimen/net_fee_vip_info"
+                            tools:text="B012｜510*************4612｜李某某" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/shape_vip_btn_background"
+                            android:onClick="@{()->fragment.deleteVipInfo()}"
+                            android:paddingLeft="@dimen/net_fee_vip_info_delete_padding_left_right"
+                            android:paddingTop="@dimen/net_fee_vip_info_delete_padding_top_bottom"
+                            android:paddingRight="@dimen/net_fee_vip_info_delete_padding_left_right"
+                            android:paddingBottom="@dimen/net_fee_vip_info_delete_padding_top_bottom"
+                            android:text="@string/net_fee_vip_info_delete"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/net_fee_vip_info_btn_delete"
+                            android:visibility='@{cache.userName.equals("没有选择会员") ? View.INVISIBLE : View.VISIBLE}' />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:baselineAligned="false"
+                        android:divider="@drawable/shape_vip_divider"
+                        android:orientation="horizontal"
+                        android:showDividers="middle"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_vip_info">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingTop="@dimen/net_fee_principal_balance_padding_top_bottom"
+                            android:paddingBottom="@dimen/net_fee_principal_balance_padding_top_bottom">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/net_fee_vip_principal_balance"
+                                android:textColor="@color/net_fee_balance_text"
+                                android:textSize="@dimen/net_fee_balance_text" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{model.amount}"
+                                android:textColor="@color/net_fee_balance"
+                                android:textSize="@dimen/net_fee_balance"
+                                tools:text="5.00" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingTop="@dimen/net_fee_principal_balance_padding_top_bottom"
+                            android:paddingBottom="@dimen/net_fee_principal_balance_padding_top_bottom">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/net_fee_vip_award_amount"
+                                android:textColor="@color/net_fee_balance_text"
+                                android:textSize="@dimen/net_fee_balance_text" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{model.award}"
+                                android:textColor="@color/net_fee_balance"
+                                android:textSize="@dimen/net_fee_balance"
+                                tools:text="10.00" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingTop="@dimen/net_fee_principal_balance_padding_top_bottom"
+                            android:paddingBottom="@dimen/net_fee_principal_balance_padding_top_bottom">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/net_fee_vip_gabon"
+                                android:textColor="@color/net_fee_balance_text"
+                                android:textSize="@dimen/net_fee_balance_text" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{model.gabon}"
+                                android:textColor="@color/net_fee_balance"
+                                android:textSize="@dimen/net_fee_balance"
+                                tools:text="100.00" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingTop="@dimen/net_fee_principal_balance_padding_top_bottom"
+                            android:paddingBottom="@dimen/net_fee_principal_balance_padding_top_bottom">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/net_fee_vip_bonus"
+                                android:textColor="@color/net_fee_balance_text"
+                                android:textSize="@dimen/net_fee_balance_text" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{model.bonus}"
+                                android:textColor="@color/net_fee_balance"
+                                android:textSize="@dimen/net_fee_balance"
+                                tools:text="30.00" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="#f2f2f2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cl_recharge" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_recharge"
@@ -356,7 +369,7 @@
                     android:background="@color/white"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@id/cl_vip_info">
 
                     <TextView
                         android:id="@+id/tv_actual_payment_amount"

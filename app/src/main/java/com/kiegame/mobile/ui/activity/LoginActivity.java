@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityLoginBinding;
 import com.kiegame.mobile.model.LoginModel;
+import com.kiegame.mobile.repository.ApiService;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
@@ -106,6 +107,8 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
             Network.change("http://10.168.1.200:9000/");
             account = "cjx1";
             password = "123456";
+        } else {
+            Network.change(ApiService.BASE_URL);
         }
         if (Text.empty(account)) {
             Toast.show("请填写登录账号");

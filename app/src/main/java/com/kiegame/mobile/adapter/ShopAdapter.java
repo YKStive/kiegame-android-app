@@ -8,6 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
@@ -48,7 +51,9 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             case ShopEntity.CONTENT:
                 int sum = Cache.ins().getShopSumById(item.getProductId());
                 ImageView view = helper.getView(R.id.iv_shop_image);
-                Glide.with(helper.itemView).load(item.getProductImg()).into(view);
+                Glide.with(helper.itemView).load(item.getProductImg())
+                        .apply(new RequestOptions().transform(new CenterCrop(), new RoundedCorners(6)))
+                        .into(view);
                 helper.setText(R.id.tv_shop_name, item.getProductName());
                 helper.setText(R.id.tv_shop_norm, item.getProductSpecName());
                 helper.setText(R.id.tv_shop_money, cal(item.getSellPrice()));
