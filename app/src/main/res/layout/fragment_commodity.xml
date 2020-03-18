@@ -134,13 +134,36 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ll_search">
 
+                    <LinearLayout
+                        android:id="@+id/ll_item_root"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/translucent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_percent="0.25">
+
+                        <TextView
+                            android:id="@+id/tv_item_menu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:textColor="@color/gray_black_text" />
+                    </LinearLayout>
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_menu"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ll_item_root"
                         app:layout_constraintWidth_percent="0.25" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -184,7 +207,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="32dp"
                     android:onClick="@{()->fragment.startShopCarActivity()}"
                     android:src="@drawable/ic_shop_car"
                     app:backgroundTint="@color/white"

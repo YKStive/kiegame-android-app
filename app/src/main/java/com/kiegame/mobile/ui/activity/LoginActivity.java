@@ -111,11 +111,11 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
             Network.change(ApiService.BASE_URL);
         }
         if (Text.empty(account)) {
-            Toast.show("请填写登录账号");
+            Toast.show("请输入账号");
             return;
         }
         if (Text.empty(password)) {
-            Toast.show("请填写登录密码");
+            Toast.show("请输入密码");
             return;
         }
         model.login(account, password).observe(this, this::loginResult);

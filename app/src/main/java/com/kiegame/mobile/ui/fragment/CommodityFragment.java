@@ -3,7 +3,6 @@ package com.kiegame.mobile.ui.fragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -110,16 +109,13 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
                 menu.setText(menuName);
             }
         };
-        View header = LayoutInflater.from(getContext()).inflate(R.layout.item_more_list_menu, null, false);
-        TextView menu = header.findViewById(R.id.tv_item_menu);
-        menu.setLetterSpacing(0.4f);
-        menu.setText("全部");
-        header.setOnClickListener(v -> {
+        binding.tvItemMenu.setLetterSpacing(0.4f);
+        binding.tvItemMenu.setText("全部");
+        binding.llItemRoot.setOnClickListener(v -> {
             setMenuItemStyle((LinearLayout) v);
             queryShops(null, null, null);
         });
-        setMenuItemStyle((LinearLayout) header);
-        menuAdapter.addHeaderView(header);
+        setMenuItemStyle(binding.llItemRoot);
         menuAdapter.setOnItemClickListener((adapter, view, position) -> {
             setMenuItemStyle((LinearLayout) view);
             if (position < this.menus.size()) {
