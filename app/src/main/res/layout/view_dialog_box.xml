@@ -25,6 +25,21 @@
             app:layout_constraintWidth_percent="0.75">
 
             <TextView
+                android:id="@+id/tv_dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textColor="@color/black_text"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="发现新版本" />
+
+            <TextView
                 android:id="@+id/tv_dialog_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,7 +52,7 @@
                 android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_dialog_title"
                 tools:text="您确定要切换到此会员支付吗? 此操作将会使您的网费也将充值到此会员账户" />
 
             <View

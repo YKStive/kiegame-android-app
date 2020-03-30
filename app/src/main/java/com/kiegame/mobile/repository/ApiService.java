@@ -10,6 +10,7 @@ import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
+import com.kiegame.mobile.repository.entity.receive.VersionEntity;
 import com.kiegame.mobile.repository.entity.result.Result;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.CancelOrder;
@@ -173,5 +174,13 @@ public interface ApiService {
             @Query("paymentPayId") String paymentPayId,
             // 退款时需要
             @Query("orderBaseId") String orderBaseId
+    );
+
+    /**
+     * 检查版本更新
+     */
+    Observable<Result<List<VersionEntity>>> queryAppVersion(
+            // android ios
+            @Query("versionId") String versionId
     );
 }

@@ -14,7 +14,6 @@ import com.kiegame.mobile.model.OrderModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.ui.base.BaseFragment;
-import com.kiegame.mobile.utils.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,9 +37,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     private OrderModel model;
     private DatePickerDialog dialog;
     private String date;
-    private int year;
-    private int month;
-    private int dayOfMonth;
+    private Calendar cal;
     private SimpleDateFormat format;
 
     @Override
@@ -51,6 +48,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     @SuppressLint("SimpleDateFormat")
     @Override
     protected void onObject() {
+        cal = Calendar.getInstance();
         binding.setLogin(Cache.ins().getLoginInfo());
         binding.setFragment(this);
         model = new ViewModelProvider(this).get(OrderModel.class);
@@ -64,13 +62,11 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
         toDay();
 
         dialog = new DatePickerDialog(Objects.requireNonNull(getActivity()), R.style.AppTheme_DatePickerDialog, (view, year, month, dayOfMonth) -> {
-            this.year = year;
-            this.month = month;
-            this.dayOfMonth = dayOfMonth;
-            date = String.format("%s-%s-%s", year, month, dayOfMonth);
+            date = String.format("%s-%s-%s", year, month + 1, dayOfMonth);
+            updateDate(date);
             binding.tvOrderCreateTime.setText(date);
             binding.srlLayout.autoRefresh();
-        }, year, month, dayOfMonth);
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
         Cache.ins().getOrderObserver().observe(this, integer -> requestData());
     }
@@ -91,7 +87,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
         binding.srlLayout.setOnRefreshListener(refreshLayout -> requestData());
         binding.tvOrderCreateTime.setText(date);
         binding.tvOrderCreateTime.setOnClickListener(v -> {
-            dialog.updateDate(year, month, dayOfMonth);
+            dialog.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
             dialog.show();
         });
     }
@@ -99,6 +95,19 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     @Override
     protected void onData() {
         requestData();
+    }
+
+    /**
+     * 更新日期
+     *
+     * @param date 日期字符串
+     */
+    private void updateDate(String date) {
+        try {
+            cal.setTime(Objects.requireNonNull(format.parse(date)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -122,7 +131,6 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             calendar.setTime(Objects.requireNonNull(format.parse(date)));
             calendar.add(Calendar.DAY_OF_MONTH, 1);
             date = format.format(calendar.getTime());
-            this.splitDate(date);
             binding.tvOrderCreateTime.setText(date);
             binding.srlLayout.autoRefresh();
             calendar.clear();
@@ -140,7 +148,6 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             calendar.setTime(Objects.requireNonNull(format.parse(date)));
             calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
             date = format.format(calendar.getTime());
-            this.splitDate(date);
             binding.tvOrderCreateTime.setText(date);
             binding.srlLayout.autoRefresh();
             calendar.clear();
@@ -168,20 +175,6 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     private void toDay() {
         Date date = new Date(System.currentTimeMillis());
         this.date = format.format(date);
-        this.splitDate(this.date);
-    }
-
-    /**
-     * 拆分日期时间
-     */
-    private void splitDate(String date) {
-        if (!Text.empty(date)) {
-            String[] split = date.split("-");
-            if (split.length >= 3) {
-                year = Integer.valueOf(split[0]);
-                month = Integer.valueOf(split[1]);
-                dayOfMonth = Integer.valueOf(split[2]);
-            }
-        }
+        this.updateDate(this.date);
     }
 }

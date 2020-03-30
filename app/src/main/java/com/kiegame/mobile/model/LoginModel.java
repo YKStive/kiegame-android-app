@@ -10,6 +10,7 @@ import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.submit.UserLogin;
+import com.kiegame.mobile.utils.MD5;
 
 import java.util.List;
 
@@ -40,7 +41,10 @@ public class LoginModel extends ViewModel {
     public LiveData<LoginEntity> login(String username, String password) {
         UserLogin bean = new UserLogin();
         bean.setLoginCode(username == null ? this.username.getValue() : username);
-        bean.setLoginPass(password == null ? this.password.getValue() : password);
+        String pass = password == null ? this.password.getValue() : password;
+        if (pass != null) {
+            bean.setLoginPass(MD5.encrypt(pass, 32, false));
+        }
         bean.setLoginType(1);
         Network.api().userLogin(bean)
                 .compose(Scheduler.apply())

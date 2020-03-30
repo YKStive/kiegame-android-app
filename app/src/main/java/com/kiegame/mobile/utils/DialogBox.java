@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil;
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ViewDialogBoxBinding;
-import com.kiegame.mobile.ui.base.listener.OnAnimationListener;
 
 /**
  * Created by: var_rain.
@@ -89,6 +88,20 @@ public class DialogBox {
     }
 
     /**
+     * 设置标题
+     *
+     * @param content 标题字符串
+     * @return {@link DialogBox}
+     */
+    public DialogBox title(String content) {
+        binding.tvDialogTitle.setText(content);
+        binding.tvDialogTitle.setVisibility(View.VISIBLE);
+        binding.tvDialogBtnOk.setVisibility(View.GONE);
+        binding.tvDialogBtnCancel.setVisibility(View.GONE);
+        return this;
+    }
+
+    /**
      * 确认按钮点击事件
      *
      * @param onClickListener {@link OnClickListener}
@@ -138,6 +151,7 @@ public class DialogBox {
         if (this.animator != null && this.isShowing) {
             this.animator.reverse();
         }
+        this.binding.tvDialogTitle.setVisibility(View.GONE);
     }
 
     /**
