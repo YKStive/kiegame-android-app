@@ -90,6 +90,8 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         model.getFailMessage().observe(this, this::onCreateOrderFailure);
         menu = new Menu(getContext()).callback(v -> {
             Cache.ins().initialize();
+            // #782 退出登录，需把界面已选择内容清空
+            resetData();
             MainActivity activity = (MainActivity) getActivity();
             startActivity(new Intent(activity, LoginActivity.class));
             if (activity != null) {
@@ -178,8 +180,8 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             pw.setOutsideTouchable(false);
             pw.setSplitTouchEnabled(true);
         }
+        list.removeAllViews();
         if (data != null && !data.isEmpty()) {
-            list.removeAllViews();
             for (UserInfoEntity entity : data) {
                 View view = inflater.inflate(R.layout.item_search_user_info, null, false);
                 TextView tv = view.findViewById(R.id.tv_user_item);
@@ -208,14 +210,18 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 });
                 list.addView(view);
             }
-            if (!pw.isShowing()) {
-                pw.showAsDropDown(binding.llSearch);
-            }
         } else {
-            if (pw.isShowing()) {
-                pw.dismiss();
+            if (list.getChildCount() == 0) {
+                View view = inflater.inflate(R.layout.item_search_user_info, null, false);
+                TextView tv = view.findViewById(R.id.tv_user_item);
+                tv.setText("暂无信息");
+                list.addView(view);
             }
         }
+        if (pw.isShowing()) {
+            pw.dismiss();
+        }
+        pw.showAsDropDown(binding.llSearch);
     }
 
     /**

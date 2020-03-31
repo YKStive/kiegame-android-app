@@ -351,6 +351,14 @@ public class ShopEntity implements MultiItemEntity, Serializable {
         this.isAllowPayByService = isAllowPayByService;
     }
 
+    public String getShopImage() {
+        String[] split = productImg.split(",");
+        if (split.length > 1) {
+            return split[0];
+        }
+        return productImg;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

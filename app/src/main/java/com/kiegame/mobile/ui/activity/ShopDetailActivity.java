@@ -59,11 +59,13 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
 
     @Override
     protected void onView() {
-        Glide.with(this).load(shop.getProductImg()).into(binding.ivShopImage);
+        // #833 后台设置多张图片，选择商品/商品详情界面图片展示失败
+//        Glide.with(this).load(shop.getProductImg()).into(binding.ivShopImage);
+        Glide.with(this).load(shop.getShopImage()).into(binding.ivShopImage);
         binding.tvShopName.setText(shop.getProductName());
         binding.tvShopStand.setText(shop.getProductSpecName());
         binding.tvShopDes.setText(shop.getProductDesc());
-        binding.tvShopPrice.setText(cal(shop.getSellPrice()));
+        binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
         binding.tvShopBuyInfo.setText(shop.getProductName());
         binding.tvShopNum.setText(String.valueOf(buySourceSize));
         binding.tvShopNum.setVisibility(buySourceSize != 0 ? View.VISIBLE : View.INVISIBLE);
@@ -245,7 +247,9 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
     public void addShopCar() {
         if (this.buySourceSize > 0) {
             addShopToOrderList();
-            Toast.show("已添加到购物车");
+            // #787 商品详情加入购物车后，未自动返回到选择商品界面
+            Toast.show("添加成功");
+            finish();
         } else {
             Toast.show("购买数量太少了, 再多买点吧");
         }
@@ -269,7 +273,6 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
      */
     public void buyNow() {
         if (this.buySourceSize > 0) {
-            addShopToOrderList();
             addShopToOrderList();
             startActivity(new Intent(this, ShopCarActivity.class));
             finish();

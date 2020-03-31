@@ -471,7 +471,8 @@ public class Cache extends BaseObservable {
             shop.setProductBuySum(sum);
             shop.setShopType(data.getProductVariety());
             shop.setShopName(data.getProductName());
-            shop.setShopImage(data.getProductImg());
+//            shop.setShopImage(data.getProductImg());
+            shop.setShopImage(data.getShopImage());
             shop.setProductSpecName(spec);
             shop.setProductFlavorName(flavor);
             shop.setProductId(data.getProductId());

@@ -51,7 +51,11 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             case ShopEntity.CONTENT:
                 int sum = Cache.ins().getShopSumById(item.getProductId());
                 ImageView view = helper.getView(R.id.iv_shop_image);
-                Glide.with(helper.itemView).load(item.getProductImg())
+//                Glide.with(helper.itemView).load(item.getProductImg())
+//                        .apply(new RequestOptions().transform(new CenterCrop(), new RoundedCorners(6)))
+//                        .into(view);
+                // #833 后台设置多张图片，选择商品/商品详情界面图片展示失败
+                Glide.with(helper.itemView).load(item.getShopImage())
                         .apply(new RequestOptions().transform(new CenterCrop(), new RoundedCorners(6)))
                         .into(view);
                 helper.setText(R.id.tv_shop_name, item.getProductName());
@@ -63,7 +67,9 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 helper.setVisible(R.id.tv_bar_count, item.getProductVariety() == 1);
                 if (item.getProductVariety() == 1) {
                     int count = item.getBarCount() - sum;
-                    helper.setText(R.id.tv_bar_count, count <= 10 ? (count == 0 ? "已售空" : String.format("剩余: %s件", count)) : "");
+                    //
+                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
+//                    helper.setText(R.id.tv_bar_count, count <= 10 ? (count == 0 ? "已售空" : String.format("剩余: %s件", count)) : "");
                 }
                 setPlusShopClickListener(helper, item);
                 setLessShopClickListener(helper, item);

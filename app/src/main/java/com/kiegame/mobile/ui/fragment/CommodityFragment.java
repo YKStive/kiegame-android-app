@@ -112,6 +112,7 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         binding.tvItemMenu.setLetterSpacing(0.4f);
         binding.tvItemMenu.setText("全部");
         binding.llItemRoot.setOnClickListener(v -> {
+            productName = "全部";
             setMenuItemStyle((LinearLayout) v);
             queryShops(null, null, null);
         });
@@ -262,6 +263,9 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
 //                productTypeId = sort.getProductTypeId();
 //                queryShops(productTypeId, null, productTagId, false);
 //            }
+            // #783 商品页面点击左边栏目后，刷新界面，左边栏目错误跳转
+            setMenuItemStyle(binding.llItemRoot);
+            productName = "全部";
             queryShops(null, null, null, false);
         }
         binding.tvShopEmpty.setVisibility(this.menus.size() == 0 ? View.VISIBLE : View.GONE);
@@ -274,9 +278,10 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
      */
     private void shopSearch(String name) {
         String productName = Text.empty(name) ? null : name;
-        if (productName == null) {
-            queryShops(productTypeId, null, productTagId);
-        } else {
+        if (productName != null) {
+            // #780 搜索商品“拿铁”，添加购物车，然后刷新，一直显示加载中
+//            queryShops(productTypeId, null, productTagId);
+//        } else {
             isSearch = true;
             queryShops(null, productName, null);
         }

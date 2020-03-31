@@ -48,6 +48,7 @@ import com.kiegame.mobile.utils.DialogBox;
 import com.kiegame.mobile.utils.PayFailure;
 import com.kiegame.mobile.utils.PaySuccess;
 import com.kiegame.mobile.utils.ServicePay;
+import com.kiegame.mobile.utils.SoftInputAdapter;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 
@@ -111,6 +112,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 
     @Override
     protected void onView() {
+        // #793 填写备注，键盘挡住了订单信息
+        SoftInputAdapter.assistActivity(this, true);
         setShopListVisible();
         adapter = new BaseItemDraggableAdapter<BuyShop, BaseViewHolder>(R.layout.item_shop_car_shop, Cache.ins().getShops()) {
             @Override
@@ -234,8 +237,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             pw.setOutsideTouchable(false);
             pw.setSplitTouchEnabled(true);
         }
+        list.removeAllViews();
         if (data != null && !data.isEmpty()) {
-            list.removeAllViews();
             for (UserInfoEntity entity : data) {
                 View view = inflater.inflate(R.layout.item_search_user_info, null, false);
                 TextView tv = view.findViewById(R.id.tv_user_item);
@@ -256,39 +259,50 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                         Cache.ins().setProductCoupon(null);
                         model.userName.setValue(name);
                     } else {
-                        if (userInfo.getCustomerId().equals(Cache.ins().getUserInfo().getCustomerId())) {
-                            StringBuilder sb = new StringBuilder();
-                            if (Cache.ins().getNetFeeNum() == 0) {
-                                sb.append(String.format("你想将会员账号切换到 %s 吗? 这将使你购买的商品也记录到 %s 的会员账号下",
-                                        Text.formatCustomName(entity.getCustomerName()),
-                                        Text.formatCustomName(entity.getCustomerName())));
-                            } else {
-                                sb.append(String.format("你想将会员账号切换到 %s 吗? 这将使你充值的网费和购买的商品也记录到 %s 的会员账号下",
-                                        Text.formatCustomName(entity.getCustomerName()),
-                                        Text.formatCustomName(entity.getCustomerName())));
+                        // #785 确认商品订单页面，删除已有会员，重新选择会员，系统闪退
+                        if (userInfo == null) {
+                            this.userInfo = entity;
+                            model.userName.setValue(name);
+                        } else {
+                            if (!userInfo.getCustomerId().equals(entity.getCustomerId())) {
+                                DialogBox.ins().text(String.format("你想将会员账号切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName()))).confirm(() -> {
+                                    this.userInfo = entity;
+                                    model.userName.setValue(name);
+                                }).cancel(null).show();
                             }
-                            DialogBox.ins().text(sb.toString()).confirm(() -> {
-                                this.userInfo = entity;
-                                model.userName.setValue(name);
-                            }).cancel(null).show();
-                        } else if (!userInfo.getCustomerId().equals(entity.getCustomerId())) {
-                            DialogBox.ins().text(String.format("你想将会员账号切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName()))).confirm(() -> {
-                                this.userInfo = entity;
-                                model.userName.setValue(name);
-                            }).cancel(null).show();
+//                            if (!entity.getCustomerId().equals(Cache.ins().getUserInfo().getCustomerId())) {
+//                                StringBuilder sb = new StringBuilder();
+//                                if (Cache.ins().getNetFeeNum() == 0) {
+//                                    sb.append(String.format("你想将会员账号切换到 %s 吗? 这将使你购买的商品也记录到 %s 的会员账号下",
+//                                            Text.formatCustomName(entity.getCustomerName()),
+//                                            Text.formatCustomName(entity.getCustomerName())));
+//                                } else {
+//                                    sb.append(String.format("你想将会员账号切换到 %s 吗? 这将使你充值的网费和购买的商品也记录到 %s 的会员账号下",
+//                                            Text.formatCustomName(entity.getCustomerName()),
+//                                            Text.formatCustomName(entity.getCustomerName())));
+//                                }
+//                                DialogBox.ins().text(sb.toString()).confirm(() -> {
+//                                    this.userInfo = entity;
+//                                    model.userName.setValue(name);
+//                                }).cancel(null).show();
+//                            }
                         }
                     }
                 });
                 list.addView(view);
             }
-            if (!pw.isShowing()) {
-                pw.showAsDropDown(binding.llSearch);
-            }
         } else {
-            if (pw.isShowing()) {
-                pw.dismiss();
+            if (list.getChildCount() == 0) {
+                View view = inflater.inflate(R.layout.item_search_user_info, null, false);
+                TextView tv = view.findViewById(R.id.tv_user_item);
+                tv.setText("暂无信息");
+                list.addView(view);
             }
         }
+        if (pw.isShowing()) {
+            pw.dismiss();
+        }
+        pw.showAsDropDown(binding.llSearch);
     }
 
     /**
@@ -329,7 +343,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         }
         String size = tv.getText().toString();
         int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-        if (data.getShopType() == 1 && Cache.ins().getShopSumById(data.getProductId()) > data.getMax()) {
+        // #788 购物车中添加商品可添加一份额外的商品
+        if (data.getShopType() == 1 && Cache.ins().getShopSumById(data.getProductId()) >= data.getMax()) {
             Toast.show("不能再多了");
         } else {
             less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
@@ -429,7 +444,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 删除会员
      */
     public void deleteVipInfo() {
-        DialogBox.ins().text(String.format("你想删除会员账号 %s 吗?", Text.formatCustomName(Cache.ins().getUserInfo().getCustomerName())))
+        DialogBox.ins().text(String.format("你想删除会员账号 %s 吗?", Text.formatCustomName(userInfo.getCustomerName())))
                 .confirm(() -> {
                     this.userInfo = null;
                     model.userName.setValue("没有选择会员");
