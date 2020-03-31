@@ -43,7 +43,7 @@ public class LoginModel extends ViewModel {
         bean.setLoginCode(username == null ? this.username.getValue() : username);
         String pass = password == null ? this.password.getValue() : password;
         if (pass != null) {
-            bean.setLoginPass(MD5.encrypt(pass, 32, false));
+            bean.setLoginPass(MD5.encrypt(pass, 16, false));
         }
         bean.setLoginType(1);
         Network.api().userLogin(bean)
