@@ -71,14 +71,16 @@ public class SplashModel extends ViewModel {
                 .subscribe(new Subs<List<VersionEntity>>(false) {
                     @Override
                     public void onSuccess(List<VersionEntity> data, int total, int length) {
-                        VersionEntity version = data.get(0);
-                        if (version != null) {
-                            if (Version.needUpdate(version.getAppCode())) {
-                                update.setValue(version);
-                            } else {
-                                update.setValue(null);
+                        if (data != null && !data.isEmpty()) {
+                            VersionEntity version = data.get(0);
+                            if (version != null) {
+                                if (Version.needUpdate(version.getAppCode())) {
+                                    update.setValue(version);
+                                    return;
+                                }
                             }
                         }
+                        update.setValue(null);
                     }
                 });
         return this.update;

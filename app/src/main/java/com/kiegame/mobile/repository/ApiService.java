@@ -179,6 +179,7 @@ public interface ApiService {
     /**
      * 检查版本更新
      */
+    @GET("app/appVersion/queryAppVersion")
     Observable<Result<List<VersionEntity>>> queryAppVersion(
             // android ios
             @Query("versionId") String versionId

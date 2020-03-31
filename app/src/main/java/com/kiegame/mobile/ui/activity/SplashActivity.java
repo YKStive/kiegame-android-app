@@ -30,6 +30,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> implemen
 
     private SplashModel model;
     private ProgressDialog dialog;
+    private boolean insCall = false;
 
     @Override
     protected int onLayout() {
@@ -48,7 +49,16 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> implemen
 
     @Override
     protected void onData() {
-        model.update().observe(this, this::checkUpdate);
+        insCall = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!insCall) {
+            insCall = true;
+            model.update().observe(this, this::checkUpdate);
+        }
     }
 
     /**
