@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 /**
  * Created by: var.
  * Created date: 2020/3/31.
- * Description:
+ * Description: 针对软键盘遮挡小屏幕适配
  */
 public class SoftInputAdapter {
 
