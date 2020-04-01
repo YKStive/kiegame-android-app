@@ -268,6 +268,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                                 DialogBox.ins().text(String.format("你想将会员账号切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName()))).confirm(() -> {
                                     this.userInfo = entity;
                                     model.userName.setValue(name);
+                                    Cache.ins().setProductCoupon(null);
                                 }).cancel(null).show();
                             }
 //                            if (!entity.getCustomerId().equals(Cache.ins().getUserInfo().getCustomerId())) {

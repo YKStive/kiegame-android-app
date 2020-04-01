@@ -15,8 +15,8 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <ImageView
-            android:id="@+id/iv_shop_image"
+        <com.youth.banner.Banner
+            android:id="@+id/iv_shop_banner"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
@@ -184,7 +184,7 @@
             android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_shop_image"
+            app:layout_constraintTop_toBottomOf="@id/iv_shop_banner"
             tools:text="大杯水果茶" />
 
         <TextView

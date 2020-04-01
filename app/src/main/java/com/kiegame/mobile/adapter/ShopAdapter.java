@@ -68,7 +68,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 if (item.getProductVariety() == 1) {
                     int count = item.getBarCount() - sum;
                     //
-                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
+                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
 //                    helper.setText(R.id.tv_bar_count, count <= 10 ? (count == 0 ? "已售空" : String.format("剩余: %s件", count)) : "");
                 }
                 setPlusShopClickListener(helper, item);
@@ -94,6 +94,10 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
      */
     private void setLessShopClickListener(@NonNull BaseViewHolder helper, ShopEntity item) {
         helper.getView(R.id.tv_btn_less).setOnClickListener(v -> {
+            if (needTips(item)) {
+                Toast.show("多规格的商品只能去购物车删除");
+                return;
+            }
             TextView tv = helper.getView(R.id.tv_shop_num);
             String size = tv.getText().toString();
             int num = Text.empty(size) ? -1 : Integer.parseInt(size) - 1;
@@ -109,7 +113,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 }
                 if (item.getProductVariety() == 1) {
                     int count = item.getBarCount() - num;
-                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
+                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
                 }
                 Cache.ins().detachShop(item.getProductId());
             }
@@ -143,12 +147,29 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                     }
                     if (item.getProductVariety() == 1) {
                         int count = item.getBarCount() - num;
-                        helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : String.format("剩余: %s件", count));
+                        helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
                     }
                     Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
                 }
             }
         });
+    }
+
+    /**
+     * 是否需要提示不能直接删除
+     *
+     * @param item 商品数据对象
+     * @return true:需要提示 false:不需要
+     */
+    private boolean needTips(ShopEntity item) {
+        String flavor = item.getProductFlavorName();
+        String spec = item.getProductSpecName();
+        if (Text.empty(flavor) && Text.empty(spec)) {
+            return false;
+        }
+        String[] fs = flavor.split(",");
+        String[] ss = spec.split(",");
+        return fs.length > 1 || ss.length > 1;
     }
 
     /**

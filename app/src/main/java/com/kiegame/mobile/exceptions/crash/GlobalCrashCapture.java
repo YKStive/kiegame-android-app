@@ -13,7 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.kiegame.mobile.BuildConfig;
-import com.kiegame.mobile.Game;
 import com.kiegame.mobile.logger.Log;
 import com.kiegame.mobile.worker.Worker;
 
@@ -102,12 +101,12 @@ public class GlobalCrashCapture implements Thread.UncaughtExceptionHandler {
     private void handleException(Throwable ex) {
         Worker.execute(() -> {
             Looper.prepare();
+            ex.printStackTrace();
             if (BuildConfig.DEBUG) {
-                ex.printStackTrace();
                 Toast.makeText(context, ex.getLocalizedMessage(), Toast.LENGTH_LONG).show();
 //                this.dumpException(ex);
-                this.delay();
-                Game.ins().exit();
+//                this.delay();
+//                Game.ins().exit();
             }
             Looper.loop();
         });

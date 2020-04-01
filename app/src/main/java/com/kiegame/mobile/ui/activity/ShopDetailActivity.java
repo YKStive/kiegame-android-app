@@ -1,10 +1,12 @@
 package com.kiegame.mobile.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,9 +20,11 @@ import com.kiegame.mobile.ui.views.FlowLayout;
 import com.kiegame.mobile.utils.Pixel;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
+import com.youth.banner.loader.ImageLoader;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 
 /**
  * Created by: var_rain.
@@ -60,8 +64,9 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
     @Override
     protected void onView() {
         // #833 后台设置多张图片，选择商品/商品详情界面图片展示失败
-//        Glide.with(this).load(shop.getProductImg()).into(binding.ivShopImage);
-        Glide.with(this).load(shop.getShopImage()).into(binding.ivShopImage);
+//        Glide.with(this).load(shop.getProductImg()).into(binding.ivShopBanner);
+//        Glide.with(this).load(shop.getShopImage()).into(binding.ivShopImage);
+        initImageBanner();
         binding.tvShopName.setText(shop.getProductName());
         binding.tvShopStand.setText(shop.getProductSpecName());
         binding.tvShopDes.setText(shop.getProductDesc());
@@ -72,6 +77,24 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         binding.tvBtnLess.setVisibility(buySourceSize != 0 ? View.VISIBLE : View.INVISIBLE);
         makeFlavorTags(shop.getProductFlavorName());
         makeSpecTags(shop.getProductSpecName());
+    }
+
+    /**
+     * 初始化商品详情图片
+     */
+    private void initImageBanner() {
+        String img = shop.getProductImg();
+        if (!Text.empty(img)) {
+            String[] images = img.split(",");
+            binding.ivShopBanner.setImageLoader(new ImageLoader() {
+                @Override
+                public void displayImage(Context context, Object path, ImageView imageView) {
+                    Glide.with(imageView).load((String) path).into(imageView);
+                }
+            });
+            binding.ivShopBanner.setImages(Arrays.asList(images));
+            binding.ivShopBanner.start();
+        }
     }
 
     /**
