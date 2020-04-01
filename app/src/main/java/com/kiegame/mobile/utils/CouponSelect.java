@@ -24,7 +24,6 @@ import com.kiegame.mobile.databinding.ViewCouponUseBinding;
 import com.kiegame.mobile.model.CouponModel;
 import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.ui.base.BaseActivity;
-import com.kiegame.mobile.ui.base.listener.OnAnimationListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -181,6 +180,10 @@ public class CouponSelect {
                     helper.setText(R.id.tv_coupon_ratio, item.getActivityRatioString());
                 }
                 helper.getView(R.id.iv_coupon_image).setOnClickListener(v -> {
+                    if (item.getIsBoolUse() != null && item.getIsBoolUse() == 2) {
+                        Toast.show("该优惠券暂不可使用");
+                        return;
+                    }
                     if (callback != null) {
                         callback.onCouponUse(item);
                         hide();

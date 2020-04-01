@@ -40,6 +40,16 @@ public class ActivityEntity {
     private String cardDesc;
     private String useScopeServiceId;
     private String useScopeServiceName;
+    // 1 可使用 2 不可使用
+    private Integer isBoolUse;
+
+    public Integer getIsBoolUse() {
+        return isBoolUse;
+    }
+
+    public void setIsBoolUse(Integer isBoolUse) {
+        this.isBoolUse = isBoolUse;
+    }
 
     public String getActivityId() {
         return activityId;
