@@ -125,7 +125,9 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
                 helper.setVisible(R.id.iv_pay_type_image, !Text.empty(payName));
                 helper.setVisible(R.id.tv_pay_type, !Text.empty(payName));
                 helper.setText(R.id.tv_user_name, getUserName(item));
-                helper.setText(R.id.tv_shop_total_money, String.format("¥%s", cal(item.getTotalAmount())));
+                // 支付成功后订单金额显示不正确的问题
+                helper.setText(R.id.tv_shop_total_money, String.format("¥%s", cal(item.getOrderAmount())));
+//                helper.setText(R.id.tv_shop_total_money, String.format("¥%s", cal(item.getTotalAmount())));
                 helper.getView(R.id.iv_delete_btn).setOnClickListener(v -> DialogBox.ins().text("你想要删除这个订单吗?").confirm(() -> deleteOrder(item.getOrderBaseId())).cancel(null).show());
                 helper.getView(R.id.tv_cancel_btn).setOnClickListener(v -> DialogBox.ins().text("你想要取消这个订单吗?").confirm(() -> {
                     String detailId = getOrderDetailId(item.getItemList());
