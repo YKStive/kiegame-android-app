@@ -67,15 +67,21 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 helper.setVisible(R.id.tv_bar_count, item.getProductVariety() == 1);
                 if (item.getProductVariety() == 1) {
                     int count = item.getBarCount() - sum;
-                    //
                     helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
 //                    helper.setText(R.id.tv_bar_count, count <= 10 ? (count == 0 ? "已售空" : String.format("剩余: %s件", count)) : "");
                 }
                 setPlusShopClickListener(helper, item);
                 setLessShopClickListener(helper, item);
-                view.setOnClickListener(v -> v.getContext()
-                        .startActivity(new Intent(v.getContext(), ShopDetailActivity.class)
-                                .putExtra(Setting.APP_SHOP_ENTITY, item)));
+                view.setOnClickListener(v -> {
+                    if (item.getProductVariety() == 1 && sum == item.getBarCount()) {
+                        // 固装商品并且已售空
+                        Toast.show("该商品已售空");
+                        return;
+                    }
+                    v.getContext()
+                            .startActivity(new Intent(v.getContext(), ShopDetailActivity.class)
+                                    .putExtra(Setting.APP_SHOP_ENTITY, item));
+                });
                 break;
             case ShopEntity.TITLE:
                 TextView tv = helper.getView(R.id.tv_title);

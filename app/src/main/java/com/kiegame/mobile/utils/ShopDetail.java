@@ -19,7 +19,6 @@ import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ViewShopDetailBinding;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
-import com.kiegame.mobile.ui.base.listener.OnAnimationListener;
 import com.kiegame.mobile.ui.views.FlowLayout;
 
 import java.math.BigDecimal;
@@ -89,8 +88,8 @@ public class ShopDetail {
             this.makeFlavorTags(data.getProductFlavorName());
             this.makeSpecTags(data.getProductSpecName());
             binding.tvShopNum.setText(String.valueOf(this.buySourceSize));
-            binding.ivBtnLess.setVisibility(this.buySourceSize == 0 ? View.INVISIBLE : View.VISIBLE);
-            binding.tvShopNum.setVisibility(this.buySourceSize == 0 ? View.INVISIBLE : View.VISIBLE);
+//            binding.ivBtnLess.setVisibility(this.buySourceSize == 0 ? View.INVISIBLE : View.VISIBLE);
+//            binding.tvShopNum.setVisibility(this.buySourceSize == 0 ? View.INVISIBLE : View.VISIBLE);
             binding.ivBtnLess.setOnClickListener(v -> this.onBtnLess());
             binding.ivBtnPlus.setOnClickListener(v -> this.onBtnPlus());
             binding.tvBtnCancel.setOnClickListener(v -> this.hide());
@@ -123,16 +122,16 @@ public class ShopDetail {
         TextView tv = binding.tvShopNum;
         String size = tv.getText().toString();
         int num = Text.empty(size) ? -1 : Integer.parseInt(size) - 1;
-        if (num < 0) {
+        if (num < 1) {
             Toast.show("不能再少了");
         } else {
-            if (num == 0) {
-                binding.ivBtnLess.setVisibility(View.INVISIBLE);
-                tv.setVisibility(View.INVISIBLE);
-                tv.setText("");
-            } else {
-                tv.setText(String.valueOf(num));
-            }
+//            if (num == 0) {
+//                binding.ivBtnLess.setVisibility(View.INVISIBLE);
+//                tv.setVisibility(View.INVISIBLE);
+//                tv.setText("");
+//            } else {
+            tv.setText(String.valueOf(num));
+//            }
             this.buySourceSize = num;
         }
     }
@@ -151,10 +150,10 @@ public class ShopDetail {
         if (shop.getProductVariety() == 1 && Cache.ins().getShopSumById(shop.getProductId()) + num > shop.getBarCount()) {
             Toast.show("不能再多了");
         } else {
-            if (num > 0) {
-                binding.ivBtnLess.setVisibility(View.VISIBLE);
-                binding.tvShopNum.setVisibility(View.VISIBLE);
-            }
+//            if (num > 0) {
+//                binding.ivBtnLess.setVisibility(View.VISIBLE);
+//                binding.tvShopNum.setVisibility(View.VISIBLE);
+//            }
             this.buySourceSize = num;
             tv.setText(String.valueOf(num));
         }

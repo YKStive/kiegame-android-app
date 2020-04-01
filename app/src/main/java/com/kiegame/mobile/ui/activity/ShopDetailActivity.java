@@ -73,8 +73,8 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
         binding.tvShopBuyInfo.setText(shop.getProductName());
         binding.tvShopNum.setText(String.valueOf(buySourceSize));
-        binding.tvShopNum.setVisibility(buySourceSize != 0 ? View.VISIBLE : View.INVISIBLE);
-        binding.tvBtnLess.setVisibility(buySourceSize != 0 ? View.VISIBLE : View.INVISIBLE);
+//        binding.tvShopNum.setVisibility(buySourceSize != 0 ? View.VISIBLE : View.INVISIBLE);
+//        binding.tvBtnLess.setVisibility(buySourceSize != 1 ? View.VISIBLE : View.INVISIBLE);
         makeFlavorTags(shop.getProductFlavorName());
         makeSpecTags(shop.getProductSpecName());
     }
@@ -234,12 +234,13 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         if (shop.getProductVariety() == 1 && Cache.ins().getShopSumById(shop.getProductId()) + num > shop.getBarCount()) {
             Toast.show("不能再多了");
         } else {
-            if (num > 0) {
-                binding.tvBtnLess.setVisibility(View.VISIBLE);
-                binding.tvShopNum.setVisibility(View.VISIBLE);
-            }
+//            if (num > 0) {
+//                binding.tvBtnLess.setVisibility(View.VISIBLE);
+//                binding.tvShopNum.setVisibility(View.VISIBLE);
+//            }
             this.buySourceSize = num;
             tv.setText(String.valueOf(num));
+            binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
         }
     }
 
@@ -250,17 +251,18 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         TextView tv = binding.tvShopNum;
         String size = tv.getText().toString();
         int num = Text.empty(size) ? -1 : Integer.parseInt(size) - 1;
-        if (num < 0) {
+        if (num < 1) {
             Toast.show("不能再少了");
         } else {
-            if (num == 0) {
-                binding.tvBtnLess.setVisibility(View.INVISIBLE);
-                tv.setVisibility(View.INVISIBLE);
-                tv.setText("");
-            } else {
-                tv.setText(String.valueOf(num));
-            }
+//            if (num == 1) {
+//                binding.tvBtnLess.setVisibility(View.INVISIBLE);
+//                tv.setVisibility(View.INVISIBLE);
+//                tv.setText("");
+//            } else {
+            tv.setText(String.valueOf(num));
+//            }
             this.buySourceSize = num;
+            binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
         }
     }
 
@@ -287,8 +289,8 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         Cache.ins().attachShop(shop, flavor, spec, this.buySourceSize);
         this.buySourceSize = 0;
         binding.tvShopNum.setText("0");
-        binding.tvShopNum.setVisibility(View.INVISIBLE);
-        binding.tvBtnLess.setVisibility(View.INVISIBLE);
+//        binding.tvShopNum.setVisibility(View.INVISIBLE);
+//        binding.tvBtnLess.setVisibility(View.INVISIBLE);
     }
 
     /**
