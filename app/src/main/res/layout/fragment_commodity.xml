@@ -145,7 +145,7 @@
                         android:paddingBottom="16dp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintWidth_percent="0.25">
+                        app:layout_constraintWidth_percent="0.22">
 
                         <TextView
                             android:id="@+id/tv_item_menu"
@@ -165,7 +165,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/ll_item_root"
-                        app:layout_constraintWidth_percent="0.25" />
+                        app:layout_constraintWidth_percent="0.22" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_content"
