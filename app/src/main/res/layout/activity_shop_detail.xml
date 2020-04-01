@@ -246,7 +246,7 @@
             app:itemSpacing="10dp"
             app:layout_constraintLeft_toRightOf="@id/tv_taste_text"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/div_center_line"
+            app:layout_constraintTop_toBottomOf="@id/fl_norm_layout"
             app:lineSpacing="10dp" />
 
         <TextView
@@ -271,7 +271,7 @@
             app:itemSpacing="10dp"
             app:layout_constraintLeft_toRightOf="@id/tv_norm_text"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fl_taste_layout"
+            app:layout_constraintTop_toBottomOf="@id/div_center_line"
             app:lineSpacing="10dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

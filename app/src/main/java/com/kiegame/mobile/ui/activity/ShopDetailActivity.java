@@ -288,7 +288,7 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         String spec = selectNorm != null ? selectNorm.getText().toString() : "";
         Cache.ins().attachShop(shop, flavor, spec, this.buySourceSize);
         this.buySourceSize = 0;
-        binding.tvShopNum.setText("0");
+//        binding.tvShopNum.setText("0");
 //        binding.tvShopNum.setVisibility(View.INVISIBLE);
 //        binding.tvBtnLess.setVisibility(View.INVISIBLE);
     }

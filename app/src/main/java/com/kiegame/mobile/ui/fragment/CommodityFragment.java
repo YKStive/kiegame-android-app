@@ -113,8 +113,10 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         binding.tvItemMenu.setText("全部");
         binding.llItemRoot.setOnClickListener(v -> {
             productName = "全部";
+            productTagId = null;
+            productTypeId = null;
             setMenuItemStyle((LinearLayout) v);
-            queryShops(null, null, null);
+            queryShops(productTypeId, null, productTagId);
         });
         setMenuItemStyle(binding.llItemRoot);
         menuAdapter.setOnItemClickListener((adapter, view, position) -> {
@@ -135,7 +137,13 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         binding.rvContent.setLayoutManager(new LinearLayoutManager(this.getContext()));
         binding.rvContent.setAdapter(shopAdapter);
 
-        binding.srlLayout.setOnRefreshListener(refreshLayout -> queryAllShopData());
+        binding.srlLayout.setOnRefreshListener(refreshLayout -> {
+            if (menus == null || menus.isEmpty()) {
+                queryAllShopData();
+            } else {
+                queryShops(productTypeId, null, productTagId);
+            }
+        });
         binding.etSearchShop.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 model.searchShop.setValue("");

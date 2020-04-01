@@ -73,7 +73,8 @@
         <!-- 购物车 -->
         <activity
             android:name=".ui.activity.ShopCarActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
         <!-- 商品详情 -->
         <activity
             android:name=".ui.activity.ShopDetailActivity"

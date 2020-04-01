@@ -67,7 +67,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 helper.setVisible(R.id.tv_bar_count, item.getProductVariety() == 1);
                 if (item.getProductVariety() == 1) {
                     int count = item.getBarCount() - sum;
-                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
+                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
 //                    helper.setText(R.id.tv_bar_count, count <= 10 ? (count == 0 ? "已售空" : String.format("剩余: %s件", count)) : "");
                 }
                 setPlusShopClickListener(helper, item);
@@ -119,7 +119,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 }
                 if (item.getProductVariety() == 1) {
                     int count = item.getBarCount() - num;
-                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
+                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
                 }
                 Cache.ins().detachShop(item.getProductId());
             }
@@ -153,7 +153,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                     }
                     if (item.getProductVariety() == 1) {
                         int count = item.getBarCount() - num;
-                        helper.setText(R.id.tv_bar_count, count == 0 ? "已售空" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
+                        helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
                     }
                     Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
                 }
@@ -168,14 +168,37 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
      * @return true:需要提示 false:不需要
      */
     private boolean needTips(ShopEntity item) {
+        return needFlavorTips(item) || needSpecTips(item);
+    }
+
+    /**
+     * 规格是否大于1种
+     *
+     * @param item 商品数据对象
+     * @return true:是 false:不是
+     */
+    private boolean needFlavorTips(ShopEntity item) {
         String flavor = item.getProductFlavorName();
-        String spec = item.getProductSpecName();
-        if (Text.empty(flavor) && Text.empty(spec)) {
+        if (Text.empty(flavor)) {
             return false;
         }
         String[] fs = flavor.split(",");
+        return fs.length > 1;
+    }
+
+    /**
+     * 口味是否大于1种
+     *
+     * @param item 商品数据对象
+     * @return true:是 false:不是
+     */
+    private boolean needSpecTips(ShopEntity item) {
+        String spec = item.getProductSpecName();
+        if (Text.empty(spec)) {
+            return false;
+        }
         String[] ss = spec.split(",");
-        return fs.length > 1 || ss.length > 1;
+        return ss.length > 1;
     }
 
     /**

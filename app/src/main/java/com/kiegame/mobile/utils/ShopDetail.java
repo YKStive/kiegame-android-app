@@ -85,6 +85,10 @@ public class ShopDetail {
             binding.tvShopName.setText(data.getProductName());
             binding.tvShopNorm.setText(data.getProductSpecName());
             binding.tvShopPrice.setText(String.format("￥%s", cal(data.getSellPrice())));
+            binding.flTasteLayout.setVisibility(View.VISIBLE);
+            binding.tvTasteText.setVisibility(View.VISIBLE);
+            binding.flNormLayout.setVisibility(View.VISIBLE);
+            binding.tvNormText.setVisibility(View.VISIBLE);
             this.makeFlavorTags(data.getProductFlavorName());
             this.makeSpecTags(data.getProductSpecName());
             binding.tvShopNum.setText(String.valueOf(this.buySourceSize));
