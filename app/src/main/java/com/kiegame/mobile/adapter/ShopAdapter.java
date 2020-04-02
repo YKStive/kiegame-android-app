@@ -100,13 +100,13 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
      */
     private void setLessShopClickListener(@NonNull BaseViewHolder helper, ShopEntity item) {
         helper.getView(R.id.tv_btn_less).setOnClickListener(v -> {
-            if (needTips(item)) {
-                Toast.show("多规格的商品只能去购物车删除");
-                return;
-            }
             TextView tv = helper.getView(R.id.tv_shop_num);
             String size = tv.getText().toString();
             int num = Text.empty(size) ? -1 : Integer.parseInt(size) - 1;
+            if (needTips(item) && num != 0) {
+                Toast.show("多规格的商品只能去购物车删除");
+                return;
+            }
             if (num < 0) {
                 Toast.show("不能再少了");
             } else {

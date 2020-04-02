@@ -317,16 +317,17 @@ public class Cache extends BaseObservable {
         int money = value == null ? 0 : value;
         List<BuyShop> shops = this.shops.getValue();
         if (shops != null) {
-            int shopSum = 0;
+//            int shopSum = 0;
             for (BuyShop shop : shops) {
                 if (shop != null) {
                     if (shop.isBuy()) {
                         money += (shop.getFee() * shop.getProductBuySum());
                     }
-                    shopSum += shop.getProductBuySum();
+//                    shopSum += shop.getProductBuySum();
                 }
             }
-            this.shopSum.setValue(shopSum);
+//            this.shopSum.setValue(shopSum);
+            this.shopSum.setValue(buySum.size());
         }
         this.paymentMoney = money - productCouponMoney;
     }
