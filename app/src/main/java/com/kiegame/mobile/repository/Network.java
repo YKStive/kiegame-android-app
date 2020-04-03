@@ -39,6 +39,8 @@ public class Network {
         loggingInterceptor.level(HttpLoggingInterceptor.Level.BODY);
         return new OkHttpClient.Builder()
                 .addInterceptor(new TokenInterceptor())
+//                .addInterceptor(new EncryptInterceptor())
+//                .addInterceptor(new DecryptInterceptor())
                 .addInterceptor(loggingInterceptor)
                 .connectTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS)
                 .readTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS)
