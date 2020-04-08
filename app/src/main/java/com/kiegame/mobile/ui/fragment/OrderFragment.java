@@ -130,7 +130,9 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(Objects.requireNonNull(format.parse(date)));
             calendar.add(Calendar.DAY_OF_MONTH, 1);
-            date = format.format(calendar.getTime());
+            Date time = calendar.getTime();
+            cal.setTime(time);
+            date = format.format(time);
             binding.tvOrderCreateTime.setText(date);
             binding.srlLayout.autoRefresh();
             calendar.clear();
@@ -147,7 +149,9 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(Objects.requireNonNull(format.parse(date)));
             calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - 1);
-            date = format.format(calendar.getTime());
+            Date time = calendar.getTime();
+            cal.setTime(time);
+            date = format.format(time);
             binding.tvOrderCreateTime.setText(date);
             binding.srlLayout.autoRefresh();
             calendar.clear();

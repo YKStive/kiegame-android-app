@@ -243,8 +243,9 @@ public class Cache extends BaseObservable {
      * @param owner    生命周期观察者
      * @param observer 观察者回调
      */
-    public void setOnShopSumChangeListener(@NonNull LifecycleOwner owner, @NonNull Observer<? super Integer> observer) {
-        this.shopSum.observe(owner, observer);
+    public void setOnShopSumChangeListener(@NonNull LifecycleOwner owner, @NonNull Observer<? super List<BuyShop>> observer) {
+//        this.shopSum.observe(owner, observer);
+        this.shops.observe(owner, observer);
     }
 
     public UserInfoEntity getUserInfo() {
@@ -259,8 +260,8 @@ public class Cache extends BaseObservable {
      * 获取商品列表数量
      */
     public int getShopSum() {
-        Integer value = shopSum.getValue();
-        return value == null ? 0 : value;
+        List<BuyShop> value = shops.getValue();
+        return value == null ? 0 : value.size();
     }
 
     /**

@@ -395,27 +395,27 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      */
     public void couponUse() {
         if (this.userInfo != null) {
-            if (canCreateOrderOrPayment(3)) {
-                CouponSelect.ins()
-                        .bind(this)
-                        .model(couponModel)
-                        .set(userInfo.getCustomerId(), this.getProductIds())
-                        .type(2)
-                        .callback(data -> {
-                            if (data != null) {
-                                if (data.getActivityType() != 2) {
-                                    Toast.show("当前交易不支持此优惠券");
-                                    return;
-                                }
-                                if (!Cache.ins().hasShop(data.getProductId())) {
-                                    Toast.show("购物车中没有商品可使用此优惠券");
-                                    return;
-                                }
+//            if (canCreateOrderOrPayment(3)) {
+            CouponSelect.ins()
+                    .bind(this)
+                    .model(couponModel)
+                    .set(userInfo.getCustomerId(), this.getProductIds())
+                    .type(2)
+                    .callback(data -> {
+                        if (data != null) {
+                            if (data.getActivityType() != 2) {
+                                Toast.show("当前交易不支持此优惠券");
+                                return;
                             }
-                            Cache.ins().setProductCoupon(data);
-                        })
-                        .show();
-            }
+                            if (!Cache.ins().hasShop(data.getProductId())) {
+                                Toast.show("购物车中没有商品可使用此优惠券");
+                                return;
+                            }
+                        }
+                        Cache.ins().setProductCoupon(data);
+                    })
+                    .show();
+//            }
         } else {
             Toast.show("请先选择会员");
         }

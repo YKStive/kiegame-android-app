@@ -489,31 +489,31 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     public void couponUse() {
         if (Cache.ins().getUserInfo() != null) {
-            if (canCreateOrderOrPayment(3)) {
-                CouponSelect.ins()
-                        .bind(this)
-                        .model(couponModel)
-                        .set(Cache.ins().getUserInfo().getCustomerId(), null)
-                        .type(1)
-                        .callback(data -> {
-                            if (data != null) {
-                                if (data.getActivityType() == 1) {
-                                    if (Cache.ins().getNetFeeNum() < data.getActivityMoneyMax()) {
-                                        Toast.show("当前交易金额无法使用此优惠券");
-                                        return;
-                                    }
-                                    this.model.bonus.setValue(String.format("%s.00", data.getActivityMoney()));
-                                } else {
-                                    Toast.show("当前交易无法使用此优惠券");
+//            if (canCreateOrderOrPayment(3)) {
+            CouponSelect.ins()
+                    .bind(this)
+                    .model(couponModel)
+                    .set(Cache.ins().getUserInfo().getCustomerId(), null)
+                    .type(1)
+                    .callback(data -> {
+                        if (data != null) {
+                            if (data.getActivityType() == 1) {
+                                if (Cache.ins().getNetFeeNum() < data.getActivityMoneyMax()) {
+                                    Toast.show("当前交易金额无法使用此优惠券");
                                     return;
                                 }
+                                this.model.bonus.setValue(String.format("%s.00", data.getActivityMoney()));
                             } else {
-                                this.model.bonus.setValue("0.00");
+                                Toast.show("当前交易无法使用此优惠券");
+                                return;
                             }
-                            Cache.ins().setNetFeeCoupon(data);
-                        })
-                        .show();
-            }
+                        } else {
+                            this.model.bonus.setValue("0.00");
+                        }
+                        Cache.ins().setNetFeeCoupon(data);
+                    })
+                    .show();
+//            }
         } else {
             Toast.show("请先选择会员");
         }

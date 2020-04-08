@@ -21,6 +21,7 @@ import com.kiegame.mobile.model.CommodityModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
+import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.ui.activity.ShopCarActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.utils.Text;
@@ -298,10 +299,10 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
     /**
      * 添加到购物车
      *
-     * @param shopSum 商品
+     * @param shops 商品
      */
-    private void setShopSum(int shopSum) {
-        badge.setBadgeNumber(shopSum);
+    private void setShopSum(List<BuyShop> shops) {
+        badge.setBadgeNumber(shops == null ? 0 : shops.size());
     }
 
     /**
