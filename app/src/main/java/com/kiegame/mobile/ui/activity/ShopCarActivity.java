@@ -89,7 +89,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         binding.setModel(model);
         binding.setActivity(this);
         binding.setCache(Cache.ins());
-        userInfo = Cache.ins().getUserInfo();
+        userInfo = Cache.ins().getTempInfo() == null ? Cache.ins().getUserInfo() : Cache.ins().getTempInfo();
         pwHeight = (int) (Game.ins().metrics(true).heightPixels * 0.3f);
         if (userInfo != null) {
             String item;
@@ -256,17 +256,20 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     binding.etSearchInput.clearFocus();
                     if (Cache.ins().getUserInfo() == null) {
                         this.userInfo = entity;
+                        Cache.ins().setTempInfo(this.userInfo);
                         Cache.ins().setProductCoupon(null);
                         model.userName.setValue(name);
                     } else {
                         // #785 确认商品订单页面，删除已有会员，重新选择会员，系统闪退
                         if (userInfo == null) {
                             this.userInfo = entity;
+                            Cache.ins().setTempInfo(this.userInfo);
                             model.userName.setValue(name);
                         } else {
                             if (!userInfo.getCustomerId().equals(entity.getCustomerId())) {
                                 DialogBox.ins().text(String.format("你想将会员账号切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName()))).confirm(() -> {
                                     this.userInfo = entity;
+                                    Cache.ins().setTempInfo(this.userInfo);
                                     model.userName.setValue(name);
                                     Cache.ins().setProductCoupon(null);
                                 }).cancel(null).show();
@@ -448,6 +451,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         DialogBox.ins().text(String.format("你想删除会员账号 %s 吗?", Text.formatCustomName(userInfo.getCustomerName())))
                 .confirm(() -> {
                     this.userInfo = null;
+                    Cache.ins().setTempInfo(this.userInfo);
                     model.userName.setValue("没有选择会员");
                 }).cancel(null).show();
     }
@@ -658,6 +662,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     private void resetShopData() {
         Cache.ins().setNetFeeCoupon(null);
         Cache.ins().setProductCoupon(null);
+        Cache.ins().setTempInfo(null);
         List<BuyShop> shops = Cache.ins().getShops();
         if (shops != null && !shops.isEmpty()) {
             List<BuyShop> buys = new ArrayList<>();

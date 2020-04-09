@@ -570,6 +570,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private void resetData() {
         Cache.ins().setNetFeeCoupon(null);
         Cache.ins().setProductCoupon(null);
+        Cache.ins().setTempInfo(null);
         // 重置金额选择
         if (this.moneyBtn != null) {
             this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);

@@ -48,7 +48,7 @@ public class Text {
         }
         String start = idCardNum.substring(0, 3);
         String end = idCardNum.substring(idCardNum.length() - 4);
-        return start + "***********" + end;
+        return start + "****" + end;
     }
 
     /**

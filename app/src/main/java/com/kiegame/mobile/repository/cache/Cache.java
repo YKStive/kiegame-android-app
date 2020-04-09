@@ -36,6 +36,7 @@ public class Cache extends BaseObservable {
     private LoginEntity login;
     // 会员信息
     private UserInfoEntity userInfo;
+    private UserInfoEntity tempInfo;
     // token
     private String token;
     // 网费
@@ -106,6 +107,14 @@ public class Cache extends BaseObservable {
             Cache.INS = new Cache();
         }
         return Cache.INS;
+    }
+
+    public UserInfoEntity getTempInfo() {
+        return tempInfo;
+    }
+
+    public void setTempInfo(UserInfoEntity tempInfo) {
+        this.tempInfo = tempInfo;
     }
 
     /**

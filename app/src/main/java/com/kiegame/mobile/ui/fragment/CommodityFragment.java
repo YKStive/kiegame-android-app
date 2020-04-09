@@ -292,6 +292,10 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
 //            queryShops(productTypeId, null, productTagId);
 //        } else {
             isSearch = true;
+            if (selectMenu != null) {
+                cleanMenuItemStyle(selectMenu);
+            }
+            cleanMenuItemStyle(binding.llItemRoot);
             queryShops(null, productName, null);
         }
     }
