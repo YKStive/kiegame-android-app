@@ -468,7 +468,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     private boolean canCreateOrderOrPayment(int orderType) {
         int money = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
-        if (money <= 0) {
+        if (money <= 0 && Cache.ins().getNetFeeCoupon() == null && Cache.ins().getProductCoupon() == null) {
             switch (orderType) {
                 case 1:
                     Toast.show("没有商品或网费可以下单");
@@ -481,7 +481,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                     break;
             }
         }
-        return money > 0;
+        return money > 0 || Cache.ins().getNetFeeCoupon() != null || Cache.ins().getProductCoupon() != null;
     }
 
     /**

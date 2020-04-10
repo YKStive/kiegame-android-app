@@ -299,9 +299,11 @@ public class ActivityEntity {
      */
     public BigDecimal getActivityRatio() {
         if (this.activityRule != null) {
-            BigDecimal decimal = new BigDecimal(this.activityRule);
-            BigDecimal ratio = new BigDecimal("100");
-            return decimal.divide(ratio, 2, RoundingMode.HALF_UP);
+            if (!this.activityRule.equals("0")) {
+                BigDecimal decimal = new BigDecimal(this.activityRule);
+                BigDecimal ratio = new BigDecimal("100");
+                return decimal.divide(ratio, 2, RoundingMode.HALF_UP);
+            }
         }
         return new BigDecimal("0");
     }
@@ -313,8 +315,12 @@ public class ActivityEntity {
      */
     public String getActivityRatioString() {
         if (this.activityRule != null) {
-            String rpl = this.activityRule.replace("0", "");
-            return String.format("%s折", rpl);
+            if (this.activityRule.equals("0")) {
+                return "100%折扣";
+            } else {
+                String rpl = this.activityRule.replace("0", "");
+                return String.format("%s折", rpl);
+            }
         }
         return "折扣";
     }

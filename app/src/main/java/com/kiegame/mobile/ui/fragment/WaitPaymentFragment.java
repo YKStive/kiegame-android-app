@@ -142,8 +142,8 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                 helper.setVisible(R.id.tv_pay_type, !Text.empty(payName));
                 helper.setText(R.id.tv_user_name, getUserName(item));
                 // 支付成功后订单金额显示不正确的问题
-//                helper.setText(R.id.tv_shop_total_money, String.format("¥%s", cal(item.getTotalAmount())));
-                helper.setText(R.id.tv_shop_total_money, String.format("¥%s", cal(item.getOrderAmount())));
+                helper.setText(R.id.tv_shop_total_money, String.format("¥%s", cal(item.getTotalAmount())));
+//                helper.setText(R.id.tv_shop_total_money, String.format("¥%s", cal(item.getOrderAmount())));
                 helper.setChecked(R.id.cb_shop_select, item.isSelect());
                 helper.getView(R.id.cb_shop_select).setOnClickListener(v -> {
                     item.setSelect(((CheckBox) v).isChecked());

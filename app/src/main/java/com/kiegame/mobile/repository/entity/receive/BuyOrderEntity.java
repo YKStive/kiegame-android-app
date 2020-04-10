@@ -221,6 +221,6 @@ public class BuyOrderEntity {
     }
 
     public int getTotalAmount() {
-        return discountAmount != null ? this.payAmount - this.discountAmount : this.payAmount;
+        return discountAmount != null ? this.orderAmount - this.discountAmount : this.orderAmount;
     }
 }

@@ -168,16 +168,15 @@ public class CouponSelect {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, ActivityEntity item) {
                 if (item.getActivityType() == 1) {
-                    helper.getView(R.id.tv_coupon_ratio).setVisibility(View.INVISIBLE);
                     helper.getView(R.id.tv_rmb).setVisibility(View.VISIBLE);
-                    helper.getView(R.id.tv_coupon_price).setVisibility(View.VISIBLE);
-                    helper.setText(R.id.tv_coupon_price, item.getActivityMoney());
+                    TextView price = helper.getView(R.id.tv_coupon_price);
+                    price.setText(item.getActivityMoney());
+                    price.setTextSize(30);
                 } else {
-                    helper.getView(R.id.tv_coupon_ratio).setVisibility(View.VISIBLE);
-                    helper.getView(R.id.tv_rmb).setVisibility(View.INVISIBLE);
-                    helper.getView(R.id.tv_coupon_price).setVisibility(View.INVISIBLE);
-                    helper.setText(R.id.tv_coupon_price, "");
-                    helper.setText(R.id.tv_coupon_ratio, item.getActivityRatioString());
+                    helper.getView(R.id.tv_rmb).setVisibility(View.GONE);
+                    TextView price = helper.getView(R.id.tv_coupon_price);
+                    price.setText(item.getActivityRatioString());
+                    price.setTextSize(18);
                 }
                 helper.getView(R.id.iv_coupon_image).setOnClickListener(v -> {
                     if (item.getIsBoolUse() != null && item.getIsBoolUse() == 2) {

@@ -134,7 +134,7 @@ public class NetFeeModel extends ViewModel {
      */
     public LiveData<List<AddOrderEntity>> addOrder(int netMoney, int shopMoney, String seatNum, String customerId, int rewardMoney, Integer discountType, String discountId, Integer discountMoney, int buyPayType, String paidInAmount, String memo, String buyPayPassword, int isAddOrder) {
         AddOrder order = new AddOrder();
-        if (shopMoney > 0) {
+        if (shopMoney > 0 || Cache.ins().getProductCoupon() != null) {
             // 购买商品
             List<BuyShop> shops = Cache.ins().getShops();
             List<BuyShop> buys = new ArrayList<>();
@@ -145,7 +145,7 @@ public class NetFeeModel extends ViewModel {
             }
             order.setProductList(buys);
         }
-        if (netMoney > 0) {
+        if (netMoney > 0 || Cache.ins().getNetFeeCoupon() != null) {
             // 充值
             order.setRechargeMoney(netMoney);
             order.setRechargeRewardMoney(rewardMoney);
@@ -158,6 +158,8 @@ public class NetFeeModel extends ViewModel {
             if (discountMoney != null) {
                 order.setRechargeDiscountMoney(discountMoney);
             }
+        } else {
+            order.setRechargeMoney(null);
         }
         order.setServiceId(login.getServiceId());
         order.setCustomerId(customerId);

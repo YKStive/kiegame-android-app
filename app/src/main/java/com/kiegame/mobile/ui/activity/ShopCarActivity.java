@@ -571,7 +571,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      */
     private boolean canCreateOrderOrPayment(int orderType) {
         int money = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
-        if (money <= 0) {
+        if (money <= 0 && Cache.ins().getProductCoupon() == null && Cache.ins().getNetFeeCoupon() == null) {
             switch (orderType) {
                 case 1:
                     Toast.show("没有商品或网费可以下单");
@@ -584,7 +584,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     break;
             }
         }
-        return money > 0;
+        return money > 0 || Cache.ins().getProductCoupon() != null || Cache.ins().getNetFeeCoupon() != null;
     }
 
     /**

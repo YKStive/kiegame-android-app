@@ -22,7 +22,7 @@ public class AddOrder {
     // *产品列表
     private List<BuyShop> productList;
     // *充值金额
-    private int rechargeMoney;
+    private Integer rechargeMoney;
     // *充值奖励金额 没有为0
     private int rechargeRewardMoney;
     // 充值优惠类型
@@ -72,11 +72,11 @@ public class AddOrder {
         this.customerId = customerId;
     }
 
-    public int getRechargeMoney() {
+    public Integer getRechargeMoney() {
         return rechargeMoney;
     }
 
-    public void setRechargeMoney(int rechargeMoney) {
+    public void setRechargeMoney(Integer rechargeMoney) {
         this.rechargeMoney = rechargeMoney;
     }
 

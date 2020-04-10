@@ -64,21 +64,6 @@
         tools:text="50" />
 
     <TextView
-        android:id="@+id/tv_coupon_ratio"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="#694827"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_coupon_rule"
-        app:layout_constraintBottom_toBottomOf="@id/tv_coupon_price"
-        app:layout_constraintLeft_toLeftOf="@id/tv_rmb"
-        app:layout_constraintRight_toLeftOf="@id/tv_coupon_rule"
-        app:layout_constraintTop_toTopOf="@id/tv_coupon_price"
-        tools:text="95折" />
-
-    <TextView
         android:id="@+id/tv_coupon_rule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
