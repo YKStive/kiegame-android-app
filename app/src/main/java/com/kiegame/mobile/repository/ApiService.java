@@ -120,7 +120,9 @@ public interface ApiService {
             // 会员名
             @Query("customerName") String customerName,
             // *当前登录员工ID
-            @Query("empId") String empId
+            @Query("empId") String empId,
+            // 分页
+            @Query("currentPage") int page
     );
 
     /**

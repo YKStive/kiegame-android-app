@@ -9,7 +9,6 @@ import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
-import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
@@ -25,7 +24,6 @@ import java.util.List;
  */
 public class OrderModel extends ViewModel {
 
-    private MutableLiveData<List<BuyOrderEntity>> orders;
     private MutableLiveData<Object> cancelOrder;
     private MutableLiveData<Object> deleteOrder;
     private MutableLiveData<List<AddOrderEntity>> updateOrder;
@@ -35,7 +33,6 @@ public class OrderModel extends ViewModel {
     public MutableLiveData<String> failureMessage;
 
     public OrderModel() {
-        this.orders = new MutableLiveData<>();
         this.cancelOrder = new MutableLiveData<>();
         this.deleteOrder = new MutableLiveData<>();
         this.updateOrder = new MutableLiveData<>();
@@ -43,6 +40,10 @@ public class OrderModel extends ViewModel {
         this.login = Cache.ins().getLoginInfo();
 
         this.failureMessage = new MutableLiveData<>();
+    }
+
+    public LoginEntity getLogin() {
+        return login;
     }
 
     /**
@@ -111,26 +112,6 @@ public class OrderModel extends ViewModel {
                     }
                 });
         return this.deleteOrder;
-    }
-
-    /**
-     * 查询订单
-     */
-    public LiveData<List<BuyOrderEntity>> queryOrders(Integer payState, String startTime, String endTime, Integer payType, String seatNum, String customName) {
-        Network.api().listBuyOrder(login.getServiceId(), payState, startTime, endTime, 2, payType, seatNum, customName, login.getEmpId())
-                .compose(Scheduler.apply())
-                .subscribe(new Subs<List<BuyOrderEntity>>(false) {
-                    @Override
-                    public void onSuccess(List<BuyOrderEntity> data, int total, int length) {
-                        orders.setValue(data);
-                    }
-
-                    @Override
-                    public void onFail() {
-                        orders.setValue(null);
-                    }
-                });
-        return this.orders;
     }
 
     /**

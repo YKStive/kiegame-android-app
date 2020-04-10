@@ -104,7 +104,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             String size = tv.getText().toString();
             int num = Text.empty(size) ? -1 : Integer.parseInt(size) - 1;
             if (needTips(item) && num != 0) {
-                Toast.show("多规格的商品只能去购物车删除");
+                Toast.show(String.format("多%s的商品只能去购物车删除", needFlavorTips(item) ? "规格" : "口味"));
                 return;
             }
             if (num < 0) {

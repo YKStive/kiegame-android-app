@@ -20,9 +20,14 @@ import com.kiegame.mobile.R;
 import com.kiegame.mobile.consts.Payment;
 import com.kiegame.mobile.databinding.FragmentAllOrderBinding;
 import com.kiegame.mobile.model.OrderModel;
+import com.kiegame.mobile.repository.Network;
+import com.kiegame.mobile.repository.Scheduler;
+import com.kiegame.mobile.repository.Subs;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyShopEntity;
+import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.activity.ScanActivity;
@@ -69,12 +74,17 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
     private int resultType;
     // 订单号
     private String baseOrderId;
+    private String startTime;
+    private String endTime;
+    private LoginEntity login;
+    private int currentPage = 0;
 
     AllOrderFragment(OrderFragment fragment) {
         this.fragment = fragment;
         this.buys = new ArrayList<>();
         this.rechargeOrderList = new StringBuilder();
         this.productOrderList = new StringBuilder();
+        this.login = Cache.ins().getLoginInfo();
     }
 
     @Override
@@ -142,6 +152,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
             }
         };
         binding.rvOrder.setAdapter(adapter);
+        binding.srlAllPay.setOnLoadMoreListener(refreshLayout -> loadMoreData());
     }
 
     @Override
@@ -239,7 +250,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
                 if (totalPayType == Payment.PAY_TYPE_ONLINE) {
                     queryPayResult(order.getPaymentPayId(), 1);
                 } else {
-                    PaySuccess.ins().order(order.getPaymentPayId()).confirm(() -> fragment.requestData()).show();
+                    PaySuccess.ins().order(order.getPaymentPayId()).confirm(() -> fragment.refreshAllData()).show();
                 }
             }
         }
@@ -279,7 +290,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
         if (this.baseOrderId != null) {
             queryPayResult(this.baseOrderId, 2);
         } else {
-            this.fragment.requestData();
+            this.fragment.refreshAllData();
             Toast.show("取消成功");
         }
     }
@@ -366,7 +377,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
                 images.addView(view);
                 Glide.with(view).load(shop.getProductImg()).into(view);
             }
-            count += Integer.valueOf(shop.getSellCount());
+            count += Integer.parseInt(shop.getSellCount());
         }
         helper.setText(R.id.tv_shop_total_num, String.format("共%s件", count));
     }
@@ -462,13 +473,13 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
                     } else {
                         if (resultType == 1) {
                             if (res.getPayState() == 2) {
-                                PaySuccess.ins().confirm(() -> fragment.requestData()).order(res.getPaymentPayId()).show();
+                                PaySuccess.ins().confirm(() -> fragment.refreshAllData()).order(res.getPaymentPayId()).show();
                             } else if (res.getPayState() == 4) {
-                                fragment.requestData();
+                                fragment.refreshAllData();
                                 PayFailure.ins().message("支付失败").show();
                             }
                         } else {
-                            fragment.requestData();
+                            fragment.refreshAllData();
                             if (res.getReturnState() == 4) {
                                 Toast.show("退款成功");
                             } else if (res.getReturnState() == 5) {
@@ -484,15 +495,51 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
     /**
      * 待支付订单数据处理
      *
-     * @param data 数据对象
+     * @param startTime 开始时间
+     * @param endTime   结束时间
      */
-    void refreshData(List<BuyOrderEntity> data) {
-        this.orders.clear();
-        this.orders.addAll(data);
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-            updateMoney();
-        }
+    void refreshData(String startTime, String endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        currentPage = 0;
+        requestData();
+    }
+
+    /**
+     * 加载更多
+     */
+    private void loadMoreData() {
+        currentPage++;
+        requestData();
+    }
+
+    private void requestData() {
+        Network.api().listBuyOrder(login.getServiceId(), null, startTime, endTime, 2, null, null, null, login.getEmpId(), currentPage)
+                .compose(Scheduler.apply())
+                .subscribe(new Subs<List<BuyOrderEntity>>(false) {
+                    @Override
+                    public void onSuccess(List<BuyOrderEntity> data, int total, int length) {
+                        if (currentPage == 0) {
+                            orders.clear();
+                        }
+                        if (data != null && !data.isEmpty()) {
+                            orders.addAll(data);
+                        }
+                        if (adapter != null) {
+                            adapter.notifyDataSetChanged();
+                            updateMoney();
+                        }
+                        fragment.finishRefresh();
+                        binding.srlAllPay.finishLoadMore();
+                        binding.srlAllPay.setNoMoreData(orders.size() >= total);
+                    }
+
+                    @Override
+                    public void onFail() {
+                        fragment.finishRefresh();
+                        binding.srlAllPay.finishLoadMore();
+                    }
+                });
     }
 
     /**

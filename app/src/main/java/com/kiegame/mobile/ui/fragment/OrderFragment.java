@@ -4,15 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.adapter.OrderAdapter;
 import com.kiegame.mobile.databinding.FragmentOrderBinding;
-import com.kiegame.mobile.model.OrderModel;
 import com.kiegame.mobile.repository.cache.Cache;
-import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 
 import java.text.ParseException;
@@ -34,11 +31,11 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     private String[] titles;
     private WaitPaymentFragment wait;
     private AllOrderFragment all;
-    private OrderModel model;
     private DatePickerDialog dialog;
     private String date;
     private Calendar cal;
     private SimpleDateFormat format;
+    private int currentPage = 0;
 
     @Override
     protected int onLayout() {
@@ -51,7 +48,6 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
         cal = Calendar.getInstance();
         binding.setLogin(Cache.ins().getLoginInfo());
         binding.setFragment(this);
-        model = new ViewModelProvider(this).get(OrderModel.class);
         format = new SimpleDateFormat("yyyy-MM-dd");
         this.views = new ArrayList<>();
         this.titles = new String[]{
@@ -68,7 +64,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             binding.srlLayout.autoRefresh();
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
-        Cache.ins().getOrderObserver().observe(this, integer -> requestData());
+        Cache.ins().getOrderObserver().observe(this, integer -> refreshAllData());
     }
 
     @SuppressLint("InflateParams")
@@ -90,11 +86,27 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             dialog.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
             dialog.show();
         });
+        binding.vpOrderViews.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentPage = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
     protected void onData() {
-        requestData();
+        refreshAllData();
     }
 
     /**
@@ -111,15 +123,35 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     }
 
     /**
-     * 请求数据
+     * 刷新所有数据
      */
-    void requestData() {
+    void refreshAllData() {
         String start = String.format("%s 00:00:00", date);
         String end = String.format("%s 23:59:59", date);
-        LiveData<List<BuyOrderEntity>> liveData = model.queryOrders(null, start, end, null, null, null);
-        if (!liveData.hasObservers()) {
-            liveData.observe(this, this::onQueryOrderResult);
+        wait.refreshData(start, end);
+        all.refreshData(start, end);
+    }
+
+    /**
+     * 请求数据
+     */
+    private void requestData() {
+        String start = String.format("%s 00:00:00", date);
+        String end = String.format("%s 23:59:59", date);
+        if (currentPage == 0) {
+            // 待支付
+            wait.refreshData(start, end);
+        } else {
+            // 全部订单
+            all.refreshData(start, end);
         }
+    }
+
+    /**
+     * 结束刷新
+     */
+    void finishRefresh() {
+        binding.srlLayout.finishRefresh();
     }
 
     /**
@@ -157,19 +189,6 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             calendar.clear();
         } catch (ParseException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * 订单查询返回
-     *
-     * @param data 订单数据
-     */
-    private void onQueryOrderResult(List<BuyOrderEntity> data) {
-        binding.srlLayout.finishRefresh();
-        if (data != null) {
-            wait.refreshData(data);
-            all.refreshData(data);
         }
     }
 
