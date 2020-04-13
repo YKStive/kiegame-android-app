@@ -3,6 +3,7 @@ package com.kiegame.mobile;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -16,6 +17,8 @@ import androidx.multidex.MultiDexApplication;
 
 import com.kiegame.mobile.exceptions.crash.GlobalCrashCapture;
 import com.kiegame.mobile.repository.Network;
+import com.kiegame.mobile.ui.activity.LoginActivity;
+import com.kiegame.mobile.utils.DialogBox;
 import com.kiegame.mobile.worker.Worker;
 
 import java.util.ArrayList;
@@ -102,6 +105,36 @@ public class Game extends MultiDexApplication implements Application.ActivityLif
         Worker.destroy();
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
+    }
+
+    /**
+     * 登录验证超时(Token过期)
+     */
+    public void expired() {
+        DialogBox.ins()
+                .text("登录验证已过期,请重新登录")
+                .confirm(() -> {
+                    if (activity != null) {
+                        activity.startActivity(new Intent(activity, LoginActivity.class));
+                        activity.finish();
+                    }
+                })
+                .show();
+    }
+
+    /**
+     * 已在其他地方登录
+     */
+    public void logged() {
+        DialogBox.ins()
+                .text("当前账号已在其他地方登录")
+                .confirm(() -> {
+                    if (activity != null) {
+                        activity.startActivity(new Intent(activity, LoginActivity.class));
+                        activity.finish();
+                    }
+                })
+                .show();
     }
 
     @Override

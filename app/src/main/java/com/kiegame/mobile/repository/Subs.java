@@ -1,6 +1,7 @@
 package com.kiegame.mobile.repository;
 
 import com.google.gson.JsonParseException;
+import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.repository.entity.result.Result;
 import com.kiegame.mobile.utils.Loading;
@@ -69,6 +70,16 @@ public abstract class Subs<T> implements Observer<Result<T>> {
     public void onNext(Result<T> data) {
         if (this.isShowMsg) {
             Loading.hide();
+        }
+        if (data.getCode() == 401) {
+            // token失效,需要重新登录
+            Game.ins().expired();
+            return;
+        }
+        if (data.getCode() == 410) {
+            // 账号在其他地方登录,需要重新登录
+            Game.ins().logged();
+            return;
         }
         if (data.getCode() == 5001 && !data.isSuccess() && isPay) {
             onPayFailure(data.getMessage());
