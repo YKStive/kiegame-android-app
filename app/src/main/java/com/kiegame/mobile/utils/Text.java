@@ -37,6 +37,21 @@ public class Text {
     }
 
     /**
+     * 验证字符串是否是BASE64编码
+     *
+     * @param text 字符串
+     * @return true:是BASE64 false:不是
+     */
+    public static boolean base64(String text) {
+        if (text != null) {
+            Pattern p = Pattern.compile("^[A-Za-z\\d+/]{214}([A-Za-z\\d+/][A-Za-z\\d+/=]|==)$");
+            Matcher m = p.matcher(text);
+            return m.matches();
+        }
+        return false;
+    }
+
+    /**
      * 格式化身份证号码显示
      *
      * @param idCardNum 身份证号码

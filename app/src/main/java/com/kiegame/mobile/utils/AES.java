@@ -16,7 +16,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class AES {
 
-    private static final String KEY = "kiegame_ase_test";
+    private static final String KEY = "kiegame_aes_test";
 
     /**
      * AES 加密操作

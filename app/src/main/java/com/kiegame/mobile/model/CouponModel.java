@@ -10,6 +10,8 @@ import com.kiegame.mobile.repository.Subs;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
+import com.kiegame.mobile.repository.entity.submit.ListActivityByService;
+import com.kiegame.mobile.repository.entity.submit.ListActivityCardResultByTime;
 
 import java.util.List;
 
@@ -36,7 +38,10 @@ public class CouponModel extends ViewModel {
      * 门店活动查询
      */
     public LiveData<List<ActivityEntity>> queryServiceActivity(String productId) {
-        Network.api().listActivityByService(login.getServiceId(), productId)
+        ListActivityByService info = new ListActivityByService();
+        info.setProductId(productId);
+        info.setServiceId(login.getServiceId());
+        Network.api().listActivityByService(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<ActivityEntity>>(false) {
                     @Override
@@ -51,7 +56,11 @@ public class CouponModel extends ViewModel {
      * 会员卡券查询
      */
     public LiveData<List<ActivityEntity>> queryCustomerCoupons(String customerId, String productId) {
-        Network.api().listActivityCardResultByTime(customerId, login.getServiceId(), productId)
+        ListActivityCardResultByTime info = new ListActivityCardResultByTime();
+        info.setCustomerId(customerId);
+        info.setProductId(productId);
+        info.setServiceId(login.getServiceId());
+        Network.api().listActivityCardResultByTime(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<ActivityEntity>>(false) {
                     @Override

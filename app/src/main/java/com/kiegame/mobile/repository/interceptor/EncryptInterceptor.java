@@ -1,6 +1,8 @@
 package com.kiegame.mobile.repository.interceptor;
 
+import com.kiegame.mobile.repository.entity.submit.Submit;
 import com.kiegame.mobile.utils.AES;
+import com.kiegame.mobile.utils.JSON;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,8 +30,11 @@ public class EncryptInterceptor implements Interceptor {
             Buffer buffer = new Buffer();
             body.writeTo(buffer);
             String encrypt = AES.encrypt(buffer.readString(StandardCharsets.UTF_8));
+            buffer.close();
             if (encrypt != null) {
-                return chain.proceed(request.newBuilder().post(RequestBody.create(encrypt, body.contentType())).build());
+                Submit submit = new Submit();
+                submit.setParamAes(encrypt);
+                return chain.proceed(request.newBuilder().post(RequestBody.create(JSON.toJson(submit), body.contentType())).build());
             }
         }
         return chain.proceed(request);

@@ -578,7 +578,6 @@
                         <RadioButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="15dp"
                             android:button="@drawable/selector_radio_background"
                             android:checked="@{cache.payment == Payment.PAY_TYPE_ONLINE}"
                             android:onClick="@{()->cache.setPayment(Payment.PAY_TYPE_ONLINE)}"
@@ -601,6 +600,7 @@
                             android:text="@string/net_fee_payment_type_offline"
                             android:textColor="@color/black_text"
                             android:textSize="14sp"
+                            android:visibility="gone"
                             tools:ignore="RtlSymmetry" />
                     </RadioGroup>
                 </LinearLayout>

@@ -8,6 +8,7 @@ import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
 import com.kiegame.mobile.repository.entity.receive.VersionEntity;
+import com.kiegame.mobile.repository.entity.submit.QueryAppVersion;
 import com.kiegame.mobile.utils.Version;
 
 import java.util.List;
@@ -29,7 +30,9 @@ public class MainModel extends ViewModel {
      * 检查更新
      */
     public LiveData<VersionEntity> update() {
-        Network.api().queryAppVersion("android")
+        QueryAppVersion info = new QueryAppVersion();
+        info.setVersionId("android");
+        Network.api().queryAppVersion(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<VersionEntity>>(false) {
                     @Override

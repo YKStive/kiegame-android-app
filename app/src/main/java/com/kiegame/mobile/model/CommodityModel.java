@@ -11,6 +11,8 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
+import com.kiegame.mobile.repository.entity.submit.ListShopTag;
+import com.kiegame.mobile.repository.entity.submit.QueryShops;
 
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class CommodityModel extends ViewModel {
      * 商品分类
      */
     public LiveData<List<ShopSortEntity>> listShopType() {
-        Network.api().listType()
+        Network.api().listType(new Object())
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<ShopSortEntity>>(false) {
                     @Override
@@ -58,7 +60,9 @@ public class CommodityModel extends ViewModel {
      * 商品标签
      */
     public LiveData<List<ShopSortEntity>> listShopTag() {
-        Network.api().listTag(1)
+        ListShopTag info = new ListShopTag();
+        info.setTagType(1);
+        Network.api().listTag(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<ShopSortEntity>>(false) {
                     @Override
@@ -73,7 +77,13 @@ public class CommodityModel extends ViewModel {
      * 查询商品
      */
     public LiveData<List<ShopEntity>> listShops(String productTypeId, String productName, String productTagId, boolean isShowLoading) {
-        Network.api().queryShops(login.getServiceId(), productTypeId, productName, productTagId, 1)
+        QueryShops info = new QueryShops();
+        info.setIsMobile(1);
+        info.setProductName(productName);
+        info.setProductTagId(productTagId);
+        info.setProductTypeId(productTypeId);
+        info.setServiceId(login.getServiceId());
+        Network.api().queryShops(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<ShopEntity>>(isShowLoading) {
                     @Override

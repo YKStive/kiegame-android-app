@@ -14,6 +14,7 @@ import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.CancelOrder;
 import com.kiegame.mobile.repository.entity.submit.DeleteOrder;
+import com.kiegame.mobile.repository.entity.submit.PayResult;
 
 import java.util.List;
 
@@ -118,7 +119,10 @@ public class OrderModel extends ViewModel {
      * 查询支付结果
      */
     public LiveData<List<PayResultEntity>> queryPayState(String payId, String baseId) {
-        Network.api().payResult(payId, baseId)
+        PayResult info = new PayResult();
+        info.setPaymentPayId(payId);
+        info.setOrderBaseId(baseId);
+        Network.api().payResult(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<PayResultEntity>>() {
                     @Override

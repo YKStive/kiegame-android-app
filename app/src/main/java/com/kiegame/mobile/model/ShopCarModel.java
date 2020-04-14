@@ -14,6 +14,8 @@ import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
 import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
+import com.kiegame.mobile.repository.entity.submit.PayResult;
+import com.kiegame.mobile.repository.entity.submit.UserInfo;
 import com.kiegame.mobile.utils.Text;
 
 import java.util.ArrayList;
@@ -72,7 +74,9 @@ public class ShopCarModel extends ViewModel {
      * 查询用户信息
      */
     public LiveData<List<UserInfoEntity>> searchUserInfos(String keywords) {
-        Network.api().queryUserInfos(keywords)
+        UserInfo info = new UserInfo();
+        info.setParam(keywords);
+        Network.api().queryUserInfos(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<UserInfoEntity>>(false) {
                     @Override
@@ -159,7 +163,10 @@ public class ShopCarModel extends ViewModel {
      * 查询支付结果
      */
     public LiveData<List<PayResultEntity>> queryPayState(String payId) {
-        Network.api().payResult(payId, null)
+        PayResult info = new PayResult();
+        info.setPaymentPayId(payId);
+        info.setOrderBaseId(null);
+        Network.api().payResult(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<PayResultEntity>>() {
                     @Override

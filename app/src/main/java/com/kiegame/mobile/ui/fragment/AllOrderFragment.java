@@ -29,6 +29,7 @@ import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyShopEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
+import com.kiegame.mobile.repository.entity.submit.ListBuyOrder;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.activity.ScanActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
@@ -514,7 +515,18 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
     }
 
     private void requestData() {
-        Network.api().listBuyOrder(login.getServiceId(), null, startTime, endTime, 2, null, null, null, login.getEmpId(), currentPage)
+        ListBuyOrder info = new ListBuyOrder();
+        info.setServiceId(login.getServiceId());
+        info.setPayTypeState(null);
+        info.setStartTime(startTime);
+        info.setEndTime(endTime);
+        info.setPayChannel(2);
+        info.setPayType(null);
+        info.setSeatNumber(null);
+        info.setCustomerName(null);
+        info.setEmpId(login.getEmpId());
+        info.setPage(currentPage);
+        Network.api().listBuyOrder(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<BuyOrderEntity>>(false) {
                     @Override

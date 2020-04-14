@@ -1,5 +1,7 @@
 package com.kiegame.mobile.repository;
 
+import com.kiegame.mobile.repository.interceptor.DecryptInterceptor;
+import com.kiegame.mobile.repository.interceptor.EncryptInterceptor;
 import com.kiegame.mobile.repository.interceptor.TokenInterceptor;
 
 import java.util.concurrent.TimeUnit;
@@ -18,8 +20,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Network {
 
     /* 网络接口 */
-    private static ApiService API;
-    private static String BASE_URL = ApiService.BASE_URL;
+    private static ApiServiceV2 API;
+    private static String BASE_URL = ApiServiceV2.BASE_URL;
 
     /**
      * 初始化方法,需要在{@link android.app.Application} 中初始化
@@ -39,28 +41,28 @@ public class Network {
         loggingInterceptor.level(HttpLoggingInterceptor.Level.BODY);
         return new OkHttpClient.Builder()
                 .addInterceptor(new TokenInterceptor())
-//                .addInterceptor(new EncryptInterceptor())
-//                .addInterceptor(new DecryptInterceptor())
+                .addInterceptor(new EncryptInterceptor())
+                .addInterceptor(new DecryptInterceptor())
                 .addInterceptor(loggingInterceptor)
-                .connectTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS)
-                .readTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS)
-                .writeTimeout(ApiService.TIME_OUT, TimeUnit.SECONDS).build();
+                .connectTimeout(ApiServiceV2.TIME_OUT, TimeUnit.SECONDS)
+                .readTimeout(ApiServiceV2.TIME_OUT, TimeUnit.SECONDS)
+                .writeTimeout(ApiServiceV2.TIME_OUT, TimeUnit.SECONDS).build();
     }
 
     /**
      * 初始化网络请求接口
      *
      * @param client {@link OkHttpClient}
-     * @return {@link ApiService}
+     * @return {@link ApiServiceV2}
      */
-    private static ApiService initApiService(OkHttpClient client) {
+    private static ApiServiceV2 initApiService(OkHttpClient client) {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(ApiService.class);
+                .create(ApiServiceV2.class);
     }
 
     /**
@@ -78,7 +80,7 @@ public class Network {
      *
      * @return 返回一个ApiService接口对象
      */
-    public static ApiService api() {
+    public static ApiServiceV2 api() {
         return Network.API;
     }
 }
