@@ -3,14 +3,16 @@ package com.kiegame.mobile.utils;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.databinding.DataBindingUtil;
 
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ViewInputBoxBinding;
-import com.kiegame.mobile.ui.base.listener.OnAnimationListener;
 
 /**
  * Created by: var_rain.
@@ -126,6 +128,9 @@ public class InputBox {
         if (!this.isShowing) {
             this.animator.start();
             binding.tvInputContent.setText("");
+            binding.tvInputContent.setFocusable(true);
+            binding.tvInputContent.requestFocus();
+            this.onFocusChange(binding.tvInputContent.isFocused());
         }
     }
 
@@ -137,6 +142,26 @@ public class InputBox {
             this.animator.reverse();
         }
     }
+
+    /**
+     * 焦点改变
+     *
+     * @param hasFocus 是否有焦点
+     */
+    private void onFocusChange(boolean hasFocus) {
+        final boolean isFocus = hasFocus;
+        (new Handler()).postDelayed(() -> {
+            InputMethodManager imm = (InputMethodManager) binding.tvInputContent.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                if (isFocus) {
+                    imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+                } else {
+                    imm.hideSoftInputFromWindow(binding.tvInputContent.getWindowToken(), 0);
+                }
+            }
+        }, 100);
+    }
+
 
     /**
      * 点击事件
