@@ -151,7 +151,7 @@ public class ShopDetail {
         TextView tv = binding.tvShopNum;
         String size = tv.getText().toString();
         int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-        if (shop.getProductVariety() == 1 && Cache.ins().getShopSumById(shop.getProductId()) + num > shop.getBarCount()) {
+        if (shop.getProductVariety() == 1 && shop.getIsIgnoreStock() == 2 && Cache.ins().getShopSumById(shop.getProductId()) + num > shop.getBarCount()) {
             Toast.show("不能再多了");
         } else {
 //            if (num > 0) {

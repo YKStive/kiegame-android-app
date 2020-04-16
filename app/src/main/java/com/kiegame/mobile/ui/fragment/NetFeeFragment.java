@@ -102,6 +102,10 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             this.recharge(this.moneyBtn, 0);
             this.resetData();
         });
+        Cache.ins().getUserInfoObserver().observe(this, name -> {
+            this.recharge(this.moneyBtn, 0);
+            this.changeUserInfo(Cache.ins().getUserInfo(), name);
+        });
         permissions = new String[]{
                 Manifest.permission.CAMERA,
                 Manifest.permission.VIBRATE,

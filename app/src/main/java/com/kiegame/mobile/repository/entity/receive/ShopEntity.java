@@ -62,6 +62,7 @@ public class ShopEntity implements MultiItemEntity, Serializable {
     private String serviceId;
     private String serviceProductId;
     private String barcode;
+    private int isIgnoreStock;
     private int commissionAmount;
     // 是否打印小票（1 是2 否）
     private Integer isPrintTicket;
@@ -97,6 +98,14 @@ public class ShopEntity implements MultiItemEntity, Serializable {
 
     public int getBarCount() {
         return barCount;
+    }
+
+    public int getIsIgnoreStock() {
+        return isIgnoreStock;
+    }
+
+    public void setIsIgnoreStock(int isIgnoreStock) {
+        this.isIgnoreStock = isIgnoreStock;
     }
 
     public void setBarCount(int barCount) {

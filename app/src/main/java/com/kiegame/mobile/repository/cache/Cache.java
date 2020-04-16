@@ -59,6 +59,8 @@ public class Cache extends BaseObservable {
     private MutableLiveData<Integer> orderObserver;
     // 首页页面更新
     private MutableLiveData<Integer> mainPageObserver;
+    // 会员信息更新
+    private MutableLiveData<String> userInfoObserver;
     // 网费优惠
     private ActivityEntity netFeeCoupon;
     // 商品优惠
@@ -75,6 +77,7 @@ public class Cache extends BaseObservable {
         this.netFeeObserver = new MutableLiveData<>();
         this.orderObserver = new MutableLiveData<>();
         this.mainPageObserver = new MutableLiveData<>();
+        this.userInfoObserver = new MutableLiveData<>();
         this.netFee = new MutableLiveData<>();
         this.shops = new MutableLiveData<>();
         this.initialize();
@@ -115,6 +118,13 @@ public class Cache extends BaseObservable {
 
     public void setTempInfo(UserInfoEntity tempInfo) {
         this.tempInfo = tempInfo;
+    }
+
+    /**
+     * 用户信息更新
+     */
+    public MutableLiveData<String> getUserInfoObserver() {
+        return userInfoObserver;
     }
 
     /**

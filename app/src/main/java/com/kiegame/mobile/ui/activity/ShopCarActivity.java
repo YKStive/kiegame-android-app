@@ -460,6 +460,14 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 去充值
      */
     public void toRecharge() {
+        String name;
+        if (Text.empty(this.userInfo.getSeatNumber())) {
+            name = String.format("%s | %s", Text.formatIdCardNum(this.userInfo.getIdCard()), Text.formatCustomName(this.userInfo.getCustomerName()));
+        } else {
+            name = String.format("%s | %s | %s", this.userInfo.getSeatNumber(), Text.formatIdCardNum(this.userInfo.getIdCard()), Text.formatCustomName(this.userInfo.getCustomerName()));
+        }
+        Cache.ins().setUserInfo(this.userInfo);
+        Cache.ins().getUserInfoObserver().setValue(name);
         Cache.ins().getMainPageObserver().setValue(0);
         this.finish();
     }

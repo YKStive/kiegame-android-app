@@ -74,7 +74,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 setLessShopClickListener(helper, item);
                 view.setOnClickListener(v -> {
                     if (item.getProductVariety() == 1 && sum == item.getBarCount()) {
-                        // 固装商品并且已售空
+                        // (记库存的)固装商品并且已售空
                         Toast.show("该商品已售空");
                         return;
                     }
@@ -104,7 +104,8 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             String size = tv.getText().toString();
             int num = Text.empty(size) ? -1 : Integer.parseInt(size) - 1;
             if (needTips(item) && num != 0) {
-                Toast.show(String.format("多%s的商品只能去购物车删除", needFlavorTips(item) ? "规格" : "口味"));
+                Toast.show("多口味的商品只能去购物车删除");
+//                Toast.show(String.format("多%s的商品只能去购物车删除", needFlavorTips(item) ? "规格" : "口味"));
                 return;
             }
             if (num < 0) {
@@ -141,7 +142,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             } else {
                 String size = tv.getText().toString();
                 int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
-                if (item.getProductVariety() == 1 && num > item.getBarCount()) {
+                if (item.getProductVariety() == 1 && item.getIsIgnoreStock() == 2 && num > item.getBarCount()) {
                     Toast.show("不能再多了");
                 } else {
                     helper.setVisible(R.id.tv_btn_less, num != 0);
