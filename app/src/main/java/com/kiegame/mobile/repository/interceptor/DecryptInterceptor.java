@@ -22,7 +22,13 @@ public class DecryptInterceptor implements Interceptor {
         Response response = chain.proceed(chain.request());
         ResponseBody body = response.body();
         if (body != null && body.contentLength() != 0) {
-            String decrypt = AES.decrypt(body.string());
+            String content = body.string();
+            String decrypt;
+            if (content.contains("{") && content.contains("}") && content.contains(":")) {
+                decrypt = content;
+            } else {
+                decrypt = AES.decrypt(content);
+            }
             if (decrypt != null) {
                 return response.newBuilder().body(ResponseBody.create(decrypt, body.contentType())).build();
             }
