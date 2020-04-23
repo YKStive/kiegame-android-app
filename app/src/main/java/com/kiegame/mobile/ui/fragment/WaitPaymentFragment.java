@@ -546,7 +546,12 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                             orders.clear();
                         }
                         if (data != null && !data.isEmpty()) {
-                            orders.addAll(data);
+                            for (BuyOrderEntity datum : data) {
+                                // 筛选待支付
+                                if (datum.getOrderState() == 1) {
+                                    orders.add(datum);
+                                }
+                            }
                         }
                         if (adapter != null) {
                             adapter.notifyDataSetChanged();
