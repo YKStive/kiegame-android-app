@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_coupon_image_select"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="38dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_coupon_select_bg"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="4:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_coupon_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="42dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="42dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_coupon_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="4:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_coupon_image_select_fg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_coupon_select_fg"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/iv_coupon_image_select"
+        app:layout_constraintRight_toRightOf="@id/iv_coupon_image_select" />
+
+    <TextView
+        android:id="@+id/tv_coupon_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textColor="#694827"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@id/iv_coupon_image"
+        app:layout_constraintTop_toTopOf="@id/iv_coupon_image"
+        tools:text="座面POS8折" />
+
+    <TextView
+        android:id="@+id/tv_coupon_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#694827"
+        android:textSize="10sp"
+        app:layout_constraintLeft_toLeftOf="@id/tv_coupon_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_coupon_name"
+        tools:ignore="SmallSp"
+        tools:text="有效期: " />
+
+    <TextView
+        android:id="@+id/tv_coupon_date_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#694827"
+        android:textSize="10sp"
+        app:layout_constraintLeft_toRightOf="@id/tv_coupon_date"
+        app:layout_constraintTop_toBottomOf="@id/tv_coupon_name"
+        tools:ignore="SmallSp"
+        tools:text="2020-04-01 00:00:00" />
+
+    <TextView
+        android:id="@+id/tv_coupon_date_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#694827"
+        android:textSize="10sp"
+        app:layout_constraintLeft_toRightOf="@id/tv_coupon_date"
+        app:layout_constraintTop_toBottomOf="@id/tv_coupon_date_start"
+        tools:ignore="SmallSp"
+        tools:text="2020-04-01 00:00:00" />
+</androidx.constraintlayout.widget.ConstraintLayout>

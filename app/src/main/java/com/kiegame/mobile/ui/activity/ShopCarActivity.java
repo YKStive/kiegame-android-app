@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.base.BaseActivity;
-import com.kiegame.mobile.utils.CouponSelect;
+import com.kiegame.mobile.utils.CouponShopSelect;
 import com.kiegame.mobile.utils.DialogBox;
 import com.kiegame.mobile.utils.PayFailure;
 import com.kiegame.mobile.utils.PaySuccess;
@@ -100,9 +101,15 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             }
             model.userName.setValue(Text.zoomCustomInfo(item));
         } else {
-            Cache.ins().setProductCoupon(null);
+            Cache.ins().setProductCoupon(null, null);
         }
-        model.searchName.observe(this, this::searchUserInfoList);
+        model.searchName.observe(this, keywords -> {
+            if (Text.empty(keywords)) {
+                if (pw != null && pw.isShowing()) {
+                    pw.dismiss();
+                }
+            }
+        });
         model.getFailMessage().observe(this, this::onCreateOrderFailure);
         permissions = new String[]{
                 Manifest.permission.CAMERA,
@@ -123,7 +130,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 cb.setOnClickListener(v -> {
                     cb.setChecked(!item.isBuy());
                     item.setBuy(!item.isBuy());
-                    Cache.ins().setProductCoupon(null);
+                    Cache.ins().setProductCoupon(null, null);
                     Cache.ins().updateTotalMoney();
                     Cache.ins().notifyChange();
                 });
@@ -164,7 +171,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 if (delete != null) {
                     Cache.ins().setShopSumById(delete.getProductId(), Cache.ins().getShopSumById(delete.getProductId()) - delete.getProductBuySum());
                 }
-                Cache.ins().setProductCoupon(null);
+                Cache.ins().setProductCoupon(null, null);
                 Cache.ins().updateTotalMoney();
                 Cache.ins().notifyChange();
             }
@@ -196,8 +203,16 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     protected void onDestroy() {
         super.onDestroy();
         if (Cache.ins().getUserInfo() == null) {
-            Cache.ins().setProductCoupon(null);
+            Cache.ins().setProductCoupon(null, null);
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            this.searchUserInfoList(model.searchName.getValue());
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     /**
@@ -257,7 +272,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     if (Cache.ins().getUserInfo() == null) {
                         this.userInfo = entity;
                         Cache.ins().setTempInfo(this.userInfo);
-                        Cache.ins().setProductCoupon(null);
+                        Cache.ins().setProductCoupon(null, null);
                         model.userName.setValue(name);
                     } else {
                         // #785 确认商品订单页面，删除已有会员，重新选择会员，系统闪退
@@ -271,7 +286,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                                     this.userInfo = entity;
                                     Cache.ins().setTempInfo(this.userInfo);
                                     model.userName.setValue(name);
-                                    Cache.ins().setProductCoupon(null);
+                                    Cache.ins().setProductCoupon(null, null);
                                 }).cancel(null).show();
                             }
 //                            if (!entity.getCustomerId().equals(Cache.ins().getUserInfo().getCustomerId())) {
@@ -368,7 +383,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         if (num < 0) {
             Toast.show("不能再少了");
         } else {
-            Cache.ins().setProductCoupon(null);
+            Cache.ins().setProductCoupon(null, null);
             less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setText(num == 0 ? "" : String.valueOf(num));
@@ -399,28 +414,70 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     public void couponUse() {
         if (this.userInfo != null) {
 //            if (canCreateOrderOrPayment(3)) {
-            CouponSelect.ins()
+            CouponShopSelect.ins()
                     .bind(this)
                     .model(couponModel)
                     .set(userInfo.getCustomerId(), this.getProductIds())
                     .type(2)
-                    .callback(data -> {
-                        if (data != null) {
-                            if (data.getActivityType() != 2) {
-                                Toast.show("当前交易不支持此优惠券");
-                                return;
-                            }
-                            if (!Cache.ins().hasShop(data.getProductId())) {
-                                Toast.show("购物车中没有商品可使用此优惠券");
-                                return;
-                            }
-                        }
-                        Cache.ins().setProductCoupon(data);
+                    .callback((service, customer) -> {
+//                        if (data != null && !data.isEmpty()) {
+//                            if (data.getActivityType() != 2) {
+//                                Toast.show("当前交易不支持此优惠券");
+//                                return;
+//                            }
+//                            if (!Cache.ins().hasShop(data.getProductId())) {
+//                                Toast.show("购物车中没有商品可使用此优惠券");
+//                                return;
+//                            }
+//                        }
+                        buildServiceCoupons(service);
+                        buildCustomerCoupons(customer);
+                        Cache.ins().setProductCoupon(service, customer);
                     })
                     .show();
 //            }
         } else {
             Toast.show("请先选择会员");
+        }
+    }
+
+    /**
+     * 组合门店活动优惠券ID
+     *
+     * @param service 已选优惠券
+     */
+    private void buildServiceCoupons(List<ActivityEntity> service) {
+        if (service != null) {
+            StringBuilder sb = new StringBuilder();
+            for (ActivityEntity act : service) {
+                if (sb.length() != 0) {
+                    sb.append(",");
+                }
+                sb.append(act.getActivityId());
+            }
+            Cache.ins().setProtectService(sb.toString());
+        } else {
+            Cache.ins().setProtectService(null);
+        }
+    }
+
+    /**
+     * 组合用户优惠券ID
+     *
+     * @param customer 已选优惠券
+     */
+    private void buildCustomerCoupons(List<ActivityEntity> customer) {
+        if (customer != null) {
+            StringBuilder sb = new StringBuilder();
+            for (ActivityEntity act : customer) {
+                if (sb.length() != 0) {
+                    sb.append(",");
+                }
+                sb.append(act.getActivityCardResultId());
+            }
+            Cache.ins().setProtectCustomer(sb.toString());
+        } else {
+            Cache.ins().setProtectCustomer(null);
         }
     }
 
@@ -565,7 +622,9 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     Cache.ins().getPayment(),
                     String.valueOf(totalMoney),
                     buyPayPassword,
-                    isAddOrder);
+                    isAddOrder,
+                    Cache.ins().getProtectService(),
+                    Cache.ins().getProtectCustomer());
             if (!order.hasObservers()) {
                 order.observe(this, this::onCreateOrderResult);
             }
@@ -669,8 +728,10 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      */
     private void resetShopData() {
         Cache.ins().setNetFeeCoupon(null);
-        Cache.ins().setProductCoupon(null);
+        Cache.ins().setProductCoupon(null, null);
         Cache.ins().setTempInfo(null);
+        Cache.ins().setProtectService(null);
+        Cache.ins().setProtectCustomer(null);
         List<BuyShop> shops = Cache.ins().getShops();
         if (shops != null && !shops.isEmpty()) {
             List<BuyShop> buys = new ArrayList<>();

@@ -47,6 +47,26 @@ public class AddOrder {
     private String paidInAmount;
     // 备注
     private String memo;
+    // 产品优惠-活动id（取值activityId）
+    private String productDiscountActivityId;
+    // 产品优惠-卡卷id(取activityCardResultId)
+    private String productDiscountCardId;
+
+    public String getProductDiscountActivityId() {
+        return productDiscountActivityId;
+    }
+
+    public void setProductDiscountActivityId(String productDiscountActivityId) {
+        this.productDiscountActivityId = productDiscountActivityId;
+    }
+
+    public String getProductDiscountCardId() {
+        return productDiscountCardId;
+    }
+
+    public void setProductDiscountCardId(String productDiscountCardId) {
+        this.productDiscountCardId = productDiscountCardId;
+    }
 
     public String getServiceId() {
         return serviceId;

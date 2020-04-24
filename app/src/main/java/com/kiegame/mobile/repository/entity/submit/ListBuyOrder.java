@@ -11,6 +11,8 @@ public class ListBuyOrder {
     private String serviceId;
     // 支付状态 1待支付 2支付成功 3支付中 4支付失败
     private Integer payTypeState;
+    // 待支付1、支付中2、退款中3、取消订单4（最终状态）、订单完成5（最终状态）、已退款6（最终状态）
+    private Integer orderState;
     // 开始时间 (yyyy-MM-dd HH:mm:ss)
     private String startTime;
     // 结束时间
@@ -27,6 +29,14 @@ public class ListBuyOrder {
     private String empId;
     // 分页
     private int page;
+
+    public Integer getOrderState() {
+        return orderState;
+    }
+
+    public void setOrderState(Integer orderState) {
+        this.orderState = orderState;
+    }
 
     public String getServiceId() {
         return serviceId;

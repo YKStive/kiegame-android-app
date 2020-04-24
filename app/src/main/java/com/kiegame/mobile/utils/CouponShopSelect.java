@@ -20,8 +20,9 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.android.material.tabs.TabLayout;
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
-import com.kiegame.mobile.databinding.ViewCouponUseBinding;
+import com.kiegame.mobile.databinding.ViewCouponShopUseBinding;
 import com.kiegame.mobile.model.CouponModel;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.ui.base.BaseActivity;
 
@@ -35,15 +36,15 @@ import java.util.List;
  * Created date: 2020/2/2.
  * Description: 优惠券选择框
  */
-public class CouponSelect {
+public class CouponShopSelect {
 
-    private static CouponSelect INS;
-    private ViewCouponUseBinding binding;
+    private static CouponShopSelect INS;
+    private ViewCouponShopUseBinding binding;
     private ValueAnimator alphaAnimator;
     private ValueAnimator moveAnimator;
     private boolean isShowing;
     private float moveSize;
-    private OnCouponUseCallback callback;
+    private OnCouponShopUseCallback callback;
     private CouponModel model;
     private LifecycleOwner owner;
     private List<ActivityEntity> serviceActivities;
@@ -57,25 +58,25 @@ public class CouponSelect {
     /**
      * 构造方法
      */
-    private CouponSelect() {
+    private CouponShopSelect() {
         this.serviceActivities = new ArrayList<>();
         this.customerCoupons = new ArrayList<>();
-        this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_coupon_use, null, false);
+        this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_coupon_shop_use, null, false);
         this.moveSize = Game.ins().metrics(true).heightPixels * 0.45f;
         this.initAnim();
         this.initViews();
     }
 
     /**
-     * 获取 {@link CouponSelect} 对象
+     * 获取 {@link CouponShopSelect} 对象
      *
-     * @return {@link CouponSelect}
+     * @return {@link CouponShopSelect}
      */
-    public static CouponSelect ins() {
-        if (CouponSelect.INS == null) {
-            CouponSelect.INS = new CouponSelect();
+    public static CouponShopSelect ins() {
+        if (CouponShopSelect.INS == null) {
+            CouponShopSelect.INS = new CouponShopSelect();
         }
-        return CouponSelect.INS;
+        return CouponShopSelect.INS;
     }
 
     /**
@@ -139,9 +140,27 @@ public class CouponSelect {
             binding.clRoot.setOnClickListener(v -> this.hide());
             binding.tvCloseBtn.setOnClickListener(v -> {
                 if (callback != null) {
-                    callback.onCouponUse(null);
+                    callback.onCouponUse(null, null);
                 }
                 this.hide();
+            });
+            binding.tvOkBtn.setOnClickListener(v -> {
+                List<ActivityEntity> service = new ArrayList<>();
+                List<ActivityEntity> customer = new ArrayList<>();
+                for (ActivityEntity entity : serviceActivities) {
+                    if (entity.isSelect()) {
+                        service.add(entity);
+                    }
+                }
+                for (ActivityEntity coupon : customerCoupons) {
+                    if (coupon.isSelect()) {
+                        customer.add(coupon);
+                    }
+                }
+                if (callback != null) {
+                    callback.onCouponUse(service, customer);
+                }
+                hide();
             });
             binding.tlCouponTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
@@ -164,32 +183,39 @@ public class CouponSelect {
     }
 
     private void initRecyclerView() {
-        adapter = new BaseQuickAdapter<ActivityEntity, BaseViewHolder>(R.layout.item_coupon) {
+        adapter = new BaseQuickAdapter<ActivityEntity, BaseViewHolder>(R.layout.item_coupon_shop) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, ActivityEntity item) {
-                if (item.getActivityType() == 1) {
-                    helper.getView(R.id.tv_rmb).setVisibility(View.VISIBLE);
-                    TextView price = helper.getView(R.id.tv_coupon_price);
-                    price.setText(item.getActivityMoney());
-                    price.setTextSize(30);
-                } else {
-                    helper.getView(R.id.tv_rmb).setVisibility(View.GONE);
-                    TextView price = helper.getView(R.id.tv_coupon_price);
-                    price.setText(item.getActivityRatioString());
-                    price.setTextSize(18);
-                }
+                helper.setVisible(R.id.iv_coupon_image_select, item.isSelect());
+                helper.setVisible(R.id.iv_coupon_image_select_fg, item.isSelect());
+//                if (item.getActivityType() == 1) {
+//                    helper.getView(R.id.tv_rmb).setVisibility(View.VISIBLE);
+//                    TextView price = helper.getView(R.id.tv_coupon_price);
+//                    price.setText(item.getActivityMoney());
+//                    price.setTextSize(30);
+//                } else {
+//                    helper.getView(R.id.tv_rmb).setVisibility(View.GONE);
+//                    TextView price = helper.getView(R.id.tv_coupon_price);
+//                    price.setText(item.getActivityRatioString());
+//                    price.setTextSize(18);
+//                }
                 helper.getView(R.id.iv_coupon_image).setOnClickListener(v -> {
                     if (item.getIsBoolUse() != null && item.getIsBoolUse() == 2) {
                         Toast.show("该优惠券暂不可使用");
                         return;
                     }
-                    if (callback != null) {
-                        callback.onCouponUse(item);
-                        hide();
+                    if (!Cache.ins().hasShop(item.getProductId())) {
+                        Toast.show("购物车中没有商品可使用此优惠券");
+                        return;
                     }
+                    item.setSelect(!item.isSelect());
+                    adapter.notifyDataSetChanged();
                 });
-                helper.setText(R.id.tv_coupon_date, String.format("有效期%s-%s", cleanDate(item.getStartTime()), cleanDate(item.getEndTime())));
-                helper.setText(R.id.tv_coupon_rule, item.getActivityName());
+                helper.setText(R.id.tv_coupon_date, "有效期: ");
+                helper.setText(R.id.tv_coupon_date_start, item.getStartTime());
+                helper.setText(R.id.tv_coupon_date_end, item.getEndTime());
+//                helper.setText(R.id.tv_coupon_date, String.format("有效期%s-%s", cleanDate(item.getStartTime()), cleanDate(item.getEndTime())));
+                helper.setText(R.id.tv_coupon_name, item.getActivityName());
             }
         };
         adapter.setEmptyView(createEmptyView());
@@ -197,21 +223,21 @@ public class CouponSelect {
         this.binding.rvContent.setAdapter(adapter);
     }
 
-    /**
-     * 清除时间的时分秒部分
-     *
-     * @param datetime 时间日期
-     * @return 返回日期 年/月/日
-     */
-    private String cleanDate(String datetime) {
-        if (datetime != null) {
-            String[] split = datetime.split(" ");
-            if (split.length >= 2) {
-                return split[0];
-            }
-        }
-        return datetime;
-    }
+//    /**
+//     * 清除时间的时分秒部分
+//     *
+//     * @param datetime 时间日期
+//     * @return 返回日期 年/月/日
+//     */
+//    private String cleanDate(String datetime) {
+//        if (datetime != null) {
+//            String[] split = datetime.split(" ");
+//            if (split.length >= 2) {
+//                return split[0];
+//            }
+//        }
+//        return datetime;
+//    }
 
     @NotNull
     private TextView createEmptyView() {
@@ -240,7 +266,7 @@ public class CouponSelect {
     /**
      * 绑定生命周期
      */
-    public CouponSelect bind(BaseActivity activity) {
+    public CouponShopSelect bind(BaseActivity activity) {
         this.owner = activity;
         return this;
     }
@@ -248,7 +274,7 @@ public class CouponSelect {
     /**
      * 绑定生命周期
      */
-    public CouponSelect bind(Fragment fragment) {
+    public CouponShopSelect bind(Fragment fragment) {
         this.owner = fragment;
         return this;
     }
@@ -258,7 +284,7 @@ public class CouponSelect {
      *
      * @param model {@link CouponModel}
      */
-    public CouponSelect model(CouponModel model) {
+    public CouponShopSelect model(CouponModel model) {
         this.model = model;
         return this;
     }
@@ -267,9 +293,9 @@ public class CouponSelect {
      * 设置数据类型
      *
      * @param type 1: 网费 2: 商品
-     * @return {@link CouponSelect}
+     * @return {@link CouponShopSelect}
      */
-    public CouponSelect type(int type) {
+    public CouponShopSelect type(int type) {
         this.type = type;
         return this;
     }
@@ -277,7 +303,7 @@ public class CouponSelect {
     /**
      * 设置数据
      */
-    public CouponSelect set(String customerId, String productId) {
+    public CouponShopSelect set(String customerId, String productId) {
         this.customerId = customerId;
         this.productId = productId;
         return this;
@@ -286,9 +312,9 @@ public class CouponSelect {
     /**
      * 设置优惠券使用回调
      *
-     * @param callback {@link OnCouponUseCallback}
+     * @param callback {@link OnCouponShopUseCallback}
      */
-    public CouponSelect callback(OnCouponUseCallback callback) {
+    public CouponShopSelect callback(OnCouponShopUseCallback callback) {
         this.callback = callback;
         return this;
     }
@@ -301,7 +327,7 @@ public class CouponSelect {
             this.isSuccess = false;
             this.serviceActivities.clear();
             this.customerCoupons.clear();
-            this.adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
             selectTab();
             this.moveAnimator.start();
         }
@@ -332,6 +358,7 @@ public class CouponSelect {
         if (data != null && !data.isEmpty()) {
             for (ActivityEntity datum : data) {
                 if (datum.getActivityType() == type) {
+                    serviceCouponSelect(datum);
                     serviceActivities.add(datum);
                 }
             }
@@ -353,6 +380,7 @@ public class CouponSelect {
         if (data != null && !data.isEmpty()) {
             for (ActivityEntity datum : data) {
                 if (datum.getActivityType() == type) {
+                    customerCouponSelect(datum);
                     customerCoupons.add(datum);
                 }
             }
@@ -365,13 +393,43 @@ public class CouponSelect {
     }
 
     /**
+     * 优惠选择状态处理
+     *
+     * @param datum 优惠券对象
+     */
+    private void serviceCouponSelect(ActivityEntity datum) {
+        String service = Cache.ins().getProtectService();
+        if (service != null) {
+            String activityId = datum.getActivityId();
+            if (activityId != null && service.contains(activityId)) {
+                datum.setSelect(true);
+            }
+        }
+    }
+
+    /**
+     * 优惠选择状态处理
+     *
+     * @param datum 优惠券对象
+     */
+    private void customerCouponSelect(ActivityEntity datum) {
+        String customer = Cache.ins().getProtectCustomer();
+        if (customer != null) {
+            String activityCardResultId = datum.getActivityCardResultId();
+            if (activityCardResultId != null && customer.contains(activityCardResultId)) {
+                datum.setSelect(true);
+            }
+        }
+    }
+
+    /**
      * 优惠券使用回调
      */
-    public interface OnCouponUseCallback {
+    public interface OnCouponShopUseCallback {
 
         /**
          * 优惠卷使用回调方法
          */
-        void onCouponUse(ActivityEntity data);
+        void onCouponUse(List<ActivityEntity> service, List<ActivityEntity> customer);
     }
 }

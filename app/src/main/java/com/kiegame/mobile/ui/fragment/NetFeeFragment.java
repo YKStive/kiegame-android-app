@@ -86,7 +86,14 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         binding.setFragment(this);
         binding.setCache(Cache.ins());
         pwHeight = (int) (Game.ins().metrics(true).heightPixels * 0.3f);
-        model.userSearch.observe(this, this::searchUserInfoList);
+        model.userSearch.observe(this, keywords -> {
+            if (Text.empty(keywords)) {
+                if (pw != null && pw.isShowing()) {
+                    pw.dismiss();
+                }
+            }
+        });
+        Cache.ins().getUserSearchObserver().observe(this, keyCode -> this.searchUserInfoList(model.userSearch.getValue()));
         model.getFailMessage().observe(this, this::onCreateOrderFailure);
         menu = new Menu(getContext()).callback(v -> {
             Cache.ins().initialize();
@@ -435,7 +442,9 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                     String.valueOf(totalMoney),
                     null,
                     buyPayPassword,
-                    isAddOrder);
+                    isAddOrder,
+                    Cache.ins().getProtectService(),
+                    Cache.ins().getProtectCustomer());
             if (!order.hasObservers()) {
                 order.observe(this, this::onCreateOrderResult);
             }
@@ -573,8 +582,10 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     private void resetData() {
         Cache.ins().setNetFeeCoupon(null);
-        Cache.ins().setProductCoupon(null);
+        Cache.ins().setProductCoupon(null, null);
         Cache.ins().setTempInfo(null);
+        Cache.ins().setProtectService(null);
+        Cache.ins().setProtectCustomer(null);
         // 重置金额选择
         if (this.moneyBtn != null) {
             this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);

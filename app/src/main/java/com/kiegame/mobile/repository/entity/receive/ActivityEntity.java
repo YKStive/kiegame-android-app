@@ -42,6 +42,15 @@ public class ActivityEntity {
     private String useScopeServiceName;
     // 1 可使用 2 不可使用
     private Integer isBoolUse;
+    private boolean isSelect;
+
+    public boolean isSelect() {
+        return isSelect;
+    }
+
+    public void setSelect(boolean select) {
+        isSelect = select;
+    }
 
     public Integer getIsBoolUse() {
         return isBoolUse;

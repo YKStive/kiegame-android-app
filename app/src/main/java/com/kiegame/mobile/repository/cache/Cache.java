@@ -61,14 +61,20 @@ public class Cache extends BaseObservable {
     private MutableLiveData<Integer> mainPageObserver;
     // 会员信息更新
     private MutableLiveData<String> userInfoObserver;
+    // 会员搜索更新
+    private MutableLiveData<Integer> userSearchObserver;
     // 网费优惠
     private ActivityEntity netFeeCoupon;
     // 商品优惠
-    private ActivityEntity productCoupon;
+    private List<ActivityEntity> productCoupon;
     // 产品优惠金额
     private int productCouponMoney;
     // 记录商品的购买数量
     private Map<String, Integer> buySum;
+    // 产品门店活动
+    private String protectService;
+    // 产品用户优惠
+    private String protectCustomer;
 
     private Cache() {
         this.buySum = new HashMap<>();
@@ -78,6 +84,7 @@ public class Cache extends BaseObservable {
         this.orderObserver = new MutableLiveData<>();
         this.mainPageObserver = new MutableLiveData<>();
         this.userInfoObserver = new MutableLiveData<>();
+        this.userSearchObserver = new MutableLiveData<>();
         this.netFee = new MutableLiveData<>();
         this.shops = new MutableLiveData<>();
         this.initialize();
@@ -95,7 +102,7 @@ public class Cache extends BaseObservable {
         this.payment = Payment.PAY_TYPE_ONLINE;
         this.shopSum.postValue(0);
         this.setNetFeeCoupon(null);
-        this.setProductCoupon(null);
+        this.setProductCoupon(null, null);
         this.productCouponMoney = 0;
         this.setUserInfo(null);
     }
@@ -112,12 +119,35 @@ public class Cache extends BaseObservable {
         return Cache.INS;
     }
 
+    public String getProtectService() {
+        return protectService;
+    }
+
+    public void setProtectService(String protectService) {
+        this.protectService = protectService;
+    }
+
+    public String getProtectCustomer() {
+        return protectCustomer;
+    }
+
+    public void setProtectCustomer(String protectCustomer) {
+        this.protectCustomer = protectCustomer;
+    }
+
     public UserInfoEntity getTempInfo() {
         return tempInfo;
     }
 
     public void setTempInfo(UserInfoEntity tempInfo) {
         this.tempInfo = tempInfo;
+    }
+
+    /**
+     * 会员搜索更新
+     */
+    public MutableLiveData<Integer> getUserSearchObserver() {
+        return userSearchObserver;
     }
 
     /**
@@ -153,8 +183,17 @@ public class Cache extends BaseObservable {
      * @return {@link ActivityEntity}
      */
     @Bindable
-    public ActivityEntity getProductCoupon() {
+    public List<ActivityEntity> getProductCoupon() {
         return productCoupon;
+    }
+
+    @Bindable
+    public String getProductCouponState() {
+        return this.productCoupon != null
+                ? (this.productCoupon.size() == 1
+                ? this.productCoupon.get(0).getActivityName()
+                : String.format("已选%s张优惠券", this.productCoupon.size()))
+                : "";
     }
 
     /**
@@ -178,21 +217,37 @@ public class Cache extends BaseObservable {
     /**
      * 设置商品优惠券数据
      *
-     * @param productCoupon {@link ActivityEntity}
+     * @param service  {@link ActivityEntity}
+     * @param customer {@link ActivityEntity}
      */
-    public void setProductCoupon(ActivityEntity productCoupon) {
-        this.productCoupon = productCoupon;
+    public void setProductCoupon(List<ActivityEntity> service, List<ActivityEntity> customer) {
+        if (service == null && customer == null) {
+            this.productCoupon = null;
+        }
+        this.productCoupon = new ArrayList<>();
+        if (service != null) {
+            this.productCoupon.addAll(service);
+        }
+        if (customer != null) {
+            this.productCoupon.addAll(customer);
+        }
         List<BuyShop> buys = shops.getValue();
         if (buys != null) {
+            List<String> pid = new ArrayList<>();
             int money = 0;
             for (BuyShop buy : buys) {
                 buy.setProductDiscountId(null);
                 buy.setProductDiscountType(null);
-                if (productCoupon != null && money == 0) {
-                    if (buy.getProductId().equals(productCoupon.getProductId()) && buy.isBuy()) {
-                        buy.setProductDiscountType(productCoupon.getDiscountType());
-                        buy.setProductDiscountId(productCoupon.getDiscountType() == 1 ? productCoupon.getActivityId() : productCoupon.getActivityCardResultId());
-                        money = buy.getFee() - (new BigDecimal(buy.getFee()).multiply(productCoupon.getActivityRatio()).intValue());
+                if (this.productCoupon != null && !this.productCoupon.isEmpty()) {
+                    if (!pid.contains(buy.getProductId())) {
+                        for (ActivityEntity act : this.productCoupon) {
+                            if (buy.getProductId().equals(act.getProductId()) && buy.isBuy()) {
+                                buy.setProductDiscountType(act.getDiscountType());
+                                buy.setProductDiscountId(act.getDiscountType() == 1 ? act.getActivityId() : act.getActivityCardResultId());
+                                pid.add(buy.getProductId());
+                                money += buy.getFee() - (new BigDecimal(buy.getFee()).multiply(act.getActivityRatio()).intValue());
+                            }
+                        }
                     }
                 }
             }

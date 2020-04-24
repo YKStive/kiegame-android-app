@@ -528,7 +528,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
     private void requestData() {
         ListBuyOrder info = new ListBuyOrder();
         info.setServiceId(login.getServiceId());
-        info.setPayTypeState(1);
+        info.setOrderState(1);
         info.setStartTime(startTime);
         info.setEndTime(endTime);
         info.setPayChannel(2);
@@ -546,12 +546,13 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                             orders.clear();
                         }
                         if (data != null && !data.isEmpty()) {
-                            for (BuyOrderEntity datum : data) {
-                                // 筛选待支付
-                                if (datum.getOrderState() == 1) {
-                                    orders.add(datum);
-                                }
-                            }
+//                            for (BuyOrderEntity datum : data) {
+//                                // 筛选待支付
+//                                if (datum.getOrderState() == 1) {
+//                                    orders.add(datum);
+//                                }
+//                            }
+                            orders.addAll(data);
                         }
                         if (adapter != null) {
                             adapter.notifyDataSetChanged();

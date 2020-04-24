@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -113,6 +114,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
             insCall = true;
             model.update().observe(this, this::checkUpdate);
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            Cache.ins().getUserSearchObserver().setValue(keyCode);
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     /**

@@ -125,21 +125,38 @@ public class NetFeeModel extends ViewModel {
     /**
      * 下单/结算
      *
-     * @param netMoney       网费充值金额
-     * @param shopMoney      商品金额
-     * @param seatNum        座号
-     * @param customerId     会员ID
-     * @param rewardMoney    网费充值奖励金,没有为0
-     * @param discountType   充值优惠类型
-     * @param discountId     充值优惠ID
-     * @param discountMoney  充值优惠金额
-     * @param buyPayType     支付类型
-     * @param paidInAmount   实际支付
-     * @param memo           备注
-     * @param buyPayPassword 支付密码
-     * @param isAddOrder     1: 下单 2:结算
+     * @param netMoney                  网费充值金额
+     * @param shopMoney                 商品金额
+     * @param seatNum                   座号
+     * @param customerId                会员ID
+     * @param rewardMoney               网费充值奖励金,没有为0
+     * @param discountType              充值优惠类型
+     * @param discountId                充值优惠ID
+     * @param discountMoney             充值优惠金额
+     * @param buyPayType                支付类型
+     * @param paidInAmount              实际支付
+     * @param memo                      备注
+     * @param buyPayPassword            支付密码
+     * @param isAddOrder                1: 下单 2:结算
+     * @param productDiscountActivityId 活动ID
+     * @param productDiscountCardId     卡券ID
      */
-    public LiveData<List<AddOrderEntity>> addOrder(int netMoney, int shopMoney, String seatNum, String customerId, int rewardMoney, Integer discountType, String discountId, Integer discountMoney, int buyPayType, String paidInAmount, String memo, String buyPayPassword, int isAddOrder) {
+    public LiveData<List<AddOrderEntity>> addOrder(
+            int netMoney,
+            int shopMoney,
+            String seatNum,
+            String customerId,
+            int rewardMoney,
+            Integer discountType,
+            String discountId,
+            Integer discountMoney,
+            int buyPayType,
+            String paidInAmount,
+            String memo,
+            String buyPayPassword,
+            int isAddOrder,
+            String productDiscountActivityId,
+            String productDiscountCardId) {
         AddOrder order = new AddOrder();
         if (shopMoney > 0 || Cache.ins().getProductCoupon() != null) {
             // 购买商品
@@ -179,6 +196,8 @@ public class NetFeeModel extends ViewModel {
         order.setCommissionId(login.getEmpId());
         order.setPaidInAmount(paidInAmount);
         order.setMemo(memo);
+        order.setProductDiscountActivityId(productDiscountActivityId);
+        order.setProductDiscountCardId(productDiscountCardId);
         Network.api().addOrder(order)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<AddOrderEntity>>(true, true) {
