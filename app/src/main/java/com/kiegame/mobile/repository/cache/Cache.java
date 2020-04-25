@@ -204,9 +204,9 @@ public class Cache extends BaseObservable {
      */
     public boolean hasShop(String productId) {
         List<BuyShop> value = shops.getValue();
-        if (value != null) {
+        if (value != null && productId != null) {
             for (BuyShop buy : value) {
-                if (buy.getProductId().equals(productId)) {
+                if (productId.contains(buy.getProductId())) {
                     return true;
                 }
             }
@@ -233,21 +233,33 @@ public class Cache extends BaseObservable {
         }
         List<BuyShop> buys = shops.getValue();
         if (buys != null) {
-            List<String> pid = new ArrayList<>();
+            List<ActivityEntity> aid = new ArrayList<>();
+            List<BuyShop> pid = new ArrayList<>();
             int money = 0;
-            for (BuyShop buy : buys) {
-                buy.setProductDiscountId(null);
-                buy.setProductDiscountType(null);
-                if (this.productCoupon != null && !this.productCoupon.isEmpty()) {
-                    if (!pid.contains(buy.getProductId())) {
+            if (this.productCoupon != null && !this.productCoupon.isEmpty()) {
+                for (BuyShop buy : buys) {
+                    String productId = buy.getProductId();
+                    // 如果商品使用过优惠券则跳过该商品
+                    if (!pid.contains(buy)) {
+                        // 如果没使用过优惠券则使用
                         for (ActivityEntity act : this.productCoupon) {
-                            if (buy.getProductId().equals(act.getProductId()) && buy.isBuy()) {
-                                buy.setProductDiscountType(act.getDiscountType());
-                                buy.setProductDiscountId(act.getDiscountType() == 1 ? act.getActivityId() : act.getActivityCardResultId());
-                                pid.add(buy.getProductId());
-                                money += buy.getFee() - (new BigDecimal(buy.getFee()).multiply(act.getActivityRatio()).intValue());
+                            // 判断该优惠券是否被使用过
+                            if (!aid.contains(act)) {
+                                // 没使用过则判断该优惠券是否适用于该商品
+                                if (act.getProductId().contains(productId) && buy.isBuy()) {
+                                    // 记录使用的优惠券和对应商品
+                                    aid.add(act);
+                                    pid.add(buy);
+                                    // 计算优惠金额
+                                    money += buy.getFee() - (new BigDecimal(buy.getFee()).multiply(act.getActivityRatio()).intValue());
+                                    break;
+                                }
                             }
                         }
+                    }
+                    // 已选择的优惠券都使用完了就结束商品遍历
+                    if (aid.size() == this.productCoupon.size()) {
+                        break;
                     }
                 }
             }
