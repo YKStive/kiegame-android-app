@@ -366,6 +366,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         if (data.getShopType() == 1 && Cache.ins().getShopSumById(data.getProductId()) >= data.getMax()) {
             Toast.show("不能再多了");
         } else {
+            Cache.ins().setProductCoupon(null, null);
             less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
             tv.setText(String.valueOf(num));
@@ -430,54 +431,12 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 //                                return;
 //                            }
 //                        }
-                        buildServiceCoupons(service);
-                        buildCustomerCoupons(customer);
                         Cache.ins().setProductCoupon(service, customer);
                     })
                     .show();
 //            }
         } else {
             Toast.show("请先选择会员");
-        }
-    }
-
-    /**
-     * 组合门店活动优惠券ID
-     *
-     * @param service 已选优惠券
-     */
-    private void buildServiceCoupons(List<ActivityEntity> service) {
-        if (service != null) {
-            StringBuilder sb = new StringBuilder();
-            for (ActivityEntity act : service) {
-                if (sb.length() != 0) {
-                    sb.append(",");
-                }
-                sb.append(act.getActivityId());
-            }
-            Cache.ins().setProtectService(sb.toString());
-        } else {
-            Cache.ins().setProtectService(null);
-        }
-    }
-
-    /**
-     * 组合用户优惠券ID
-     *
-     * @param customer 已选优惠券
-     */
-    private void buildCustomerCoupons(List<ActivityEntity> customer) {
-        if (customer != null) {
-            StringBuilder sb = new StringBuilder();
-            for (ActivityEntity act : customer) {
-                if (sb.length() != 0) {
-                    sb.append(",");
-                }
-                sb.append(act.getActivityCardResultId());
-            }
-            Cache.ins().setProtectCustomer(sb.toString());
-        } else {
-            Cache.ins().setProtectCustomer(null);
         }
     }
 

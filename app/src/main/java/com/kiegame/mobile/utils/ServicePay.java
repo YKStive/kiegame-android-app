@@ -10,7 +10,6 @@ import androidx.databinding.DataBindingUtil;
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ViewServiceConfirmBinding;
-import com.kiegame.mobile.ui.base.listener.OnAnimationListener;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

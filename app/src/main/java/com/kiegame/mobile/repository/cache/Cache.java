@@ -16,6 +16,7 @@ import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.utils.Prefer;
 import com.kiegame.mobile.utils.PreferPlus;
+import com.kiegame.mobile.utils.Toast;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by: var_rain.
@@ -231,43 +233,130 @@ public class Cache extends BaseObservable {
         if (customer != null) {
             this.productCoupon.addAll(customer);
         }
-        List<BuyShop> buys = shops.getValue();
-        if (buys != null) {
+        Map<String, Integer> shopSum = getBuyShopSum();
+        if (!shopSum.isEmpty()) {
+            Set<Map.Entry<String, Integer>> buys = shopSum.entrySet();
             List<ActivityEntity> aid = new ArrayList<>();
-            List<BuyShop> pid = new ArrayList<>();
+            List<String> pid = new ArrayList<>();
             int money = 0;
             if (this.productCoupon != null && !this.productCoupon.isEmpty()) {
-                for (BuyShop buy : buys) {
-                    String productId = buy.getProductId();
+                for (Map.Entry<String, Integer> buy : buys) {
+                    String productId = buy.getKey();
                     // 如果商品使用过优惠券则跳过该商品
-                    if (!pid.contains(buy)) {
-                        // 如果没使用过优惠券则使用
-                        for (ActivityEntity act : this.productCoupon) {
-                            // 判断该优惠券是否被使用过
-                            if (!aid.contains(act)) {
-                                // 没使用过则判断该优惠券是否适用于该商品
-                                if (act.getProductId().contains(productId) && buy.isBuy()) {
-                                    // 记录使用的优惠券和对应商品
-                                    aid.add(act);
-                                    pid.add(buy);
-                                    // 计算优惠金额
-                                    money += buy.getFee() - (new BigDecimal(buy.getFee()).multiply(act.getActivityRatio()).intValue());
-                                    break;
-                                }
-                            }
-                        }
+                    if (!pid.contains(productId)) {
+                        money += getMoney(aid, pid, productId, buy.getValue());
                     }
                     // 已选择的优惠券都使用完了就结束商品遍历
                     if (aid.size() == this.productCoupon.size()) {
                         break;
                     }
                 }
+                if (aid.size() != this.productCoupon.size()) {
+                    for (int i = 0; i < this.productCoupon.size(); i++) {
+                        ActivityEntity act = this.productCoupon.get(i);
+                        if (!aid.contains(act)) {
+                            this.productCoupon.remove(act);
+                        }
+                    }
+                    Toast.show("商品已经存在优惠券了");
+                }
             }
+            buildServiceCoupons(service);
+            buildCustomerCoupons(customer);
             productCouponMoney = money;
-            shops.setValue(buys);
             updateTotalMoney();
         }
         this.notifyChange();
+    }
+
+    private int getMoney(List<ActivityEntity> aid, List<String> pid, String productId, Integer price) {
+        // 如果没使用过优惠券则使用
+        actLoop:
+        for (ActivityEntity act : this.productCoupon) {
+            // 判断该优惠券是否被使用过
+            if (!aid.contains(act)) {
+                // 判断优惠券是否包含已优惠的商品
+                for (String id : pid) {
+                    if (act.getProductId().contains(id)) {
+                        // 如果包含了,这张优惠券就不能使用了，继续处理下一张优惠券
+                        continue actLoop;
+                    }
+                }
+                // 没使用过则判断该优惠券是否适用于该商品
+                if (act.getProductId().contains(productId)) {
+                    // 记录使用的优惠券和对应商品
+                    aid.add(act);
+                    pid.add(productId);
+                    // 计算优惠金额
+                    return price - (new BigDecimal(price).multiply(act.getActivityRatio()).intValue());
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 获取已购买商品的商品ID和商品总金额
+     *
+     * @return 返回一个map对象
+     */
+    private Map<String, Integer> getBuyShopSum() {
+        Map<String, Integer> map = new HashMap<>();
+        List<BuyShop> buys = shops.getValue();
+        if (buys != null && !buys.isEmpty()) {
+            for (BuyShop buy : buys) {
+                if (buy.isBuy()) {
+                    // 第一个商品
+                    map.put(buy.getProductId(), buy.getFee() * buy.getProductBuySum());
+                }
+            }
+        }
+        return map;
+    }
+
+
+    /**
+     * 组合门店活动优惠券ID
+     *
+     * @param service 已选优惠券
+     */
+    private void buildServiceCoupons(List<ActivityEntity> service) {
+        if (service != null) {
+            StringBuilder sb = new StringBuilder();
+            for (ActivityEntity act : service) {
+                if (this.productCoupon.contains(act)) {
+                    if (sb.length() != 0) {
+                        sb.append(",");
+                    }
+                    sb.append(act.getActivityId());
+                }
+            }
+            setProtectService(sb.toString());
+        } else {
+            setProtectService(null);
+        }
+    }
+
+    /**
+     * 组合用户优惠券ID
+     *
+     * @param customer 已选优惠券
+     */
+    private void buildCustomerCoupons(List<ActivityEntity> customer) {
+        if (customer != null) {
+            StringBuilder sb = new StringBuilder();
+            for (ActivityEntity act : customer) {
+                if (this.productCoupon.contains(act)) {
+                    if (sb.length() != 0) {
+                        sb.append(",");
+                    }
+                    sb.append(act.getActivityCardResultId());
+                }
+            }
+            setProtectCustomer(sb.toString());
+        } else {
+            setProtectCustomer(null);
+        }
     }
 
     /**
