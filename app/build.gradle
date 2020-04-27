@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/home/var_rain/AndroidStudioProjects/kiegame-android-app/keystone/kiegame.jks')
+            storePassword '123456'
+            keyAlias = 'kiegame'
+            keyPassword '123456'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
