@@ -56,6 +56,7 @@ public class CouponShopSelect {
     private int index;
     private boolean isSuccess;
     private int type;
+    private String useIds;
 
     /**
      * 构造方法
@@ -141,9 +142,8 @@ public class CouponShopSelect {
             initRecyclerView();
             binding.clRoot.setOnClickListener(v -> this.hide());
             binding.tvCloseBtn.setOnClickListener(v -> {
-                if (callback != null) {
-                    callback.onCouponUse(null, null);
-                }
+                this.useIds = "";
+                Cache.ins().setProductCoupon(null, null);
                 this.hide();
             });
             binding.tvOkBtn.setOnClickListener(v -> {
@@ -210,7 +210,15 @@ public class CouponShopSelect {
                         Toast.show("购物车中没有商品可使用此优惠券");
                         return;
                     }
-                    item.setSelect(!item.isSelect());
+                    if (!item.isSelect()) {
+                        if (!couponCanUse(item)) {
+                            Toast.show("商品已经有一个优惠券了");
+                            return;
+                        }
+                    } else {
+                        item.setSelect(!item.isSelect());
+                        removeCouponIds(item);
+                    }
                     // 记录选择顺序
                     if (item.isSelect()) {
                         item.setIndex(index);
@@ -247,6 +255,53 @@ public class CouponShopSelect {
 //        }
 //        return datetime;
 //    }
+
+    /**
+     * 删除已经使用的优惠券
+     *
+     * @param data 优惠券数据
+     */
+    private void removeCouponIds(ActivityEntity data) {
+        useIds = useIds.replace(data.getProductId(), "");
+    }
+
+    /**
+     * 检查优惠券是否可以使用
+     *
+     * @param data 优惠券数据
+     * @return true：能使用 false：不能使用
+     */
+    private boolean couponCanUse(ActivityEntity data) {
+        if (useIds == null) {
+            recordProductIds(data);
+            data.setSelect(true);
+            return true;
+        }
+        String[] ids = data.getProductId().split(",");
+        for (String id : ids) {
+            if (!Text.empty(id)) {
+                if (useIds.contains(id)) {
+                    data.setSelect(false);
+                    return false;
+                }
+            }
+        }
+        data.setSelect(true);
+        return true;
+    }
+
+    /**
+     * 记录已经使用的优惠券优惠ID
+     *
+     * @param data 优惠券数据
+     */
+    private void recordProductIds(ActivityEntity data) {
+        if (useIds == null) {
+            useIds = data.getProductId();
+        } else {
+            useIds += data.getProductId();
+        }
+    }
 
     @NotNull
     private TextView createEmptyView() {
@@ -444,7 +499,12 @@ public class CouponShopSelect {
         String service = Cache.ins().getProtectService();
         if (service != null) {
             String activityId = datum.getActivityId();
-            datum.setSelect(activityId != null && service.contains(activityId));
+            if (activityId != null && service.contains(activityId)) {
+                datum.setSelect(true);
+                recordProductIds(datum);
+            } else {
+                datum.setSelect(false);
+            }
         }
     }
 
@@ -457,7 +517,12 @@ public class CouponShopSelect {
         String customer = Cache.ins().getProtectCustomer();
         if (customer != null) {
             String activityCardResultId = datum.getActivityCardResultId();
-            datum.setSelect(activityCardResultId != null && customer.contains(activityCardResultId));
+            if (activityCardResultId != null && customer.contains(activityCardResultId)) {
+                datum.setSelect(true);
+                recordProductIds(datum);
+            } else {
+                datum.setSelect(false);
+            }
         }
     }
 

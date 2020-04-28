@@ -271,15 +271,15 @@ public class Cache extends BaseObservable {
 
     private int getMoney(List<ActivityEntity> aid, List<String> pid, String productId, Integer price) {
         // 如果没使用过优惠券则使用
-//        actLoop:
+        actLoop:
         for (ActivityEntity act : this.productCoupon) {
             // 判断优惠券是否包含已优惠的商品
-//            for (String id : pid) {
-//                if (act.getProductId().contains(id)) {
-//                    // 如果包含了,这张优惠券就不能使用了，继续处理下一张优惠券
-//                    continue actLoop;
-//                }
-//            }
+            for (String id : pid) {
+                if (!aid.contains(act) && act.getProductId().contains(id)) {
+                    // 如果包含了,这张优惠券就不能使用了，继续处理下一张优惠券
+                    continue actLoop;
+                }
+            }
             // 没使用过则判断该优惠券是否适用于该商品
             if (act.getProductId().contains(productId)) {
                 // 记录使用的优惠券和对应商品
