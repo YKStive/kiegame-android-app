@@ -246,10 +246,10 @@ public class Cache extends BaseObservable {
                     if (!pid.contains(productId)) {
                         money += getMoney(aid, pid, productId, buy.getValue());
                     }
-                    // 已选择的优惠券都使用完了就结束商品遍历
-                    if (aid.size() == this.productCoupon.size()) {
-                        break;
-                    }
+//                    // 已选择的优惠券都使用完了就结束商品遍历
+//                    if (aid.size() == this.productCoupon.size()) {
+//                        break;
+//                    }
                 }
                 if (aid.size() != this.productCoupon.size()) {
                     for (int i = 0; i < this.productCoupon.size(); i++) {
@@ -271,25 +271,25 @@ public class Cache extends BaseObservable {
 
     private int getMoney(List<ActivityEntity> aid, List<String> pid, String productId, Integer price) {
         // 如果没使用过优惠券则使用
-        actLoop:
+//        actLoop:
         for (ActivityEntity act : this.productCoupon) {
-            // 判断该优惠券是否被使用过
-            if (!aid.contains(act)) {
-                // 判断优惠券是否包含已优惠的商品
-                for (String id : pid) {
-                    if (act.getProductId().contains(id)) {
-                        // 如果包含了,这张优惠券就不能使用了，继续处理下一张优惠券
-                        continue actLoop;
-                    }
-                }
-                // 没使用过则判断该优惠券是否适用于该商品
-                if (act.getProductId().contains(productId)) {
-                    // 记录使用的优惠券和对应商品
+            // 判断优惠券是否包含已优惠的商品
+//            for (String id : pid) {
+//                if (act.getProductId().contains(id)) {
+//                    // 如果包含了,这张优惠券就不能使用了，继续处理下一张优惠券
+//                    continue actLoop;
+//                }
+//            }
+            // 没使用过则判断该优惠券是否适用于该商品
+            if (act.getProductId().contains(productId)) {
+                // 记录使用的优惠券和对应商品
+                // 判断该优惠券是否被使用过
+                if (!aid.contains(act)) {
                     aid.add(act);
-                    pid.add(productId);
-                    // 计算优惠金额
-                    return price - (new BigDecimal(price).multiply(act.getActivityRatio()).intValue());
                 }
+                pid.add(productId);
+                // 计算优惠金额
+                return price - (new BigDecimal(price).multiply(act.getActivityRatio()).intValue());
             }
         }
         return 0;
