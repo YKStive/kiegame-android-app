@@ -43,6 +43,15 @@ public class ActivityEntity {
     // 1 可使用 2 不可使用
     private Integer isBoolUse;
     private boolean isSelect;
+    private int index;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
     public boolean isSelect() {
         return isSelect;

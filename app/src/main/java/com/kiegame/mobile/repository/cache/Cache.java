@@ -258,7 +258,7 @@ public class Cache extends BaseObservable {
                             this.productCoupon.remove(act);
                         }
                     }
-                    Toast.show("商品已经存在优惠券了");
+                    Toast.show("商品已经有一个优惠券了");
                 }
             }
             buildServiceCoupons(service);

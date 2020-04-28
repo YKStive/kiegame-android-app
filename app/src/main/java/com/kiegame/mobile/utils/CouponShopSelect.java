@@ -29,6 +29,7 @@ import com.kiegame.mobile.ui.base.BaseActivity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,6 +53,7 @@ public class CouponShopSelect {
     private BaseQuickAdapter<ActivityEntity, BaseViewHolder> adapter;
     private String customerId;
     private String productId;
+    private int index;
     private boolean isSuccess;
     private int type;
 
@@ -145,21 +147,21 @@ public class CouponShopSelect {
                 this.hide();
             });
             binding.tvOkBtn.setOnClickListener(v -> {
-                List<ActivityEntity> service = new ArrayList<>();
-                List<ActivityEntity> customer = new ArrayList<>();
-                for (ActivityEntity entity : serviceActivities) {
-                    if (entity.isSelect()) {
-                        service.add(entity);
-                    }
-                }
-                for (ActivityEntity coupon : customerCoupons) {
-                    if (coupon.isSelect()) {
-                        customer.add(coupon);
-                    }
-                }
-                if (callback != null) {
-                    callback.onCouponUse(service, customer);
-                }
+//                List<ActivityEntity> service = new ArrayList<>();
+//                List<ActivityEntity> customer = new ArrayList<>();
+//                for (ActivityEntity entity : serviceActivities) {
+//                    if (entity.isSelect()) {
+//                        service.add(entity);
+//                    }
+//                }
+//                for (ActivityEntity coupon : customerCoupons) {
+//                    if (coupon.isSelect()) {
+//                        customer.add(coupon);
+//                    }
+//                }
+//                if (callback != null) {
+//                    callback.onCouponUse(service, customer);
+//                }
                 hide();
             });
             binding.tlCouponTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -209,6 +211,13 @@ public class CouponShopSelect {
                         return;
                     }
                     item.setSelect(!item.isSelect());
+                    // 记录选择顺序
+                    if (item.isSelect()) {
+                        item.setIndex(index);
+                        index++;
+                    }
+                    updateCoupons();
+                    notifyCoupons();
                     adapter.notifyDataSetChanged();
                 });
                 helper.setText(R.id.tv_coupon_date, "有效期: ");
@@ -246,6 +255,28 @@ public class CouponShopSelect {
         view.setBackgroundResource(R.color.white);
         view.setGravity(Gravity.CENTER);
         return view;
+    }
+
+    /**
+     * 更新优惠券已选择状态
+     */
+    private void updateCoupons() {
+        List<ActivityEntity> service = new ArrayList<>();
+        List<ActivityEntity> customer = new ArrayList<>();
+        for (ActivityEntity entity : serviceActivities) {
+            if (entity.isSelect()) {
+                service.add(entity);
+            }
+        }
+        for (ActivityEntity coupon : customerCoupons) {
+            if (coupon.isSelect()) {
+                customer.add(coupon);
+            }
+        }
+        // 根据优惠券选择顺序排序
+        Collections.sort(service, (o1, o2) -> o1.getIndex() > o2.getIndex() ? 1 : -1);
+        Collections.sort(customer, (o1, o2) -> o1.getIndex() > o2.getIndex() ? 1 : -1);
+        Cache.ins().setProductCoupon(service, customer);
     }
 
     /**
@@ -393,6 +424,18 @@ public class CouponShopSelect {
     }
 
     /**
+     * 更新用户优惠券选择状态
+     */
+    private void notifyCoupons() {
+        for (ActivityEntity act : this.customerCoupons) {
+            customerCouponSelect(act);
+        }
+        for (ActivityEntity act : this.serviceActivities) {
+            serviceCouponSelect(act);
+        }
+    }
+
+    /**
      * 优惠选择状态处理
      *
      * @param datum 优惠券对象
@@ -401,9 +444,7 @@ public class CouponShopSelect {
         String service = Cache.ins().getProtectService();
         if (service != null) {
             String activityId = datum.getActivityId();
-            if (activityId != null && service.contains(activityId)) {
-                datum.setSelect(true);
-            }
+            datum.setSelect(activityId != null && service.contains(activityId));
         }
     }
 
@@ -416,9 +457,7 @@ public class CouponShopSelect {
         String customer = Cache.ins().getProtectCustomer();
         if (customer != null) {
             String activityCardResultId = datum.getActivityCardResultId();
-            if (activityCardResultId != null && customer.contains(activityCardResultId)) {
-                datum.setSelect(true);
-            }
+            datum.setSelect(activityCardResultId != null && customer.contains(activityCardResultId));
         }
     }
 

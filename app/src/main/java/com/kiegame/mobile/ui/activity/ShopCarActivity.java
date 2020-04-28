@@ -431,7 +431,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 //                                return;
 //                            }
 //                        }
-                        Cache.ins().setProductCoupon(service, customer);
+//                        Cache.ins().setProductCoupon(service, customer);
                     })
                     .show();
 //            }
