@@ -111,6 +111,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             if (num < 0) {
                 Toast.show("不能再少了");
             } else {
+                Cache.ins().setProductCoupon(null, null);
                 helper.setVisible(R.id.tv_btn_less, num != 0);
                 tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
                 if (num == 0) {
@@ -145,6 +146,7 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 if (item.getProductVariety() == 1 && item.getIsIgnoreStock() == 2 && num > item.getBarCount()) {
                     Toast.show("不能再多了");
                 } else {
+                    Cache.ins().setProductCoupon(null, null);
                     helper.setVisible(R.id.tv_btn_less, num != 0);
                     tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
                     if (num > 0) {

@@ -411,12 +411,19 @@ public class CouponShopSelect {
     public void show() {
         if (!this.isShowing) {
             this.isSuccess = false;
+            String service = Cache.ins().getProtectService();
+            String customer = Cache.ins().getProtectCustomer();
+            this.useIds = service == null ? customer : service;
             this.serviceActivities.clear();
             this.customerCoupons.clear();
             adapter.notifyDataSetChanged();
             selectTab();
             this.moveAnimator.start();
         }
+    }
+
+    public boolean isShowing() {
+        return this.isShowing;
     }
 
     private void selectTab() {
@@ -429,7 +436,7 @@ public class CouponShopSelect {
     /**
      * 隐藏优惠券
      */
-    private void hide() {
+    public void hide() {
         if (this.moveAnimator != null && this.isShowing) {
             this.moveAnimator.reverse();
         }

@@ -211,6 +211,11 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_ENTER) {
             this.searchUserInfoList(model.searchName.getValue());
+        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (CouponShopSelect.ins().isShowing()) {
+                CouponShopSelect.ins().hide();
+                return true;
+            }
         }
         return super.onKeyUp(keyCode, event);
     }
