@@ -24,7 +24,9 @@ import com.youth.banner.loader.ImageLoader;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by: var_rain.
@@ -33,7 +35,7 @@ import java.util.Arrays;
  */
 public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> {
 
-    private TextView selectFlavor;
+    private List<TextView> selectFlavor;
     private TextView selectNorm;
     private ShopEntity shop;
     private int buySourceSize;
@@ -146,8 +148,9 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         cleanBtnStyle(textView);
         if (type == TAG_TYPE_FLAVOR) {
             if (selectFlavor == null) {
-                selectFlavor = textView;
-                setTextViewSelect(selectFlavor);
+                selectFlavor = new ArrayList<>();
+                selectFlavor.add(textView);
+                setTextViewSelect(textView);
             }
         }
         if (type == TAG_TYPE_NORM) {
@@ -170,11 +173,19 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
         int type = (int) view.getTag();
         switch (type) {
             case TAG_TYPE_FLAVOR:
-                if (selectFlavor != null) {
-                    cleanBtnStyle(selectFlavor);
+//                if (selectFlavor != null) {
+//                    cleanBtnStyle(selectFlavor);
+//                }
+                if (selectFlavor == null) {
+                    selectFlavor = new ArrayList<>();
                 }
-                selectFlavor = view;
-                setTextViewSelect(selectFlavor);
+                if (selectFlavor.contains(view)) {
+                    selectFlavor.remove(view);
+                    cleanBtnStyle(view);
+                } else {
+                    selectFlavor.add(view);
+                    setTextViewSelect(view);
+                }
                 break;
             case TAG_TYPE_NORM:
                 if (selectNorm != null) {
@@ -205,9 +216,25 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
     private void setTextViewSelect(TextView view) {
         view.setTextColor(getResources().getColor(R.color.black_dark));
         view.setBackgroundResource(R.drawable.shape_shop_norm_btn_press_background);
-        String flavor = selectFlavor != null ? selectFlavor.getText().toString() : "";
+        String flavor = selectFlavor != null && selectFlavor.size() != 0 ? getFlavor() : "";
         String norm = selectNorm != null ? selectNorm.getText().toString() : "";
         binding.tvShopBuyInfo.setText(!Text.empty(flavor) && !Text.empty(norm) ? String.format("%s/%s/%s", shop.getProductName(), norm, flavor) : String.format("%s/%s", shop.getProductName(), Text.empty(norm) ? flavor : norm));
+    }
+
+    /**
+     * 获取全部口味
+     *
+     * @return 返回多个口味
+     */
+    private String getFlavor() {
+        StringBuilder sb = new StringBuilder();
+        for (TextView view : this.selectFlavor) {
+            if (sb.length() != 0) {
+                sb.append(",");
+            }
+            sb.append(view.getText().toString());
+        }
+        return sb.toString();
     }
 
     /**
@@ -284,7 +311,7 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
      * 添加商品到购物车
      */
     private void addShopToOrderList() {
-        String flavor = selectFlavor != null ? selectFlavor.getText().toString() : "";
+        String flavor = selectFlavor != null && selectFlavor.size() != 0 ? getFlavor() : "";
         String spec = selectNorm != null ? selectNorm.getText().toString() : "";
         Cache.ins().attachShop(shop, flavor, spec, this.buySourceSize);
         this.buySourceSize = 0;

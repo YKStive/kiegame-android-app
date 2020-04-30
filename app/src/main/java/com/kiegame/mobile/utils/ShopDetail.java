@@ -23,6 +23,8 @@ import com.kiegame.mobile.ui.views.FlowLayout;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by: var_rain.
@@ -36,7 +38,7 @@ public class ShopDetail {
     private ViewShopDetailBinding binding;
     private ValueAnimator animator;
     private boolean isShowing;
-    private TextView selectFlavor;
+    private List<TextView> selectFlavor;
     private TextView selectNorm;
     private ShopEntity shop;
     private int buySourceSize;
@@ -113,10 +115,26 @@ public class ShopDetail {
      * 添加商品到购物车
      */
     private void addShopToOrderList() {
-        String flavor = selectFlavor != null ? selectFlavor.getText().toString() : "";
+        String flavor = selectFlavor != null && selectFlavor.size() != 0 ? getFlavor() : "";
         String spec = selectNorm != null ? selectNorm.getText().toString() : "";
         Cache.ins().attachShop(shop, flavor, spec, this.buySourceSize);
         Cache.ins().getShopObserver().setValue(-1);
+    }
+
+    /**
+     * 获取全部口味
+     *
+     * @return 返回多个口味
+     */
+    private String getFlavor() {
+        StringBuilder sb = new StringBuilder();
+        for (TextView view : this.selectFlavor) {
+            if (sb.length() != 0) {
+                sb.append(",");
+            }
+            sb.append(view.getText().toString());
+        }
+        return sb.toString();
     }
 
     /**
@@ -222,8 +240,9 @@ public class ShopDetail {
         cleanBtnStyle(textView);
         if (type == TAG_TYPE_FLAVOR) {
             if (selectFlavor == null) {
-                selectFlavor = textView;
-                setTextViewSelect(selectFlavor);
+                selectFlavor = new ArrayList<>();
+                selectFlavor.add(textView);
+                setTextViewSelect(textView);
             }
         }
         if (type == TAG_TYPE_NORM) {
@@ -246,11 +265,19 @@ public class ShopDetail {
         int type = (int) view.getTag();
         switch (type) {
             case TAG_TYPE_FLAVOR:
-                if (selectFlavor != null) {
-                    cleanBtnStyle(selectFlavor);
+//                if (selectFlavor != null) {
+//                    cleanBtnStyle(selectFlavor);
+//                }
+                if (selectFlavor == null) {
+                    selectFlavor = new ArrayList<>();
                 }
-                selectFlavor = view;
-                setTextViewSelect(selectFlavor);
+                if (selectFlavor.contains(view)) {
+                    selectFlavor.remove(view);
+                    cleanBtnStyle(view);
+                } else {
+                    selectFlavor.add(view);
+                    setTextViewSelect(view);
+                }
                 break;
             case TAG_TYPE_NORM:
                 if (selectNorm != null) {
@@ -317,6 +344,7 @@ public class ShopDetail {
         if (this.animator != null && this.isShowing) {
             this.animator.reverse();
         }
+        this.selectFlavor.clear();
         this.selectFlavor = null;
         this.selectNorm = null;
     }
