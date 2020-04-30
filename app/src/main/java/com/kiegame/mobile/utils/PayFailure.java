@@ -28,7 +28,6 @@ public class PayFailure {
      */
     private PayFailure() {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_payment_failure, null, false);
-        this.binding.tvBtnOk.setOnClickListener(v -> this.hide());
         this.initAnim();
     }
 
@@ -86,6 +85,22 @@ public class PayFailure {
     }
 
     /**
+     * 确认按钮
+     *
+     * @param listener 回调监听
+     * @return {@link PayFailure}
+     */
+    public PayFailure confirm(OnClickListener listener) {
+        this.binding.tvBtnOk.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onClick();
+            }
+            this.hide();
+        });
+        return this;
+    }
+
+    /**
      * 显示对话框
      */
     public void show() {
@@ -101,5 +116,16 @@ public class PayFailure {
         if (this.animator != null && this.isShowing) {
             this.animator.reverse();
         }
+    }
+
+    /**
+     * 点击事件
+     */
+    public interface OnClickListener {
+
+        /**
+         * 点击回调方法
+         */
+        void onClick();
     }
 }

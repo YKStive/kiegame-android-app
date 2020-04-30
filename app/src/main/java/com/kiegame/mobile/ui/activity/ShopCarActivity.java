@@ -209,7 +209,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_SEARCH) {
             this.searchUserInfoList(model.searchName.getValue());
         } else if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (CouponShopSelect.ins().isShowing()) {
@@ -681,7 +681,12 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      */
     private void onCreateOrderFailure(String msg) {
         if (orderType != 1) {
-            PayFailure.ins().message(msg).show();
+            PayFailure.ins().message(msg).confirm(() -> {
+                resetShopData();
+                Cache.ins().getMainPageObserver().setValue(2);
+                Cache.ins().getOrderObserver().setValue(1);
+                finish();
+            }).show();
         } else {
             Toast.show(msg);
         }

@@ -65,6 +65,18 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
         Cache.ins().getOrderObserver().observe(this, integer -> refreshAllData());
+        Cache.ins().getOrderObserver().observe(this, page -> {
+            if (page != null) {
+                binding.vpOrderViews.setCurrentItem(page);
+                String start = String.format("%s 00:00:00", date);
+                String end = String.format("%s 23:59:59", date);
+                if (page == 0) {
+                    wait.refreshData(start, end);
+                } else {
+                    all.refreshData(start, end);
+                }
+            }
+        });
     }
 
     @SuppressLint("InflateParams")

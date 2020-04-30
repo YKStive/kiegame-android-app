@@ -159,4 +159,12 @@ public class BuyShopEntity {
     public void setProductImgBig(String productImgBig) {
         this.productImgBig = productImgBig;
     }
+
+    public String getShopImage() {
+        String[] split = productImg.split(",");
+        if (split.length > 1) {
+            return split[0];
+        }
+        return productImg;
+    }
 }

@@ -430,7 +430,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                 view.setLayoutParams(params);
                 view.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 images.addView(view);
-                Glide.with(view).load(shop.getProductImg()).into(view);
+                Glide.with(view).load(shop.getShopImage()).into(view);
             }
             count += Integer.parseInt(shop.getSellCount());
         }
@@ -449,7 +449,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
         helper.getView(R.id.cb_shop_select).setVisibility(View.VISIBLE);
         helper.setText(R.id.tv_shop_total_num, String.format("共%s件", shop.getSellCount()));
         helper.setText(R.id.tv_shop_des, String.format("商品描述: %s", shop.getProductDesc()));
-        Glide.with(helper.itemView).load(shop.getProductImg()).into((ImageView) helper.getView(R.id.iv_shop_image));
+        Glide.with(helper.itemView).load(shop.getShopImage()).into((ImageView) helper.getView(R.id.iv_shop_image));
         helper.setText(R.id.tv_shop_name, shop.getProductName());
     }
 

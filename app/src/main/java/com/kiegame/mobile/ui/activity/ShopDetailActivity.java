@@ -123,6 +123,15 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
             for (String name : taste) {
                 binding.flTasteLayout.addView(makeTextView(name, TAG_TYPE_FLAVOR));
             }
+            // 一个以上的口味
+            if (taste.length > 1) {
+                if (this.selectFlavor != null && !this.selectFlavor.isEmpty()) {
+                    for (TextView view : selectFlavor) {
+                        cleanBtnStyle(view);
+                    }
+                    selectFlavor.clear();
+                }
+            }
         } else {
             binding.flTasteLayout.setVisibility(View.GONE);
             binding.tvTasteText.setVisibility(View.GONE);
