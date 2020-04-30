@@ -161,10 +161,13 @@ public class NetFeeModel extends ViewModel {
         if (shopMoney > 0 || Cache.ins().getProductCoupon() != null) {
             // 购买商品
             List<BuyShop> shops = Cache.ins().getShops();
-            List<BuyShop> buys = new ArrayList<>();
-            for (BuyShop shop : shops) {
-                if (shop != null && shop.isBuy()) {
-                    buys.add(shop);
+            List<BuyShop> buys = null;
+            if (shops != null) {
+                buys = new ArrayList<>();
+                for (BuyShop shop : shops) {
+                    if (shop != null && shop.isBuy()) {
+                        buys.add(shop);
+                    }
                 }
             }
             order.setProductList(buys);
