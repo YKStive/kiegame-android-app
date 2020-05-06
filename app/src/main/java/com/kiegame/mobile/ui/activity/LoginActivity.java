@@ -8,6 +8,7 @@ import android.view.View;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import com.kiegame.mobile.BuildConfig;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityLoginBinding;
 import com.kiegame.mobile.model.LoginModel;
@@ -104,9 +105,11 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
         String account = model.username.getValue();
         String password = model.password.getValue();
         if (binding.switchTestMode.isChecked()) {
-            Network.change("http://10.168.1.200:9000/");
-            account = "cjx1";
-            password = "123456";
+            Network.change(BuildConfig.SERVER_TEST);
+            if (Text.empty(account) && Text.empty(password)) {
+                account = "cjx1";
+                password = "123456";
+            }
         } else {
             Network.change(ApiServiceV2.BASE_URL);
         }

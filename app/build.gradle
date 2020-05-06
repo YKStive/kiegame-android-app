@@ -47,16 +47,24 @@ android {
     productFlavors {
         dev {
             resValue('string', 'app_name', '游易电竞-开发版')
-            buildConfigField "String", "SERVER_BASE", '"http://10.168.1.200:9000/"'
+            // 测试地址
+            buildConfigField "String", "SERVER_TEST", '"http://10.168.1.200:9000/"'
+            // 演示地址
+            buildConfigField "String", "SERVER_BASE", '"https://kienewdemo.kiegame.com/api/"'
         }
         beta {
             resValue('string', 'app_name', '游易电竞-测试版')
-            buildConfigField "String", "SERVER_BASE", '"http://www.kiegame.com:9000/"'
+            // 测试地址
+            buildConfigField "String", "SERVER_TEST", '"http://10.168.1.200:9000/"'
+            // 演示地址
+            buildConfigField "String", "SERVER_BASE", '"https://kienewdemo.kiegame.com/api/"'
         }
         pre {
             resValue('string', 'app_name', '游易电竞')
             // 演示地址
-            buildConfigField "String", "SERVER_BASE", '"https://kienewdemo.kiegame.com/api/"'
+            buildConfigField "String", "SERVER_TEST", '"https://kienewdemo.kiegame.com/api/"'
+            // 正式地址
+            buildConfigField "String", "SERVER_BASE", '"https://api.kiegame.com/"'
         }
     }
     android.applicationVariants.all { variant ->
