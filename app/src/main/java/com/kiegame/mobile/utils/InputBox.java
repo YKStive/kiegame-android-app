@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.inputmethod.InputMethodManager;
 
@@ -13,6 +14,7 @@ import androidx.databinding.DataBindingUtil;
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ViewInputBoxBinding;
+import com.kiegame.mobile.ui.views.MoneyFilter;
 
 /**
  * Created by: var_rain.
@@ -32,6 +34,7 @@ public class InputBox {
     private InputBox() {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_input_box, null, false);
         binding.tvDialogBtnCancel.setOnClickListener(v -> this.hide());
+        binding.tvInputContent.setFilters(new InputFilter[]{new MoneyFilter()});
         this.initAnim();
     }
 
