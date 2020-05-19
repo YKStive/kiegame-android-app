@@ -86,7 +86,7 @@ public class InputBox {
     public InputBox confirm(OnClickListener onClickListener) {
         binding.tvDialogBtnOk.setOnClickListener(v -> {
             if (!Text.empty(binding.tvInputContent.getText().toString())) {
-                int money = getInputMoney();
+                double money = getInputMoney();
                 if (money > 0) {
                     if (onClickListener != null) {
                         onClickListener.onClick(money);
@@ -105,18 +105,29 @@ public class InputBox {
      *
      * @return 返回充值金额
      */
-    private int getInputMoney() {
-        int money = -1;
+    private double getInputMoney() {
+        double money = -1;
         String text = binding.tvInputContent.getText().toString();
+        String[] split = text.split("\\.");
+        if (split.length > 2) {
+            Toast.show("请输入正确的充值金额");
+            return -1;
+        }
+        if (split.length == 2) {
+            if (split[1].length() > 2) {
+                Toast.show("请输入正确的充值金额");
+                return -1;
+            }
+        }
         try {
-            money = Integer.parseInt(text);
+            money = Double.parseDouble(text);
             if (money <= 0) {
                 Toast.show("请输入正确的充值金额");
                 return -1;
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            Toast.show("请输入正确的整数金钱数值");
+            Toast.show("请输入正确的金钱数值");
         }
         return money;
     }
@@ -171,6 +182,6 @@ public class InputBox {
         /**
          * 点击回调方法
          */
-        void onClick(int money);
+        void onClick(double money);
     }
 }

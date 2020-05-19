@@ -53,6 +53,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by: var_rain.
@@ -167,7 +168,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     public void showInputMoney() {
         InputBox.ins().confirm(money -> {
-            this.recharge(this.moneyBtn, 0);
+            this.recharge(this.moneyBtn, 0.0);
             this.recharge(this.moneyBtn, money);
         }).show();
     }
@@ -302,7 +303,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * @param view  选择金额按钮
      * @param money 金额数量
      */
-    public void recharge(View view, int money) {
+    public void recharge(View view, double money) {
 //        String userNameValue = Cache.ins().getUserName();
 //        if (userNameValue == null || userNameValue.equals("没有选择会员")) {
 //            Toast.show("请先选择会员");
@@ -322,13 +323,13 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 this.moneyBtn.setTextColor(getResources().getColor(R.color.black_text));
             }
         }
-        this.model.recharge.setValue(String.format("%s.00", money));
-        this.model.gabon.setValue(String.format("%s.00", money));
+        this.model.recharge.setValue(String.format(Locale.getDefault(), "%.2f", money));
+        this.model.gabon.setValue(String.format(Locale.getDefault(), "%.2f", money));
         this.model.bonus.setValue("0.00");
 
         Cache.ins().setNetFeeCoupon(null);
         // 此处扩大100倍为了总计时计算
-        Cache.ins().setNetFee(money * 100);
+        Cache.ins().setNetFee((int) (money * 100));
     }
 
     /**

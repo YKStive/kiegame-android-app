@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/vector_password_input_background"
-                android:digits="0123456789"
+                android:digits="0123456789."
                 android:gravity="center_vertical|start"
                 android:importantForAutofill="no"
                 android:inputType="number"
