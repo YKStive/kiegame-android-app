@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -192,6 +193,19 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             }
         });
         binding.rvShopLayout.setAdapter(adapter);
+        binding.etSearchInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String value = model.searchName.getValue();
+                if (!Text.empty(value)) {
+                    searchUserInfoList(value);
+                    return true;
+                } else {
+                    Toast.show(R.string.net_fee_search_input_hint);
+                    return false;
+                }
+            }
+            return false;
+        });
     }
 
     @Override
@@ -209,9 +223,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_SEARCH) {
-            this.searchUserInfoList(model.searchName.getValue());
-        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (CouponShopSelect.ins().isShowing()) {
                 CouponShopSelect.ins().hide();
                 return true;

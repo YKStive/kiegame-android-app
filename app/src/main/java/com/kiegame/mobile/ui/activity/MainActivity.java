@@ -116,13 +116,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
         }
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_SEARCH) {
-            Cache.ins().getUserSearchObserver().setValue(keyCode);
-        }
-        return super.onKeyUp(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyUp(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_SEARCH) {
+//            Cache.ins().getUserSearchObserver().setValue(keyCode);
+//        }
+//        return super.onKeyUp(keyCode, event);
+//    }
 
     /**
      * 检查更新

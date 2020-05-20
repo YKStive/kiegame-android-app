@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -94,7 +95,6 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 }
             }
         });
-        Cache.ins().getUserSearchObserver().observe(this, keyCode -> this.searchUserInfoList(model.userSearch.getValue()));
         model.getFailMessage().observe(this, this::onCreateOrderFailure);
         menu = new Menu(getContext()).callback(v -> {
             Cache.ins().initialize();
@@ -127,6 +127,19 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             public void displayImage(Context context, Object path, ImageView imageView) {
                 Glide.with(imageView).load(((BannerEntity) path).getBannerUrl()).into(imageView);
             }
+        });
+        binding.etSearchInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String value = model.userSearch.getValue();
+                if (!Text.empty(value)) {
+                    searchUserInfoList(value);
+                    return true;
+                } else {
+                    Toast.show(R.string.net_fee_search_input_hint);
+                    return false;
+                }
+            }
+            return false;
         });
     }
 

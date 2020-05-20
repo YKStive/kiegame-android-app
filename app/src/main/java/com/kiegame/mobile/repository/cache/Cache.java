@@ -61,12 +61,8 @@ public class Cache extends BaseObservable {
     private MutableLiveData<Integer> orderObserver;
     // 首页页面更新
     private MutableLiveData<Integer> mainPageObserver;
-    // 订单页面更新
-    private MutableLiveData<Integer> orderPageObserver;
     // 会员信息更新
     private MutableLiveData<String> userInfoObserver;
-    // 会员搜索更新
-    private MutableLiveData<Integer> userSearchObserver;
     // 网费优惠
     private ActivityEntity netFeeCoupon;
     // 商品优惠
@@ -87,9 +83,7 @@ public class Cache extends BaseObservable {
         this.netFeeObserver = new MutableLiveData<>();
         this.orderObserver = new MutableLiveData<>();
         this.mainPageObserver = new MutableLiveData<>();
-        this.orderPageObserver = new MutableLiveData<>();
         this.userInfoObserver = new MutableLiveData<>();
-        this.userSearchObserver = new MutableLiveData<>();
         this.netFee = new MutableLiveData<>();
         this.shops = new MutableLiveData<>();
         this.initialize();
@@ -124,10 +118,6 @@ public class Cache extends BaseObservable {
         return Cache.INS;
     }
 
-    public MutableLiveData<Integer> getOrderPageObserver() {
-        return orderPageObserver;
-    }
-
     public String getProtectService() {
         return protectService;
     }
@@ -150,13 +140,6 @@ public class Cache extends BaseObservable {
 
     public void setTempInfo(UserInfoEntity tempInfo) {
         this.tempInfo = tempInfo;
-    }
-
-    /**
-     * 会员搜索更新
-     */
-    public MutableLiveData<Integer> getUserSearchObserver() {
-        return userSearchObserver;
     }
 
     /**
