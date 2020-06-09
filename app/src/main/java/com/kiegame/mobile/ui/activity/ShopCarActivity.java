@@ -481,12 +481,12 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 删除会员
      */
     public void deleteVipInfo() {
-        DialogBox.ins().text(String.format("你想删除会员账号 %s 吗?", Text.formatCustomName(userInfo.getCustomerName())))
-                .confirm(() -> {
-                    this.userInfo = null;
-                    Cache.ins().setTempInfo(this.userInfo);
-                    model.userName.setValue("没有选择会员");
-                }).cancel(null).show();
+//        DialogBox.ins().text(String.format("你想删除会员账号 %s 吗?", Text.formatCustomName(userInfo.getCustomerName())))
+//                .confirm(() -> {
+        this.userInfo = null;
+        Cache.ins().setTempInfo(this.userInfo);
+        model.userName.setValue("没有选择会员");
+//                }).cancel(null).show();
     }
 
     /**

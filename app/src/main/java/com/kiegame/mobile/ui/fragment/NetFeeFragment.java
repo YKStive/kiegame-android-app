@@ -295,19 +295,19 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 删除会员
      */
     public void deleteVipInfo() {
-        DialogBox.ins().text(String.format("你想删除会员账号 %s 吗?", Text.formatCustomName(Cache.ins().getUserInfo().getCustomerName())))
-                .confirm(() -> {
-                    if (this.moneyBtn != null) {
-                        this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
-                        this.moneyBtn.setTextColor(getResources().getColor(R.color.gray_white));
-                    }
-                    this.model.recharge.setValue("0.00");
-                    model.resetData();
+//        DialogBox.ins().text(String.format("你想删除会员账号 %s 吗?", Text.formatCustomName(Cache.ins().getUserInfo().getCustomerName())))
+//                .confirm(() -> {
+        if (this.moneyBtn != null) {
+            this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);
+            this.moneyBtn.setTextColor(getResources().getColor(R.color.gray_white));
+        }
+        this.model.recharge.setValue("0.00");
+        model.resetData();
 
-                    Cache.ins().setUserInfo(null);
-                    Cache.ins().setNetFee(0);
-                    Cache.ins().setUserName("没有选择会员");
-                }).cancel(null).show();
+        Cache.ins().setUserInfo(null);
+        Cache.ins().setNetFee(0);
+        Cache.ins().setUserName("没有选择会员");
+//                }).cancel(null).show();
     }
 
     /**
