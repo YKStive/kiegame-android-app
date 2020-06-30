@@ -12,13 +12,16 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
 
 import com.bumptech.glide.Glide;
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ViewShopDetailBinding;
+import com.kiegame.mobile.model.CommodityModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
+import com.kiegame.mobile.ui.fragment.CommodityFragment;
 import com.kiegame.mobile.ui.views.FlowLayout;
 
 import java.math.BigDecimal;
@@ -42,6 +45,8 @@ public class ShopDetail {
     private TextView selectNorm;
     private ShopEntity shop;
     private int buySourceSize;
+    private CommodityModel model;
+    private CommodityFragment fragment;
 
     // 标签类型 口味
     private static final int TAG_TYPE_FLAVOR = 1;
@@ -72,6 +77,22 @@ public class ShopDetail {
         if (!this.isShowing) {
             this.animator.start();
         }
+    }
+
+    /**
+     * 设置请求接口
+     */
+    public ShopDetail model(CommodityModel model) {
+        this.model = model;
+        return this;
+    }
+
+    /**
+     * 上下文参数
+     */
+    public ShopDetail context(CommodityFragment fragment) {
+        this.fragment = fragment;
+        return this;
     }
 
     /**
@@ -176,8 +197,20 @@ public class ShopDetail {
 //                binding.ivBtnLess.setVisibility(View.VISIBLE);
 //                binding.tvShopNum.setVisibility(View.VISIBLE);
 //            }
-            this.buySourceSize = num;
-            tv.setText(String.valueOf(num));
+            /* --------- 新增自制商品库存判断 -------- */
+            if (shop.getProductVariety() == 2) {
+                LiveData<Object> stock = model.queryProductStock(shop.getProductId(), num);
+                if (!stock.hasObservers()) {
+                    stock.observe(fragment, o -> {
+                        this.buySourceSize = num;
+                        tv.setText(String.valueOf(num));
+                    });
+                }
+                /* --------- 新增自制商品库存判断 -------- */
+            } else {
+                this.buySourceSize = num;
+                tv.setText(String.valueOf(num));
+            }
         }
     }
 

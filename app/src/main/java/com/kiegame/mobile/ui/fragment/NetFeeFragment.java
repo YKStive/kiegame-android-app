@@ -479,7 +479,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                     if (res.getPayState() == 2) {
                         PaySuccess.ins().confirm(null).order(res.getPaymentPayId()).show();
                     } else if (res.getPayState() == 4) {
-                        PayFailure.ins().message("支付失败").show();
+                        PayFailure.ins().confirm(null).message("支付失败").show();
                     } else {
                         queryPayResult(res.getPaymentPayId());
                     }

@@ -21,6 +21,7 @@ import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.Prefer;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
+import com.kiegame.mobile.utils.Version;
 
 /**
  * Created by: var_rain.
@@ -48,6 +49,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
 
     @Override
     protected void onView() {
+        binding.tvVersion.setText(String.format("V%s", Version.appVersionName()));
         binding.ivLogo.setOnClickListener(v -> {
             long now = System.currentTimeMillis();
             if (now - touchTime < 800) {

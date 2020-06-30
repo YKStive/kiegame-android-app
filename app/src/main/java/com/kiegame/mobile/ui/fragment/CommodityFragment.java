@@ -135,6 +135,8 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         binding.rvMenu.setLayoutManager(new LinearLayoutManager(this.getContext()));
         binding.rvMenu.setAdapter(menuAdapter);
         shopAdapter = new ShopAdapter(this.shops);
+        shopAdapter.setModel(model);
+        shopAdapter.setFragment(this);
         binding.rvContent.setLayoutManager(new LinearLayoutManager(this.getContext()));
         binding.rvContent.setAdapter(shopAdapter);
 

@@ -11,6 +11,7 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.Text;
+import com.kiegame.mobile.utils.Version;
 import com.kiegame.mobile.worker.Worker;
 
 /**
@@ -34,7 +35,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
 
     @Override
     protected void onView() {
-
+        binding.tvVersion.setText(String.format("V%s", Version.appVersionName()));
     }
 
     @Override

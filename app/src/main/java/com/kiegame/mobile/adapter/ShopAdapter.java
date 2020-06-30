@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -14,10 +15,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
+import com.kiegame.mobile.model.CommodityModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.activity.ShopDetailActivity;
+import com.kiegame.mobile.ui.fragment.CommodityFragment;
 import com.kiegame.mobile.utils.ShopDetail;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
@@ -33,6 +36,9 @@ import java.util.List;
  */
 public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewHolder> {
 
+    private CommodityModel model;
+    private CommodityFragment fragment;
+
     /**
      * Same as QuickAdapter#QuickAdapter(Context,int) but with
      * some initialization data.
@@ -43,6 +49,14 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
         super(data);
         this.addItemType(ShopEntity.CONTENT, R.layout.item_more_list_shop);
         this.addItemType(ShopEntity.TITLE, R.layout.item_more_list_title);
+    }
+
+    public void setFragment(CommodityFragment fragment) {
+        this.fragment = fragment;
+    }
+
+    public void setModel(CommodityModel model) {
+        this.model = model;
     }
 
     @Override
@@ -139,26 +153,49 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
             }
             TextView tv = helper.getView(R.id.tv_shop_num);
             if (!Text.empty(item.getProductFlavorName()) || !Text.empty(item.getProductSpecName())) {
-                ShopDetail.ins().set(item).show();
+                ShopDetail.ins().set(item).model(model).context(fragment).show();
             } else {
                 String size = tv.getText().toString();
                 int num = Text.empty(size) ? 1 : Integer.parseInt(size) + 1;
                 if (item.getProductVariety() == 1 && item.getIsIgnoreStock() == 2 && num > item.getBarCount()) {
                     Toast.show("不能再多了");
                 } else {
-                    Cache.ins().setProductCoupon(null, null);
-                    helper.setVisible(R.id.tv_btn_less, num != 0);
-                    tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
-                    if (num > 0) {
-                        tv.setText(String.valueOf(num));
+                    /* --------- 新增自制商品库存判断 -------- */
+                    if (item.getProductVariety() == 2) {
+                        LiveData<Object> stock = model.queryProductStock(item.getProductId(), num);
+                        if (!stock.hasObservers()) {
+                            stock.observe(fragment, o -> {
+                                Cache.ins().setProductCoupon(null, null);
+                                helper.setVisible(R.id.tv_btn_less, num != 0);
+                                tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
+                                if (num > 0) {
+                                    tv.setText(String.valueOf(num));
+                                } else {
+                                    tv.setText("");
+                                }
+                                if (item.getProductVariety() == 1) {
+                                    int count = item.getBarCount() - num;
+                                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
+                                }
+                                Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
+                            });
+                        }
+                        /* --------- 新增自制商品库存判断 -------- */
                     } else {
-                        tv.setText("");
+                        Cache.ins().setProductCoupon(null, null);
+                        helper.setVisible(R.id.tv_btn_less, num != 0);
+                        tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
+                        if (num > 0) {
+                            tv.setText(String.valueOf(num));
+                        } else {
+                            tv.setText("");
+                        }
+                        if (item.getProductVariety() == 1) {
+                            int count = item.getBarCount() - num;
+                            helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
+                        }
+                        Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
                     }
-                    if (item.getProductVariety() == 1) {
-                        int count = item.getBarCount() - num;
-                        helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
-                    }
-                    Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
                 }
             }
         });

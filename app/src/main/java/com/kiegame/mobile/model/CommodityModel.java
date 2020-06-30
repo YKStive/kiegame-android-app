@@ -12,6 +12,7 @@ import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
 import com.kiegame.mobile.repository.entity.submit.ListShopTag;
+import com.kiegame.mobile.repository.entity.submit.QueryProductStock;
 import com.kiegame.mobile.repository.entity.submit.QueryShops;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class CommodityModel extends ViewModel {
     private MutableLiveData<List<ShopSortEntity>> shopType;
     private MutableLiveData<List<ShopSortEntity>> shopTag;
     private MutableLiveData<List<ShopEntity>> shops;
+    private MutableLiveData<Object> stock;
 
     public LoginEntity login;
 
@@ -37,6 +39,7 @@ public class CommodityModel extends ViewModel {
         this.shopType = new MutableLiveData<>();
         this.shopTag = new MutableLiveData<>();
         this.shops = new MutableLiveData<>();
+        this.stock = new MutableLiveData<>();
 
         this.login = Cache.ins().getLoginInfo();
     }
@@ -97,5 +100,24 @@ public class CommodityModel extends ViewModel {
                     }
                 });
         return this.shops;
+    }
+
+    /**
+     * 查询商品库存是否充足
+     */
+    public LiveData<Object> queryProductStock(String productId, Integer sum) {
+        QueryProductStock bean = new QueryProductStock();
+        bean.setBuySum(sum);
+        bean.setProductId(productId);
+        bean.setServiceId(login.getServiceId());
+        Network.api().queryProductStock(bean)
+                .compose(Scheduler.apply())
+                .subscribe(new Subs<Object>() {
+                    @Override
+                    public void onSuccess(Object data, int total, int length) {
+                        stock.setValue(data);
+                    }
+                });
+        return this.stock;
     }
 }

@@ -20,7 +20,7 @@ public class Version {
      *
      * @return 返回应用程序的当前版本号字符串
      */
-    private static String appVersionName() {
+    public static String appVersionName() {
         String version = null;
         try {
             PackageManager pm = Game.ins().getPackageManager();

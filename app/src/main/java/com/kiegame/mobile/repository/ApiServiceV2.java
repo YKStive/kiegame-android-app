@@ -22,6 +22,7 @@ import com.kiegame.mobile.repository.entity.submit.ListShopTag;
 import com.kiegame.mobile.repository.entity.submit.PayResult;
 import com.kiegame.mobile.repository.entity.submit.QueryAppVersion;
 import com.kiegame.mobile.repository.entity.submit.QueryBanner;
+import com.kiegame.mobile.repository.entity.submit.QueryProductStock;
 import com.kiegame.mobile.repository.entity.submit.QueryShops;
 import com.kiegame.mobile.repository.entity.submit.UserInfo;
 import com.kiegame.mobile.repository.entity.submit.UserLogin;
@@ -133,4 +134,10 @@ public interface ApiServiceV2 {
      */
     @POST("app/v2/appVersion/queryAppVersion")
     Observable<Result<List<VersionEntity>>> queryAppVersion(@Body QueryAppVersion body);
+
+    /**
+     * 查询商品库存是否足够
+     */
+    @POST("/app/v2/serviceProduct/checkProductStock")
+    Observable<Result<Object>> queryProductStock(@Body QueryProductStock body);
 }

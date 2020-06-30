@@ -15,6 +15,7 @@ import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.submit.AddOrder;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
 import com.kiegame.mobile.repository.entity.submit.PayResult;
+import com.kiegame.mobile.repository.entity.submit.QueryProductStock;
 import com.kiegame.mobile.repository.entity.submit.UserInfo;
 import com.kiegame.mobile.utils.Text;
 
@@ -38,6 +39,7 @@ public class ShopCarModel extends ViewModel {
     private MutableLiveData<List<AddOrderEntity>> addOrder;
     private MutableLiveData<List<PayResultEntity>> payResult;
     private MutableLiveData<String> failMessage;
+    private MutableLiveData<Object> stock;
 
     public ShopCarModel() {
         this.searchName = new MutableLiveData<>();
@@ -50,6 +52,7 @@ public class ShopCarModel extends ViewModel {
         this.addOrder = new MutableLiveData<>();
         this.payResult = new MutableLiveData<>();
         this.failMessage = new MutableLiveData<>();
+        this.stock = new MutableLiveData<>();
 
         this.initialize();
     }
@@ -193,5 +196,24 @@ public class ShopCarModel extends ViewModel {
                     }
                 });
         return this.payResult;
+    }
+
+    /**
+     * 查询商品库存是否充足
+     */
+    public LiveData<Object> queryProductStock(String productId, Integer sum) {
+        QueryProductStock bean = new QueryProductStock();
+        bean.setBuySum(sum);
+        bean.setProductId(productId);
+        bean.setServiceId(login.getServiceId());
+        Network.api().queryProductStock(bean)
+                .compose(Scheduler.apply())
+                .subscribe(new Subs<Object>() {
+                    @Override
+                    public void onSuccess(Object data, int total, int length) {
+                        stock.setValue(data);
+                    }
+                });
+        return this.stock;
     }
 }

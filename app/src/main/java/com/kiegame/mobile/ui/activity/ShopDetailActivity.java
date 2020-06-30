@@ -9,9 +9,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.bumptech.glide.Glide;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityShopDetailBinding;
+import com.kiegame.mobile.model.CommodityModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.settings.Setting;
@@ -44,6 +48,7 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
     private static final int TAG_TYPE_FLAVOR = 1;
     // 标签类型 规格
     private static final int TAG_TYPE_NORM = 2;
+    private CommodityModel model;
 
     @Override
     protected int onLayout() {
@@ -52,6 +57,7 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
 
     @Override
     protected void onObject() {
+        model = new ViewModelProvider(this).get(CommodityModel.class);
         binding.setActivity(this);
         shop = (ShopEntity) getIntent().getSerializableExtra(Setting.APP_SHOP_ENTITY);
         if (shop != null) {
@@ -274,9 +280,22 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
 //                binding.tvBtnLess.setVisibility(View.VISIBLE);
 //                binding.tvShopNum.setVisibility(View.VISIBLE);
 //            }
-            this.buySourceSize = num;
-            tv.setText(String.valueOf(num));
-            binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
+            /* --------- 新增自制商品库存判断 -------- */
+            if (shop.getProductVariety() == 2) {
+                LiveData<Object> stock = model.queryProductStock(shop.getProductId(), num);
+                if (!stock.hasObservers()) {
+                    stock.observe(this, o -> {
+                        this.buySourceSize = num;
+                        tv.setText(String.valueOf(num));
+                        binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
+                    });
+                }
+                /* --------- 新增自制商品库存判断 -------- */
+            } else {
+                this.buySourceSize = num;
+                tv.setText(String.valueOf(num));
+                binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
+            }
         }
     }
 
