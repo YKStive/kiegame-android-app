@@ -386,8 +386,10 @@ public class ShopDetail {
         if (this.animator != null && this.isShowing) {
             this.animator.reverse();
         }
-        this.selectFlavor.clear();
-        this.selectFlavor = null;
+        if (this.selectFlavor != null) {
+            this.selectFlavor.clear();
+            this.selectFlavor = null;
+        }
         this.selectNorm = null;
     }
 }

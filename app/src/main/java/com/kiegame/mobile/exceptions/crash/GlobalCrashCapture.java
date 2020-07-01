@@ -140,7 +140,7 @@ public class GlobalCrashCapture implements Thread.UncaughtExceptionHandler {
             throwable.printStackTrace(writer);
             writer.close();
         } catch (Exception e) {
-            Log.e("dump exception failed: s%", e);
+            Log.e("dump exception failed: %s", e);
         }
     }
 
