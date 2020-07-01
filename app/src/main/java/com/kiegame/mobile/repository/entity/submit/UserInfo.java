@@ -9,6 +9,8 @@ public class UserInfo {
 
     // 机位号/身份证后4位/姓名
     private String param;
+    // 门店ID
+    private String serviceId;
 
     public String getParam() {
         return param;
@@ -16,5 +18,13 @@ public class UserInfo {
 
     public void setParam(String param) {
         this.param = param;
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 }

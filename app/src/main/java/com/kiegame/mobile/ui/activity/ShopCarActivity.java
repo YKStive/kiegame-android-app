@@ -728,6 +728,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         Cache.ins().setTempInfo(null);
         Cache.ins().setProtectService(null);
         Cache.ins().setProtectCustomer(null);
+        Cache.ins().setPayment(Payment.PAY_TYPE_ONLINE);
         List<BuyShop> shops = Cache.ins().getShops();
         if (shops != null && !shops.isEmpty()) {
             List<BuyShop> buys = new ArrayList<>();

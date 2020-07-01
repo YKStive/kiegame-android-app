@@ -600,6 +600,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
         Cache.ins().setTempInfo(null);
         Cache.ins().setProtectService(null);
         Cache.ins().setProtectCustomer(null);
+        Cache.ins().setPayment(Payment.PAY_TYPE_ONLINE);
         // 重置金额选择
         if (this.moneyBtn != null) {
             this.moneyBtn.setBackgroundResource(R.drawable.shape_net_fee_none_border);

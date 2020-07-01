@@ -79,6 +79,7 @@ public class ShopCarModel extends ViewModel {
     public LiveData<List<UserInfoEntity>> searchUserInfos(String keywords) {
         UserInfo info = new UserInfo();
         info.setParam(keywords);
+        info.setServiceId(login.getServiceId());
         Network.api().queryUserInfos(info)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<UserInfoEntity>>(false) {
