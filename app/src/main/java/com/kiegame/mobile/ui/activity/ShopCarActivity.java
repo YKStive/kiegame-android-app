@@ -508,6 +508,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 去充值
      */
     public void toRecharge() {
+        Cache.ins().setPayment(Payment.PAY_TYPE_ONLINE);
         String name;
         if (Text.empty(this.userInfo.getSeatNumber())) {
             name = String.format("%s | %s", Text.formatIdCardNum(this.userInfo.getIdCard()), Text.formatCustomName(this.userInfo.getCustomerName()));
