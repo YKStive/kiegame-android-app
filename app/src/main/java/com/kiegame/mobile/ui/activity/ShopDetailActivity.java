@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -280,22 +279,22 @@ public class ShopDetailActivity extends BaseActivity<ActivityShopDetailBinding> 
 //                binding.tvBtnLess.setVisibility(View.VISIBLE);
 //                binding.tvShopNum.setVisibility(View.VISIBLE);
 //            }
-            /* --------- 新增自制商品库存判断 -------- */
-            if (shop.getProductVariety() == 2) {
-                LiveData<Object> stock = model.queryProductStock(shop.getProductId(), num);
-                if (!stock.hasObservers()) {
-                    stock.observe(this, o -> {
-                        this.buySourceSize = num;
-                        tv.setText(String.valueOf(num));
-                        binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
-                    });
-                }
-                /* --------- 新增自制商品库存判断 -------- */
-            } else {
-                this.buySourceSize = num;
-                tv.setText(String.valueOf(num));
-                binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
-            }
+//            /* --------- 新增自制商品库存判断 -------- */
+//            if (shop.getProductVariety() == 2) {
+//                LiveData<Object> stock = model.queryProductStock(shop.getProductId(), num);
+//                if (!stock.hasObservers()) {
+//                    stock.observe(this, o -> {
+//                        this.buySourceSize = num;
+//                        tv.setText(String.valueOf(num));
+//                        binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
+//                    });
+//                }
+//                /* --------- 新增自制商品库存判断 -------- */
+//            } else {
+            this.buySourceSize = num;
+            tv.setText(String.valueOf(num));
+            binding.tvShopPrice.setText(cal(shop.getSellPrice() * buySourceSize));
+//            }
         }
     }
 

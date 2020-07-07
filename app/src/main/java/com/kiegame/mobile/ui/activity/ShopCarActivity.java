@@ -383,26 +383,26 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
         if (data.getShopType() == 1 && Cache.ins().getShopSumById(data.getProductId()) >= data.getMax()) {
             Toast.show("不能再多了");
         } else {
-            /* --------- 新增自制商品库存判断 -------- */
-            if (data.getShopType() == 2) {
-                LiveData<Object> stock = model.queryProductStock(data.getProductId(), num);
-                if (!stock.hasObservers()) {
-                    stock.observe(this, o -> {
-                        Cache.ins().setProductCoupon(null, null);
-                        less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
-                        tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
-                        tv.setText(String.valueOf(num));
-                        Cache.ins().attachShop(data, data.getProductFlavorName(), data.getProductSpecName(), 1);
-                    });
-                }
-                /* --------- 新增自制商品库存判断 -------- */
-            } else {
-                Cache.ins().setProductCoupon(null, null);
-                less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
-                tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
-                tv.setText(String.valueOf(num));
-                Cache.ins().attachShop(data, data.getProductFlavorName(), data.getProductSpecName(), 1);
-            }
+//            /* --------- 新增自制商品库存判断 -------- */
+//            if (data.getShopType() == 2) {
+//                LiveData<Object> stock = model.queryProductStock(data.getProductId(), num);
+//                if (!stock.hasObservers()) {
+//                    stock.observe(this, o -> {
+//                        Cache.ins().setProductCoupon(null, null);
+//                        less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
+//                        tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
+//                        tv.setText(String.valueOf(num));
+//                        Cache.ins().attachShop(data, data.getProductFlavorName(), data.getProductSpecName(), 1);
+//                    });
+//                }
+//                /* --------- 新增自制商品库存判断 -------- */
+//            } else {
+            Cache.ins().setProductCoupon(null, null);
+            less.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
+            tv.setVisibility(num == 0 ? View.INVISIBLE : View.VISIBLE);
+            tv.setText(String.valueOf(num));
+            Cache.ins().attachShop(data, data.getProductFlavorName(), data.getProductSpecName(), 1);
+//            }
         }
         adapter.notifyDataSetChanged();
     }

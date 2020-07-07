@@ -12,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LiveData;
 
 import com.bumptech.glide.Glide;
 import com.kiegame.mobile.Game;
@@ -197,20 +196,20 @@ public class ShopDetail {
 //                binding.ivBtnLess.setVisibility(View.VISIBLE);
 //                binding.tvShopNum.setVisibility(View.VISIBLE);
 //            }
-            /* --------- 新增自制商品库存判断 -------- */
-            if (shop.getProductVariety() == 2) {
-                LiveData<Object> stock = model.queryProductStock(shop.getProductId(), num);
-                if (!stock.hasObservers()) {
-                    stock.observe(fragment, o -> {
-                        this.buySourceSize = num;
-                        tv.setText(String.valueOf(num));
-                    });
-                }
-                /* --------- 新增自制商品库存判断 -------- */
-            } else {
-                this.buySourceSize = num;
-                tv.setText(String.valueOf(num));
-            }
+//            /* --------- 新增自制商品库存判断 -------- */
+//            if (shop.getProductVariety() == 2) {
+//                LiveData<Object> stock = model.queryProductStock(shop.getProductId(), num);
+//                if (!stock.hasObservers()) {
+//                    stock.observe(fragment, o -> {
+//                        this.buySourceSize = num;
+//                        tv.setText(String.valueOf(num));
+//                    });
+//                }
+//                /* --------- 新增自制商品库存判断 -------- */
+//            } else {
+            this.buySourceSize = num;
+            tv.setText(String.valueOf(num));
+//            }
         }
     }
 

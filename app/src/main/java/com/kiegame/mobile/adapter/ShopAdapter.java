@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -160,42 +159,42 @@ public class ShopAdapter extends BaseMultiItemQuickAdapter<ShopEntity, BaseViewH
                 if (item.getProductVariety() == 1 && item.getIsIgnoreStock() == 2 && num > item.getBarCount()) {
                     Toast.show("不能再多了");
                 } else {
-                    /* --------- 新增自制商品库存判断 -------- */
-                    if (item.getProductVariety() == 2) {
-                        LiveData<Object> stock = model.queryProductStock(item.getProductId(), num);
-                        if (!stock.hasObservers()) {
-                            stock.observe(fragment, o -> {
-                                Cache.ins().setProductCoupon(null, null);
-                                helper.setVisible(R.id.tv_btn_less, num != 0);
-                                tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
-                                if (num > 0) {
-                                    tv.setText(String.valueOf(num));
-                                } else {
-                                    tv.setText("");
-                                }
-                                if (item.getProductVariety() == 1) {
-                                    int count = item.getBarCount() - num;
-                                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
-                                }
-                                Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
-                            });
-                        }
-                        /* --------- 新增自制商品库存判断 -------- */
+//                    /* --------- 新增自制商品库存判断 -------- */
+//                    if (item.getProductVariety() == 2) {
+//                        LiveData<Object> stock = model.queryProductStock(item.getProductId(), num);
+//                        if (!stock.hasObservers()) {
+//                            stock.observe(fragment, o -> {
+//                                Cache.ins().setProductCoupon(null, null);
+//                                helper.setVisible(R.id.tv_btn_less, num != 0);
+//                                tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
+//                                if (num > 0) {
+//                                    tv.setText(String.valueOf(num));
+//                                } else {
+//                                    tv.setText("");
+//                                }
+//                                if (item.getProductVariety() == 1) {
+//                                    int count = item.getBarCount() - num;
+//                                    helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
+//                                }
+//                                Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
+//                            });
+//                        }
+//                        /* --------- 新增自制商品库存判断 -------- */
+//                    } else {
+                    Cache.ins().setProductCoupon(null, null);
+                    helper.setVisible(R.id.tv_btn_less, num != 0);
+                    tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
+                    if (num > 0) {
+                        tv.setText(String.valueOf(num));
                     } else {
-                        Cache.ins().setProductCoupon(null, null);
-                        helper.setVisible(R.id.tv_btn_less, num != 0);
-                        tv.setVisibility(num != 0 ? View.VISIBLE : View.GONE);
-                        if (num > 0) {
-                            tv.setText(String.valueOf(num));
-                        } else {
-                            tv.setText("");
-                        }
-                        if (item.getProductVariety() == 1) {
-                            int count = item.getBarCount() - num;
-                            helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
-                        }
-                        Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
+                        tv.setText("");
                     }
+                    if (item.getProductVariety() == 1) {
+                        int count = item.getBarCount() - num;
+                        helper.setText(R.id.tv_bar_count, count == 0 ? "已售罄" : (count > 99999 ? String.format("剩余: %s件", 99999) : String.format("剩余: %s件", count)));
+                    }
+                    Cache.ins().attachShop(item, item.getProductFlavorName(), item.getProductSpecName());
+//                    }
                 }
             }
         });
