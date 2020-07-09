@@ -103,7 +103,7 @@ public class ShopDetail {
         if (data != null) {
             this.shop = data;
             this.buySourceSize = 1;
-            Glide.with(binding.getRoot()).load(data.getShopImage()).into(binding.ivShopImage);
+            Glide.with(Game.ins().activity()).load(data.getShopImage()).into(binding.ivShopImage);
             binding.tvShopName.setText(data.getProductName());
             binding.tvShopNorm.setText(data.getProductSpecName());
             binding.tvShopPrice.setText(String.format("￥%s", cal(data.getSellPrice())));
