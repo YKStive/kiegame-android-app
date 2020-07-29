@@ -91,11 +91,11 @@ public class PayFailure {
      * @return {@link PayFailure}
      */
     public PayFailure confirm(OnClickListener listener) {
-        this.binding.tvBtnOk.setOnClickListener(v -> {
+        binding.tvBtnOk.setOnClickListener(v -> {
+            this.hide();
             if (listener != null) {
                 listener.onClick();
             }
-            this.hide();
         });
         return this;
     }

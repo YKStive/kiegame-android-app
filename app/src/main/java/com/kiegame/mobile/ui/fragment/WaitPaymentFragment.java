@@ -111,7 +111,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                 binding.cbTotalAll.setChecked(aBoolean);
             }
         });
-        model.failureMessage.observe(this, s -> PayFailure.ins().message(s).show());
+        model.failureMessage.observe(this, s -> PayFailure.ins().confirm(null).message(s).show());
         permissions = new String[]{
                 Manifest.permission.CAMERA,
                 Manifest.permission.VIBRATE,
@@ -334,7 +334,7 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                             if (res.getPayState() == 2) {
                                 PaySuccess.ins().confirm(() -> fragment.refreshAllData()).order(res.getPaymentPayId()).show();
                             } else if (res.getPayState() == 4) {
-                                PayFailure.ins().message("支付失败").show();
+                                PayFailure.ins().confirm(null).message("支付失败").show();
                             }
                         } else {
                             if (res.getReturnState() == 4) {
@@ -358,7 +358,11 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
     private String getUserName(BuyOrderEntity item) {
         if (Text.empty(item.getSeatNumber())) {
             if (Text.empty(item.getIdCard())) {
-                return String.format("%s", Text.formatCustomName(item.getCustomerName()));
+                if (Text.empty(item.getCustomerName())) {
+                    return "散客";
+                } else {
+                    return String.format("%s", Text.formatCustomName(item.getCustomerName()));
+                }
             } else {
                 return String.format("%s | %s", Text.lastIdNum(item.getIdCard()), Text.formatCustomName(item.getCustomerName()));
             }

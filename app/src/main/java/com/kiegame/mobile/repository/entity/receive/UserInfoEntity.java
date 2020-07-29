@@ -30,6 +30,18 @@ public class UserInfoEntity {
     private String customerName;
     private String seatNumber;
 
+    public UserInfoEntity() {
+    }
+
+    public UserInfoEntity(String customerName) {
+        this.customerName = customerName;
+        this.bonusBalance = 0;
+        this.idCard = "";
+        this.customerId = "";
+        this.accountBalance = 0;
+        this.seatNumber = "";
+    }
+
     public int getCustomerType() {
         return customerType;
     }

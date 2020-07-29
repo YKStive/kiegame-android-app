@@ -1,11 +1,11 @@
 package com.kiegame.mobile.ui.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -81,6 +81,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
             if (page != null) {
                 binding.vpViews.setCurrentItem(page);
             }
+        });
+
+        requestSelfPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, (authorize, permissions) -> {
+            // 只请求权限,不做任何操作
         });
     }
 

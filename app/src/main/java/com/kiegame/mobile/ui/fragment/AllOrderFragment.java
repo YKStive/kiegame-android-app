@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -103,7 +104,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
                 binding.tvTotalMoney.setText(cal(integer));
             }
         });
-        model.failureMessage.observe(this, s -> PayFailure.ins().message(s).show());
+        model.failureMessage.observe(this, s -> PayFailure.ins().confirm(null).message(s).show());
         permissions = new String[]{
                 Manifest.permission.CAMERA,
                 Manifest.permission.VIBRATE,
@@ -154,6 +155,17 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
         };
         binding.rvOrder.setAdapter(adapter);
         binding.srlAllPay.setOnLoadMoreListener(refreshLayout -> loadMoreData());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            String password = data.getStringExtra(Setting.APP_SCAN_CONTENT);
+            if (!Text.empty(password)) {
+                payOrder(productOrderList.toString(), rechargeOrderList.toString(), totalPayType, password, String.valueOf(totalMoney));
+            }
+        }
     }
 
     @Override
@@ -324,7 +336,11 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
     private String getUserName(BuyOrderEntity item) {
         if (Text.empty(item.getSeatNumber())) {
             if (Text.empty(item.getIdCard())) {
-                return String.format("%s", Text.formatCustomName(item.getCustomerName()));
+                if (Text.empty(item.getCustomerName())) {
+                    return "散客";
+                } else {
+                    return String.format("%s", Text.formatCustomName(item.getCustomerName()));
+                }
             } else {
                 return String.format("%s | %s", Text.lastIdNum(item.getIdCard()), Text.formatCustomName(item.getCustomerName()));
             }
@@ -477,7 +493,7 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
                                 PaySuccess.ins().confirm(() -> fragment.refreshAllData()).order(res.getPaymentPayId()).show();
                             } else if (res.getPayState() == 4) {
                                 fragment.refreshAllData();
-                                PayFailure.ins().message("支付失败").show();
+                                PayFailure.ins().confirm(null).message("支付失败").show();
                             }
                         } else {
                             fragment.refreshAllData();

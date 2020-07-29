@@ -206,43 +206,49 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             pw.setSplitTouchEnabled(true);
         }
         list.removeAllViews();
-        if (data != null && !data.isEmpty()) {
-            for (UserInfoEntity entity : data) {
-                View view = inflater.inflate(R.layout.item_search_user_info, null, false);
-                TextView tv = view.findViewById(R.id.tv_user_item);
-                String item;
+        UserInfoEntity temp = new UserInfoEntity("散客");
+        data.add(0, temp);
+//        if (data != null && !data.isEmpty()) {
+        for (UserInfoEntity entity : data) {
+            View view = inflater.inflate(R.layout.item_search_user_info, null, false);
+            TextView tv = view.findViewById(R.id.tv_user_item);
+            String item;
+            if ("散客".equals(entity.getCustomerName())) {
+                item = entity.getCustomerName();
+            } else {
                 if (Text.empty(entity.getSeatNumber())) {
                     item = String.format("%s | %s", Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
                 } else {
                     item = String.format("%s | %s | %s", entity.getSeatNumber(), Text.formatIdCardNum(entity.getIdCard()), Text.formatCustomName(entity.getCustomerName()));
                 }
-                tv.setText(Text.zoomCustomInfo(item));
-                tv.setOnClickListener(v -> {
-                    String name = tv.getText().toString();
-                    model.userSearch.setValue("");
-                    hideInputMethod();
-                    binding.etSearchInput.clearFocus();
-                    if (Cache.ins().getUserInfo() == null) {
-                        changeUserInfo(entity, name);
-                    } else {
-                        if (!Cache.ins().getUserInfo().getCustomerId().equals(entity.getCustomerId())) {
-                            DialogBox.ins().text(String.format("你想将会员账号切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName())))
-                                    .confirm(() -> changeUserInfo(entity, name))
-                                    .cancel(null)
-                                    .show();
-                        }
+            }
+            tv.setText(Text.zoomCustomInfo(item));
+            tv.setOnClickListener(v -> {
+                String name = tv.getText().toString();
+                model.userSearch.setValue("");
+                hideInputMethod();
+                binding.etSearchInput.clearFocus();
+                if (Cache.ins().getUserInfo() == null) {
+                    changeUserInfo(entity, name);
+                } else {
+                    if (!Cache.ins().getUserInfo().getCustomerId().equals(entity.getCustomerId())) {
+                        DialogBox.ins().text(String.format("你想将会员账号切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName())))
+                                .confirm(() -> changeUserInfo(entity, name))
+                                .cancel(null)
+                                .show();
                     }
-                });
-                list.addView(view);
-            }
-        } else {
-            if (list.getChildCount() == 0) {
-                View view = inflater.inflate(R.layout.item_search_user_info, null, false);
-                TextView tv = view.findViewById(R.id.tv_user_item);
-                tv.setText("暂无信息");
-                list.addView(view);
-            }
+                }
+            });
+            list.addView(view);
         }
+//        } else {
+//            if (list.getChildCount() == 0) {
+//                View view = inflater.inflate(R.layout.item_search_user_info, null, false);
+//                TextView tv = view.findViewById(R.id.tv_user_item);
+//                tv.setText("暂无信息");
+//                list.addView(view);
+//            }
+//        }
         if (pw.isShowing()) {
             pw.dismiss();
         }
@@ -494,6 +500,10 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * @return true: 可以 false: 不可以
      */
     private boolean canCreateOrderOrPayment(int orderType) {
+        if ("散客".equals(Cache.ins().getUserInfo().getCustomerName()) && Cache.ins().getNetFeeNum() != 0) {
+            Toast.show("请先上机后再充值网费");
+            return false;
+        }
         int money = Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum();
         if (money <= 0 && Cache.ins().getNetFeeCoupon() == null && Cache.ins().getProductCoupon() == null) {
             switch (orderType) {
@@ -577,7 +587,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 Toast.show("下单失败");
             } else {
                 // 结算
-                PayFailure.ins().message("未找到订单号").show();
+                PayFailure.ins().confirm(null).message("未找到订单号").show();
             }
         }
     }

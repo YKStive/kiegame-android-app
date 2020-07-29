@@ -10,7 +10,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/translucent_black_50">
+        android:background="@color/translucent_black_50"
+        android:clickable="true"
+        android:focusable="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
@@ -68,6 +70,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/shape_shop_ok_btn_background"
+                android:clickable="true"
+                android:focusable="true"
                 android:paddingLeft="48dp"
                 android:paddingTop="10dp"
                 android:paddingRight="48dp"
