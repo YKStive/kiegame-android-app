@@ -210,6 +210,11 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             }
             return false;
         });
+        binding.etSearchInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                searchUserInfosResult(new ArrayList<>());
+            }
+        });
     }
 
     @Override

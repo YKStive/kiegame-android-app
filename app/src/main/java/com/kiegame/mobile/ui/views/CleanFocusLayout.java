@@ -9,25 +9,29 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.kiegame.mobile.Game;
-
 /**
  * Created by: var_rain.
  * Created date: 2020/2/10.
  * Description: 焦点清除
  */
-public class FocusLayout extends ConstraintLayout {
+public class CleanFocusLayout extends ConstraintLayout {
 
-    public FocusLayout(Context context) {
+    public CleanFocusLayout(Context context) {
         super(context);
+        setFocusable(true);
+        setFocusableInTouchMode(true);
     }
 
-    public FocusLayout(Context context, AttributeSet attrs) {
+    public CleanFocusLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setFocusable(true);
+        setFocusableInTouchMode(true);
     }
 
-    public FocusLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CleanFocusLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setFocusable(true);
+        setFocusableInTouchMode(true);
     }
 
     @Override
@@ -41,7 +45,7 @@ public class FocusLayout extends ConstraintLayout {
      * 隐藏输入法
      */
     private void hideInputMethod() {
-        Activity activity = Game.ins().activity();
+        Activity activity = (Activity) this.getContext();
         if (activity != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             if (inputMethodManager != null) {

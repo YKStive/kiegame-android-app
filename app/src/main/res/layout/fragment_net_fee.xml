@@ -26,7 +26,7 @@
             type="com.kiegame.mobile.repository.cache.Cache" />
     </data>
 
-    <com.kiegame.mobile.ui.views.FocusLayout
+    <com.kiegame.mobile.ui.views.CleanFocusLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
@@ -749,5 +749,5 @@
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
-    </com.kiegame.mobile.ui.views.FocusLayout>
+    </com.kiegame.mobile.ui.views.CleanFocusLayout>
 </layout>

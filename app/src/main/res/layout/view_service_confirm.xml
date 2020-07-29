@@ -7,7 +7,7 @@
 
     </data>
 
-    <com.kiegame.mobile.ui.views.FocusLayout
+    <com.kiegame.mobile.ui.views.CleanFocusLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/translucent_black_50">
@@ -147,5 +147,5 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/et_service_password" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.kiegame.mobile.ui.views.FocusLayout>
+    </com.kiegame.mobile.ui.views.CleanFocusLayout>
 </layout>

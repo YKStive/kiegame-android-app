@@ -7,7 +7,7 @@
 
     </data>
 
-    <com.kiegame.mobile.ui.views.FocusLayout
+    <com.kiegame.mobile.ui.views.CleanFocusLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/translucent_black_50"
@@ -119,5 +119,5 @@
                     android:textSize="16sp" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.kiegame.mobile.ui.views.FocusLayout>
+    </com.kiegame.mobile.ui.views.CleanFocusLayout>
 </layout>

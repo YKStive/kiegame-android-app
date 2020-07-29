@@ -14,7 +14,7 @@
             type="com.kiegame.mobile.ui.activity.LoginActivity" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.kiegame.mobile.ui.views.CleanFocusLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -191,5 +191,5 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             tools:text="V1.2.0" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.kiegame.mobile.ui.views.CleanFocusLayout>
 </layout>

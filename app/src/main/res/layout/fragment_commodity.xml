@@ -14,7 +14,7 @@
             type="com.kiegame.mobile.model.CommodityModel" />
     </data>
 
-    <com.kiegame.mobile.ui.views.FocusLayout
+    <com.kiegame.mobile.ui.views.CleanFocusLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -231,5 +231,5 @@
                 </RelativeLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
-    </com.kiegame.mobile.ui.views.FocusLayout>
+    </com.kiegame.mobile.ui.views.CleanFocusLayout>
 </layout>

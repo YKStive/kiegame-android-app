@@ -141,6 +141,11 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             }
             return false;
         });
+        binding.etSearchInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                searchUserInfosResult(new ArrayList<>());
+            }
+        });
     }
 
     @Override
