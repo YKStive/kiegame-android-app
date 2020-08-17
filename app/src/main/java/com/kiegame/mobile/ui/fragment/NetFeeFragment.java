@@ -404,7 +404,10 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
                 String value;
                 String money = cal(Cache.ins().getNetFeeNum() + Cache.ins().getShopMoneyTotalNum());
                 if (payType == Payment.PAY_TYPE_BUCKLE) {
-                    value = String.format("卡扣支付%s元", money);
+                    // 调整卡口支付方式为不扫码
+//                    value = String.format("卡扣支付%s元", money);
+                    createOrderOrPayment(null, 2);
+                    return;
                 } else if (payType == Payment.PAY_TYPE_ONLINE) {
                     value = String.format("扫码支付%s元", money);
                 } else {
