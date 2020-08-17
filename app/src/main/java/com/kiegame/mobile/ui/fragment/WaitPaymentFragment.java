@@ -252,7 +252,10 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                 if (authorize) {
                     String value;
                     if (totalPayType == Payment.PAY_TYPE_BUCKLE) {
-                        value = String.format("卡扣支付%s元", cal(totalMoney));
+                        // 修改卡扣支付方式为不扫码
+//                        value = String.format("卡扣支付%s元", cal(totalMoney));
+                        payOrder(productOrderList.toString(), rechargeOrderList.toString(), totalPayType, null, String.valueOf(totalMoney));
+                        return;
                     } else if (totalPayType == Payment.PAY_TYPE_ONLINE) {
                         value = String.format("扫码支付%s元", cal(totalMoney));
                     } else {
