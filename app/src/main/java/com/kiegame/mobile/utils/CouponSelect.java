@@ -1,8 +1,5 @@
 package com.kiegame.mobile.utils;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,10 +36,7 @@ public class CouponSelect {
 
     private static CouponSelect INS;
     private ViewCouponUseBinding binding;
-    private ValueAnimator alphaAnimator;
-    private ValueAnimator moveAnimator;
     private boolean isShowing;
-    private float moveSize;
     private OnCouponUseCallback callback;
     private CouponModel model;
     private LifecycleOwner owner;
@@ -61,8 +55,6 @@ public class CouponSelect {
         this.serviceActivities = new ArrayList<>();
         this.customerCoupons = new ArrayList<>();
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_coupon_use, null, false);
-        this.moveSize = Game.ins().metrics(true).heightPixels * 0.45f;
-        this.initAnim();
         this.initViews();
     }
 
@@ -76,58 +68,6 @@ public class CouponSelect {
             CouponSelect.INS = new CouponSelect();
         }
         return CouponSelect.INS;
-    }
-
-    /**
-     * 初始化动画
-     */
-    private void initAnim() {
-        this.alphaAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        this.alphaAnimator.setDuration(150);
-        this.alphaAnimator.addUpdateListener(animation -> {
-            if (this.binding != null) {
-                this.binding.vvBackground.setAlpha((Float) animation.getAnimatedValue());
-            }
-        });
-        this.alphaAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
-                if (isReverse) {
-                    InjectView.ins().clean(binding.getRoot());
-                    isShowing = false;
-                }
-            }
-        });
-        this.moveAnimator = ValueAnimator.ofFloat(moveSize, 0.0f);
-        this.moveAnimator.setDuration(150);
-        this.moveAnimator.addUpdateListener(animation -> {
-            if (this.binding != null) {
-                this.binding.clContent.setTranslationY((Float) animation.getAnimatedValue());
-            }
-        });
-        this.moveAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation, boolean isReverse) {
-                if (!isReverse) {
-                    InjectView.ins().inject(binding.getRoot());
-                    isShowing = true;
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
-                if (isReverse) {
-                    if (alphaAnimator != null) {
-                        alphaAnimator.reverse();
-                    }
-                } else {
-                    if (alphaAnimator != null) {
-                        alphaAnimator.start();
-                    }
-                    query();
-                }
-            }
-        });
     }
 
     /**
@@ -298,12 +238,16 @@ public class CouponSelect {
      */
     public void show() {
         if (!this.isShowing) {
+            isShowing = true;
+            InjectView.ins().inject(binding.getRoot());
             this.isSuccess = false;
             this.serviceActivities.clear();
             this.customerCoupons.clear();
             this.adapter.notifyDataSetChanged();
-            selectTab();
-            this.moveAnimator.start();
+            binding.getRoot().postDelayed(() -> {
+                selectTab();
+                query();
+            }, 200);
         }
     }
 
@@ -318,8 +262,9 @@ public class CouponSelect {
      * 隐藏优惠券
      */
     private void hide() {
-        if (this.moveAnimator != null && this.isShowing) {
-            this.moveAnimator.reverse();
+        if (this.isShowing) {
+            InjectView.ins().clean(binding.getRoot());
+            isShowing = false;
         }
     }
 

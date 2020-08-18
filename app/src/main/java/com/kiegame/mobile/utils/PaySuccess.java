@@ -21,7 +21,6 @@ public class PaySuccess {
 
     private static PaySuccess INS;
     private ViewPaymentSuccessBinding binding;
-    private ValueAnimator animator;
     private boolean isShowing;
     private OnClickListener onClickListener;
 
@@ -30,7 +29,6 @@ public class PaySuccess {
      */
     private PaySuccess() {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_payment_success, null, false);
-        this.initAnim();
     }
 
     /**
@@ -43,37 +41,6 @@ public class PaySuccess {
             PaySuccess.INS = new PaySuccess();
         }
         return PaySuccess.INS;
-    }
-
-    /**
-     * 初始化动画
-     */
-    private void initAnim() {
-        this.animator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        this.animator.setDuration(100);
-        this.animator.addUpdateListener(animation -> {
-            if (this.binding != null) {
-                this.binding.getRoot().setAlpha((Float) animation.getAnimatedValue());
-            }
-        });
-        this.animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation, boolean isReverse) {
-                if (!isReverse) {
-                    InjectView.ins().inject(binding.getRoot());
-                    isShowing = true;
-                    startCountdown();
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
-                if (isReverse) {
-                    InjectView.ins().clean(binding.getRoot());
-                    isShowing = false;
-                }
-            }
-        });
     }
 
     /**
@@ -131,7 +98,9 @@ public class PaySuccess {
      */
     public void show() {
         if (!this.isShowing) {
-            this.animator.start();
+            isShowing = true;
+            InjectView.ins().inject(binding.getRoot());
+            startCountdown();
         }
     }
 
@@ -139,8 +108,9 @@ public class PaySuccess {
      * 隐藏对话框
      */
     private void hide() {
-        if (this.animator != null && this.isShowing) {
-            this.animator.reverse();
+        if (this.isShowing) {
+            isShowing = false;
+            InjectView.ins().clean(binding.getRoot());
         }
     }
 

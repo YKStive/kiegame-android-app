@@ -1,5 +1,6 @@
 package com.kiegame.mobile;
 
+import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
@@ -7,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -139,6 +142,20 @@ public class Game extends MultiDexApplication implements Application.ActivityLif
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+        Window window = activity.getWindow();
+        if (window != null) {
+            ViewGroup view = (ViewGroup) window.getDecorView();
+            LayoutTransition layoutTransition = view.getLayoutTransition();
+            if (layoutTransition != null) {
+                layoutTransition.setDuration(200);
+                layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+            } else {
+                LayoutTransition transition = new LayoutTransition();
+                transition.setDuration(200);
+                transition.enableTransitionType(LayoutTransition.CHANGING);
+                view.setLayoutTransition(transition);
+            }
+        }
         this.activities.add(activity);
     }
 

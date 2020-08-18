@@ -1,8 +1,5 @@
 package com.kiegame.mobile.utils;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
 import android.text.InputFilter;
@@ -25,7 +22,6 @@ public class InputBox {
 
     private static InputBox INS;
     private ViewInputBoxBinding binding;
-    private ValueAnimator animator;
     private boolean isShowing;
 
     /**
@@ -35,7 +31,6 @@ public class InputBox {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_input_box, null, false);
         binding.tvDialogBtnCancel.setOnClickListener(v -> this.hide());
         binding.tvInputContent.setFilters(new InputFilter[]{new MoneyFilter()});
-        this.initAnim();
     }
 
     /**
@@ -48,36 +43,6 @@ public class InputBox {
             InputBox.INS = new InputBox();
         }
         return InputBox.INS;
-    }
-
-    /**
-     * 初始化动画
-     */
-    private void initAnim() {
-        this.animator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        this.animator.setDuration(100);
-        this.animator.addUpdateListener(animation -> {
-            if (this.binding != null) {
-                this.binding.getRoot().setAlpha((Float) animation.getAnimatedValue());
-            }
-        });
-        this.animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation, boolean isReverse) {
-                if (!isReverse) {
-                    InjectView.ins().inject(binding.getRoot());
-                    isShowing = true;
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
-                if (isReverse) {
-                    InjectView.ins().clean(binding.getRoot());
-                    isShowing = false;
-                }
-            }
-        });
     }
 
     /**
@@ -140,11 +105,14 @@ public class InputBox {
      */
     public void show() {
         if (!this.isShowing) {
-            this.animator.start();
-            binding.tvInputContent.setText("");
-            binding.tvInputContent.setFocusable(true);
-            binding.tvInputContent.requestFocus();
-            this.onFocusChange(binding.tvInputContent.isFocused());
+            isShowing = true;
+            InjectView.ins().inject(binding.getRoot());
+            binding.getRoot().postDelayed(() -> {
+                binding.tvInputContent.setText("");
+                binding.tvInputContent.setFocusable(true);
+                binding.tvInputContent.requestFocus();
+                this.onFocusChange(binding.tvInputContent.isFocused());
+            }, 200);
         }
     }
 
@@ -152,8 +120,9 @@ public class InputBox {
      * 隐藏商品详情
      */
     private void hide() {
-        if (this.animator != null && this.isShowing) {
-            this.animator.reverse();
+        if (this.isShowing) {
+            isShowing = false;
+            InjectView.ins().clean(binding.getRoot());
         }
     }
 

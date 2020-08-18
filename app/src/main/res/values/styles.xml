@@ -11,4 +11,9 @@
     <style name="AppTheme.DatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/black</item>
     </style>
+
+    <!-- 加载框 -->
+    <style name="AppTheme.Loading" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@color/translucent</item>
+    </style>
 </resources>

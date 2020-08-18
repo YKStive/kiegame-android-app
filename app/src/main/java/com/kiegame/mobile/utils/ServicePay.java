@@ -1,8 +1,5 @@
 package com.kiegame.mobile.utils;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.view.LayoutInflater;
 
 import androidx.databinding.DataBindingUtil;
@@ -23,7 +20,6 @@ public class ServicePay {
 
     private static ServicePay INS;
     private ViewServiceConfirmBinding binding;
-    private ValueAnimator animator;
     private boolean isShowing;
 
     /**
@@ -32,7 +28,6 @@ public class ServicePay {
     private ServicePay() {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_service_confirm, null, false);
         binding.tvBtnCancel.setOnClickListener(v -> this.hide());
-        this.initAnim();
     }
 
     /**
@@ -45,36 +40,6 @@ public class ServicePay {
             ServicePay.INS = new ServicePay();
         }
         return ServicePay.INS;
-    }
-
-    /**
-     * 初始化动画
-     */
-    private void initAnim() {
-        this.animator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        this.animator.setDuration(100);
-        this.animator.addUpdateListener(animation -> {
-            if (this.binding != null) {
-                this.binding.getRoot().setAlpha((Float) animation.getAnimatedValue());
-            }
-        });
-        this.animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation, boolean isReverse) {
-                if (!isReverse) {
-                    InjectView.ins().inject(binding.getRoot());
-                    isShowing = true;
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
-                if (isReverse) {
-                    InjectView.ins().clean(binding.getRoot());
-                    isShowing = false;
-                }
-            }
-        });
     }
 
     /**
@@ -128,7 +93,8 @@ public class ServicePay {
      */
     public void show() {
         if (!this.isShowing) {
-            this.animator.start();
+            isShowing = true;
+            InjectView.ins().inject(binding.getRoot());
         }
     }
 
@@ -136,8 +102,9 @@ public class ServicePay {
      * 隐藏对话框
      */
     private void hide() {
-        if (this.animator != null && this.isShowing) {
-            this.animator.reverse();
+        if (this.isShowing) {
+            InjectView.ins().clean(binding.getRoot());
+            isShowing = false;
         }
     }
 

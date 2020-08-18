@@ -1,8 +1,5 @@
 package com.kiegame.mobile.utils;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,7 +35,6 @@ public class ShopDetail {
     @SuppressLint("StaticFieldLeak")
     private static ShopDetail INS;
     private ViewShopDetailBinding binding;
-    private ValueAnimator animator;
     private boolean isShowing;
     private List<TextView> selectFlavor;
     private TextView selectNorm;
@@ -54,7 +50,6 @@ public class ShopDetail {
 
     private ShopDetail() {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_shop_detail, null, false);
-        this.initAnim();
     }
 
     /**
@@ -74,7 +69,8 @@ public class ShopDetail {
      */
     public void show() {
         if (!this.isShowing) {
-            this.animator.start();
+            isShowing = true;
+            InjectView.ins().inject(binding.getRoot());
         }
     }
 
@@ -349,41 +345,12 @@ public class ShopDetail {
     }
 
     /**
-     * 初始化动画
-     */
-    private void initAnim() {
-        this.animator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        this.animator.setDuration(150);
-        this.animator.addUpdateListener(animation -> {
-            if (this.binding != null) {
-                this.binding.getRoot().setAlpha((Float) animation.getAnimatedValue());
-            }
-        });
-        this.animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation, boolean isReverse) {
-                if (!isReverse) {
-                    InjectView.ins().inject(binding.getRoot());
-                    isShowing = true;
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
-                if (isReverse) {
-                    InjectView.ins().clean(binding.getRoot());
-                    isShowing = false;
-                }
-            }
-        });
-    }
-
-    /**
      * 隐藏商品详情
      */
     private void hide() {
-        if (this.animator != null && this.isShowing) {
-            this.animator.reverse();
+        if (this.isShowing) {
+            isShowing = false;
+            InjectView.ins().clean(binding.getRoot());
         }
         if (this.selectFlavor != null) {
             this.selectFlavor.clear();

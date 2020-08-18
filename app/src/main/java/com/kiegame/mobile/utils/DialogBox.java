@@ -1,8 +1,5 @@
 package com.kiegame.mobile.utils;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -21,7 +18,6 @@ public class DialogBox {
 
     private static DialogBox INS;
     private ViewDialogBoxBinding binding;
-    private ValueAnimator animator;
     private boolean isShowing;
 
     /**
@@ -29,7 +25,6 @@ public class DialogBox {
      */
     private DialogBox() {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_dialog_box, null, false);
-        this.initAnim();
     }
 
     /**
@@ -42,36 +37,6 @@ public class DialogBox {
             DialogBox.INS = new DialogBox();
         }
         return DialogBox.INS;
-    }
-
-    /**
-     * 初始化动画
-     */
-    private void initAnim() {
-        this.animator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        this.animator.setDuration(100);
-        this.animator.addUpdateListener(animation -> {
-            if (this.binding != null) {
-                this.binding.getRoot().setAlpha((Float) animation.getAnimatedValue());
-            }
-        });
-        this.animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation, boolean isReverse) {
-                if (!isReverse) {
-                    InjectView.ins().inject(binding.getRoot());
-                    isShowing = true;
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation, boolean isReverse) {
-                if (isReverse) {
-                    InjectView.ins().clean(binding.getRoot());
-                    isShowing = false;
-                }
-            }
-        });
     }
 
     /**
@@ -140,7 +105,8 @@ public class DialogBox {
      */
     public void show() {
         if (!this.isShowing) {
-            this.animator.start();
+            isShowing = true;
+            InjectView.ins().inject(binding.getRoot());
         }
     }
 
@@ -148,8 +114,9 @@ public class DialogBox {
      * 隐藏商品详情
      */
     private void hide() {
-        if (this.animator != null && this.isShowing) {
-            this.animator.reverse();
+        if (this.isShowing) {
+            isShowing = false;
+            InjectView.ins().clean(binding.getRoot());
         }
         this.binding.tvDialogTitle.setVisibility(View.GONE);
     }

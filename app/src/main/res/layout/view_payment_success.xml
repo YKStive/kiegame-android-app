@@ -11,7 +11,9 @@
         android:id="@+id/cl_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/translucent_black_50">
+        android:background="@color/translucent_black_50"
+        android:clickable="true"
+        android:focusable="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"

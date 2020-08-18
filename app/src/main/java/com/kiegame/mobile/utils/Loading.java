@@ -1,8 +1,5 @@
 package com.kiegame.mobile.utils;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.view.View;
 
@@ -17,7 +14,6 @@ public class Loading {
 
     @SuppressLint("StaticFieldLeak")
     private static View view;
-    private static ValueAnimator animator;
     private static boolean isShowing;
 
     /**
@@ -27,34 +23,9 @@ public class Loading {
         if (Loading.view == null) {
             Loading.view = InjectView.ins().make(R.layout.view_loading);
         }
-        if (Loading.animator == null) {
-            Loading.animator = ValueAnimator.ofFloat(0.0f, 1.0f);
-            Loading.animator.setDuration(200);
-            Loading.animator.addUpdateListener(animation -> {
-                if (Loading.view != null) {
-                    Loading.view.setAlpha((Float) animation.getAnimatedValue());
-                }
-            });
-            Loading.animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation, boolean isReverse) {
-                    if (!isReverse) {
-                        InjectView.ins().inject(Loading.view);
-                        Loading.isShowing = true;
-                    }
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation, boolean isReverse) {
-                    if (isReverse) {
-                        InjectView.ins().clean(Loading.view);
-                        Loading.isShowing = false;
-                    }
-                }
-            });
-        }
         if (!Loading.isShowing) {
-            Loading.animator.start();
+            Loading.isShowing = true;
+            InjectView.ins().inject(Loading.view);
         }
     }
 
@@ -62,8 +33,9 @@ public class Loading {
      * 隐藏加载动画
      */
     public static void hide() {
-        if (Loading.animator != null && Loading.isShowing) {
-            Loading.animator.reverse();
+        if (Loading.isShowing) {
+            Loading.isShowing = false;
+            InjectView.ins().clean(Loading.view);
         }
     }
 }
