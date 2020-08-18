@@ -207,7 +207,7 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
             pw.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
             pw.setHeight(pwHeight);
             pw.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.translucent)));
-            pw.setOutsideTouchable(false);
+            pw.setOutsideTouchable(true);
             pw.setSplitTouchEnabled(true);
         }
         list.removeAllViews();
