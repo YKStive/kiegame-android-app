@@ -22,6 +22,7 @@ import com.kiegame.mobile.exceptions.crash.GlobalCrashCapture;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.ui.activity.LoginActivity;
 import com.kiegame.mobile.utils.DialogBox;
+import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.worker.Worker;
 
 import java.util.ArrayList;
@@ -128,9 +129,9 @@ public class Game extends MultiDexApplication implements Application.ActivityLif
     /**
      * 已在其他地方登录
      */
-    public void logged() {
+    public void logged(String msg) {
         DialogBox.ins()
-                .text("当前账号已在其他地方登录")
+                .text(Text.empty(msg) ? "当前账号已在其他地方登录" : msg)
                 .confirm(() -> {
                     if (activity != null) {
                         activity.startActivity(new Intent(activity, LoginActivity.class));

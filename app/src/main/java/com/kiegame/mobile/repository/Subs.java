@@ -78,7 +78,7 @@ public abstract class Subs<T> implements Observer<Result<T>> {
         }
         if (data.getCode() == 410) {
             // 账号在其他地方登录,需要重新登录
-            Game.ins().logged();
+            Game.ins().logged(data.getMessage());
             return;
         }
         if (data.getCode() == 5001 && !data.isSuccess() && isPay) {
