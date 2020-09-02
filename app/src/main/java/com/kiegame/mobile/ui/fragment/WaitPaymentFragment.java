@@ -538,7 +538,8 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
         info.setOrderState(1);
         info.setStartTime(startTime);
         info.setEndTime(endTime);
-        info.setPayChannel(2);
+//        info.setPayChannel(2);
+        info.setPayChannel(null);
         info.setPayType(null);
         info.setSeatNumber(null);
         info.setCustomerName(null);

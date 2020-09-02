@@ -114,9 +114,9 @@ public class Game extends MultiDexApplication implements Application.ActivityLif
     /**
      * 登录验证超时(Token过期)
      */
-    public void expired() {
+    public void expired(String msg) {
         DialogBox.ins()
-                .text("登录验证已过期,请重新登录")
+                .text(Text.empty(msg) ? "登录验证已过期,请重新登录" : msg)
                 .confirm(() -> {
                     if (activity != null) {
                         activity.startActivity(new Intent(activity, LoginActivity.class));

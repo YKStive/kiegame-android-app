@@ -73,7 +73,7 @@ public abstract class Subs<T> implements Observer<Result<T>> {
         }
         if (data.getCode() == 401) {
             // token失效,需要重新登录
-            Game.ins().expired();
+            Game.ins().expired(data.getMessage());
             return;
         }
         if (data.getCode() == 410) {
