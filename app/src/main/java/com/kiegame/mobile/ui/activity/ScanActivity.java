@@ -196,6 +196,7 @@ public class ScanActivity extends BaseActivity<ActivityScanBinding> implements S
                         if (result != null && !isSuccess) {
                             isSuccess = true;
                             playSoundAndVibrate();
+                            camera.getCameraControl().enableTorch(false);
                             Intent intent = new Intent().putExtra(Setting.APP_SCAN_CONTENT, result.getText());
                             setResult(RESULT_CODE_SCAN, intent);
                             finish();
