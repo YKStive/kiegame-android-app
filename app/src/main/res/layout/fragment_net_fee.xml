@@ -9,6 +9,8 @@
 
         <import type="com.kiegame.mobile.consts.Payment" />
 
+        <import type="com.kiegame.mobile.utils.Access" />
+
         <variable
             name="user"
             type="com.kiegame.mobile.repository.entity.receive.LoginEntity" />
@@ -731,7 +733,8 @@
                     android:paddingBottom="10dp"
                     android:text="@string/net_fee_btn_go_shopping"
                     android:textColor="@color/net_fee_option_btn"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="@{Access.canProduct()?View.VISIBLE:View.GONE}" />
 
                 <TextView
                     android:layout_width="wrap_content"

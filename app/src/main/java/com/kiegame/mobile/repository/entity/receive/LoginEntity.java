@@ -1,5 +1,7 @@
 package com.kiegame.mobile.repository.entity.receive;
 
+import java.util.List;
+
 /**
  * Created by: var_rain.
  * Created date: 2020/1/14.
@@ -52,6 +54,7 @@ public class LoginEntity {
     private Object isDelete;
     private Object deleteDate;
     private String loginToken;
+    private List<MenuEntry> menuList;
 
     public String getEmpId() {
         return empId;
@@ -219,5 +222,13 @@ public class LoginEntity {
 
     public void setLoginToken(String loginToken) {
         this.loginToken = loginToken;
+    }
+
+    public List<MenuEntry> getMenuList() {
+        return menuList;
+    }
+
+    public void setMenuList(List<MenuEntry> menuList) {
+        this.menuList = menuList;
     }
 }

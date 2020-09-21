@@ -18,6 +18,7 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.settings.Setting;
 import com.kiegame.mobile.ui.base.BaseActivity;
+import com.kiegame.mobile.utils.Access;
 import com.kiegame.mobile.utils.Prefer;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
@@ -132,6 +133,9 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
      * @param data 数据对象
      */
     private void loginResult(LoginEntity data) {
+        // 处理权限
+        Access.access(data);
+        // 数据缓存
         Boolean keep = model.keepPassword.getValue();
         Prefer.put(Setting.USER_ACCOUNT_KEEP, keep == null ? false : keep);
         Prefer.put(Setting.USER_LOGIN_ACCOUNT, model.username.getValue());

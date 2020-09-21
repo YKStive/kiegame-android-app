@@ -9,6 +9,8 @@
 
         <import type="com.kiegame.mobile.consts.Payment" />
 
+        <import type="com.kiegame.mobile.utils.Access" />
+
         <variable
             name="cache"
             type="com.kiegame.mobile.repository.cache.Cache" />
@@ -531,7 +533,8 @@
                     android:paddingBottom="10dp"
                     android:text="@string/go_net_fee_recharge"
                     android:textColor="@color/net_fee_option_btn"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="@{Access.canRecharge()?View.VISIBLE:View.GONE}" />
 
                 <TextView
                     android:layout_width="wrap_content"

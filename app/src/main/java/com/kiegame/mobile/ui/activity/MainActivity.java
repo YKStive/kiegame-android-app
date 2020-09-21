@@ -21,6 +21,7 @@ import com.kiegame.mobile.model.MainModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.VersionEntity;
 import com.kiegame.mobile.ui.base.BaseActivity;
+import com.kiegame.mobile.utils.Access;
 import com.kiegame.mobile.utils.DialogBox;
 import com.kiegame.mobile.utils.DownloadManager;
 
@@ -92,15 +93,24 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
     @Override
     protected void onView() {
         LayoutInflater inflater = LayoutInflater.from(this);
-        // 网费充值
-        views.add(inflater.inflate(R.layout.view_net_fee, null));
-        // 商品
-        views.add(inflater.inflate(R.layout.view_commodity, null));
-        // 订单
-        views.add(inflater.inflate(R.layout.view_order, null));
+        if (Access.canRecharge()) {
+            // 网费充值
+            views.add(inflater.inflate(R.layout.view_net_fee, null));
+            binding.tvBtnNetFee.setVisibility(View.VISIBLE);
+        }
+        if (Access.canProduct()) {
+            // 商品
+            views.add(inflater.inflate(R.layout.view_commodity, null));
+            binding.tvBtnCommodity.setVisibility(View.VISIBLE);
+        }
+        if (Access.canOrder()) {
+            // 订单
+            views.add(inflater.inflate(R.layout.view_order, null));
+            binding.tvBtnOrder.setVisibility(View.VISIBLE);
+        }
         ViewAdapter adapter = new ViewAdapter(views);
         binding.vpViews.setAdapter(adapter);
-        binding.vpViews.setOffscreenPageLimit(2);
+        binding.vpViews.setOffscreenPageLimit(views.size());
         binding.vpViews.addOnPageChangeListener(this);
 
         selectBtn = (TextView) binding.clNavBar.getChildAt(0);

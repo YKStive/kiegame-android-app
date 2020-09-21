@@ -10,6 +10,7 @@ import com.kiegame.mobile.model.SplashModel;
 import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.ui.base.BaseActivity;
+import com.kiegame.mobile.utils.Access;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Version;
 import com.kiegame.mobile.worker.Worker;
@@ -85,6 +86,8 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
      */
     private void loginResult(LoginEntity data) {
         if (data != null) {
+            // 处理权限
+            Access.access(data);
             // 保存到内存
             Cache.ins().setToken(data.getLoginToken());
             Cache.ins().setLoginInfo(data);
