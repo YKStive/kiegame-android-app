@@ -688,6 +688,9 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     } else {
                         PaySuccess.ins().confirm(this::finish).order(order.getPaymentPayId()).show();
                     }
+                } else {
+                    // 结算
+                    PayFailure.ins().confirm(null).message("未找到订单号").show();
                 }
             }
         } else {
