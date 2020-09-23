@@ -51,6 +51,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
     private MainModel model;
     private ProgressDialog dialog;
     private boolean insCall = false;
+    private List<String> pageConst;
+    private List<String> pageName;
 
     @Override
     protected int onLayout() {
@@ -62,7 +64,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
         model = new ViewModelProvider(this).get(MainModel.class);
         binding.setActivity(this);
 
+        this.pageName = new ArrayList<>();
         this.views = new ArrayList<>();
+        this.pageConst = new ArrayList<>();
+
+        this.pageConst.add("recharge"); // index 0
+        this.pageConst.add("product"); // index 1
+        this.pageConst.add("order"); // index 2
 
         this.press = new int[]{
                 R.drawable.ic_net_fee_press,
@@ -97,16 +105,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
             // 网费充值
             views.add(inflater.inflate(R.layout.view_net_fee, null));
             binding.tvBtnNetFee.setVisibility(View.VISIBLE);
+            pageName.add("recharge");
         }
         if (Access.canProduct()) {
             // 商品
             views.add(inflater.inflate(R.layout.view_commodity, null));
             binding.tvBtnCommodity.setVisibility(View.VISIBLE);
+            pageName.add("product");
         }
         if (Access.canOrder()) {
             // 订单
             views.add(inflater.inflate(R.layout.view_order, null));
             binding.tvBtnOrder.setVisibility(View.VISIBLE);
+            pageName.add("order");
         }
         ViewAdapter adapter = new ViewAdapter(views);
         binding.vpViews.setAdapter(adapter);
@@ -189,7 +200,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
         if (this.selectBtn != null) {
             this.cleanBtnStyle(this.selectBtn);
         }
-        this.selectBtn = (TextView) binding.clNavBar.getChildAt(position);
+        this.selectBtn = (TextView) binding.clNavBar.getChildAt(pageConst.indexOf(pageName.get(position)));
         this.setBtnStyle(this.selectBtn);
     }
 
@@ -226,7 +237,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
      * @param index 页面索引
      */
     public void setCurrentPage(int index) {
-        binding.vpViews.setCurrentItem(index);
+        binding.vpViews.setCurrentItem(pageName.indexOf(pageConst.get(index)));
     }
 
 
