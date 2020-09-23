@@ -68,16 +68,33 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/sb_status_bar" />
 
+                <ImageView
+                    android:id="@+id/iv_exit_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="32dp"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="@{()->fragment.showMenu()}"
+                    android:padding="3dp"
+                    android:rotation="-90"
+                    android:src="@drawable/ic_left_back"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_service_id"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_service_id" />
+
                 <TextView
+                    android:id="@+id/tv_service_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/net_fee_address_margin_end"
                     android:layout_marginBottom="@dimen/net_fee_address_margin_bottom"
+                    android:onClick="@{()->fragment.showMenu()}"
                     android:text='@{String.format("%s / %s", login.getServiceName(), login.getEmpName())}'
                     android:textColor="@color/white"
                     android:textSize="@dimen/net_fee_address"
                     app:layout_constraintBottom_toBottomOf="@id/tv_page_title"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/iv_exit_btn"
                     tools:text="奥克斯店铺 / 张某某" />
 
                 <LinearLayout

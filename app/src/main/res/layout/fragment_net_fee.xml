@@ -758,7 +758,8 @@
                     android:paddingBottom="10dp"
                     android:text="@string/net_fee_btn_place_an_order"
                     android:textColor="@color/net_fee_option_btn"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="@{Access.canOrder()?View.VISIBLE:View.GONE}" />
             </LinearLayout>
         </LinearLayout>
     </com.kiegame.mobile.ui.views.CleanFocusLayout>

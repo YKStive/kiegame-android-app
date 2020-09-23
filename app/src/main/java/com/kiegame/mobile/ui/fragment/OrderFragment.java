@@ -2,6 +2,7 @@ package com.kiegame.mobile.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -10,7 +11,10 @@ import com.kiegame.mobile.R;
 import com.kiegame.mobile.adapter.OrderAdapter;
 import com.kiegame.mobile.databinding.FragmentOrderBinding;
 import com.kiegame.mobile.repository.cache.Cache;
+import com.kiegame.mobile.ui.activity.LoginActivity;
+import com.kiegame.mobile.ui.activity.MainActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
+import com.kiegame.mobile.utils.Menu;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,6 +40,7 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
     private Calendar cal;
     private SimpleDateFormat format;
     private int currentPage = 0;
+    private Menu menu;
 
     @Override
     protected int onLayout() {
@@ -112,6 +117,16 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+        menu = new Menu(getContext()).callback(v -> {
+            Cache.ins().initialize();
+            // #782 退出登录，需把界面已选择内容清空
+            Cache.ins().getNetFeeObserver().setValue(-1);
+            MainActivity activity = (MainActivity) getActivity();
+            startActivity(new Intent(activity, LoginActivity.class));
+            if (activity != null) {
+                activity.finish();
             }
         });
     }
@@ -202,6 +217,13 @@ public class OrderFragment extends BaseFragment<FragmentOrderBinding> {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 显示菜单
+     */
+    public void showMenu() {
+        menu.show(binding.ivExitBtn);
     }
 
     /**

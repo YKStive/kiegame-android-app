@@ -22,8 +22,11 @@ import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ShopEntity;
 import com.kiegame.mobile.repository.entity.receive.ShopSortEntity;
 import com.kiegame.mobile.repository.entity.submit.BuyShop;
+import com.kiegame.mobile.ui.activity.LoginActivity;
+import com.kiegame.mobile.ui.activity.MainActivity;
 import com.kiegame.mobile.ui.activity.ShopCarActivity;
 import com.kiegame.mobile.ui.base.BaseFragment;
+import com.kiegame.mobile.utils.Menu;
 import com.kiegame.mobile.utils.Text;
 import com.kiegame.mobile.utils.Toast;
 
@@ -55,6 +58,7 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
     private boolean isTypeDone;
     private boolean isTagDone;
     private boolean isSearch;
+    private Menu menu;
 
     @Override
     public void onResume() {
@@ -96,6 +100,17 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
         badge = new QBadgeView(getContext())
                 .bindTarget(binding.tvBadgeNum);
         badge.setBadgeNumber(Cache.ins().getShopSum());
+
+        menu = new Menu(getContext()).callback(v -> {
+            Cache.ins().initialize();
+            // #782 退出登录，需把界面已选择内容清空
+            Cache.ins().getNetFeeObserver().setValue(-1);
+            MainActivity activity = (MainActivity) getActivity();
+            startActivity(new Intent(activity, LoginActivity.class));
+            if (activity != null) {
+                activity.finish();
+            }
+        });
 
         menuAdapter = new BaseQuickAdapter<ShopSortEntity, BaseViewHolder>(R.layout.item_more_list_menu, menus) {
             @Override
@@ -348,6 +363,13 @@ public class CommodityFragment extends BaseFragment<FragmentCommodityBinding> {
             }
             isSearch = false;
         }
+    }
+
+    /**
+     * 显示菜单
+     */
+    public void showMenu() {
+        menu.show(binding.ivExitBtn);
     }
 
     /**
