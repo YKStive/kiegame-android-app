@@ -15,11 +15,17 @@ public class Loading {
     @SuppressLint("StaticFieldLeak")
     private static View view;
     private static boolean isShowing;
+    private static long time;
 
     /**
      * 显示加载动画
      */
     public static void show() {
+        long millis = System.currentTimeMillis();
+        if (millis - time < 1000) {
+            return;
+        }
+        time = millis;
         if (Loading.view == null) {
             Loading.view = InjectView.ins().make(R.layout.view_loading);
         }
