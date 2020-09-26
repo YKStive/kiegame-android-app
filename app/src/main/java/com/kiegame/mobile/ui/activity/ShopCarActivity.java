@@ -78,6 +78,8 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
     private int pwHeight;
     private CouponModel couponModel;
     private BuyShop delete;
+    // 点触时间
+    private long touch;
 
     @Override
     protected int onLayout() {
@@ -563,6 +565,11 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 下订单
      */
     public void createOrder() {
+        long millis = System.currentTimeMillis();
+        if (millis - touch < 3000) {
+            return;
+        }
+        touch = millis;
         if (this.userInfo != null) {
             if (canCreateOrderOrPayment(1)) {
                 createOrderOrPayment(null, 1);
@@ -576,6 +583,11 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      * 结算
      */
     public void totalOrder() {
+        long millis = System.currentTimeMillis();
+        if (millis - touch < 3000) {
+            return;
+        }
+        touch = millis;
         if (this.userInfo != null) {
             if (canCreateOrderOrPayment(2)) {
                 int payment = Cache.ins().getPayment();

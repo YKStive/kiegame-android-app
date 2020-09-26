@@ -74,6 +74,8 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     private final int RESULT_CODE_SCAN = 10086;
     private String[] permissions;
     private int orderType = -1;
+    // 点触时间
+    private long touch;
 
     @Override
     protected int onLayout() {
@@ -385,6 +387,11 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 结算
      */
     public void totalShop() {
+        long millis = System.currentTimeMillis();
+        if (millis - touch < 3000) {
+            return;
+        }
+        touch = millis;
         if (Cache.ins().getUserInfo() != null) {
             if (canCreateOrderOrPayment(2)) {
                 int payment = Cache.ins().getPayment();
@@ -445,6 +452,11 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      * 下订单
      */
     public void createOrder() {
+        long millis = System.currentTimeMillis();
+        if (millis - touch < 3000) {
+            return;
+        }
+        touch = millis;
         if (Cache.ins().getUserInfo() != null) {
             if (canCreateOrderOrPayment(1)) {
                 createOrderOrPayment(null, 1);
