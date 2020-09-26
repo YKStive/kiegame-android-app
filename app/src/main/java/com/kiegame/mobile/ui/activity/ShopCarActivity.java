@@ -219,7 +219,26 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
 
     @Override
     protected void onData() {
-
+        // 未对接的系统默认使用散客
+        if (Cache.ins().getSystemType() == 3 || Cache.ins().getSystemType() == 4) {
+            binding.getRoot().post(() -> {
+                if (this.userInfo == null) {
+                    UserInfoEntity entity = new UserInfoEntity("散客");
+                    String item = entity.getCustomerName();
+                    this.userInfo = entity;
+                    Cache.ins().setTempInfo(this.userInfo);
+                    model.userName.setValue(item);
+                    Cache.ins().setProductCoupon(null, null);
+                }
+                // 禁用卡扣
+                binding.rbSnap.setAlpha(0.3f);
+                binding.rbSnap.setEnabled(false);
+            });
+        } else {
+            // 启用卡扣
+            binding.rbSnap.setAlpha(1.0f);
+            binding.rbSnap.setEnabled(true);
+        }
     }
 
     @Override
@@ -461,6 +480,10 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
      */
     public void couponUse() {
         if (this.userInfo != null) {
+            if (Cache.ins().getSystemType() != 3 && Cache.ins().getSystemType() != 4 && "散客".equals(this.userInfo.getCustomerName())) {
+                Toast.show("散客无法使用优惠券");
+                return;
+            }
 //            if (canCreateOrderOrPayment(3)) {
             CouponShopSelect.ins()
                     .bind(this)

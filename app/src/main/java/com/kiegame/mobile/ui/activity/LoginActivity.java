@@ -147,6 +147,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
         // 保存到内存中
         Cache.ins().setToken(data.getLoginToken());
         Cache.ins().setLoginInfo(data);
+        Cache.ins().setSystemType(data.getSystemType());
 
         startActivity(new Intent(this, MainActivity.class));
         finish();

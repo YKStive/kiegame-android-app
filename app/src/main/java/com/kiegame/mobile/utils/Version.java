@@ -57,6 +57,9 @@ public class Version {
         String[] tv = target.split("\\.");
         int min = Math.min(lv.length, tv.length);
         for (int i = 0; i < min; i++) {
+            if (Integer.parseInt(lv[i]) > Integer.parseInt(tv[i])) {
+                return false;
+            }
             if (Integer.parseInt(tv[i]) > Integer.parseInt(lv[i])) {
                 return true;
             }

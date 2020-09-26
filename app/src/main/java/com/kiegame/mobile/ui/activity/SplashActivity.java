@@ -91,6 +91,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding> {
             // 保存到内存
             Cache.ins().setToken(data.getLoginToken());
             Cache.ins().setLoginInfo(data);
+            Cache.ins().setSystemType(data.getSystemType());
 
             startActivity(new Intent(this, MainActivity.class));
         } else {

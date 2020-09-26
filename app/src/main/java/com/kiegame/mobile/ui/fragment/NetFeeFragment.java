@@ -151,6 +151,14 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
     @Override
     protected void onData() {
         model.queryBanner().observe(this, this::queryBannerResult);
+        // 未对接的系统默认使用散客
+        if (Cache.ins().getSystemType() == 3 || Cache.ins().getSystemType() == 4) {
+            binding.getRoot().post(() -> {
+                UserInfoEntity entity = new UserInfoEntity("散客");
+                String item = entity.getCustomerName();
+                changeUserInfo(entity, item);
+            });
+        }
     }
 
     /**
@@ -534,6 +542,10 @@ public class NetFeeFragment extends BaseFragment<FragmentNetFeeBinding> {
      */
     public void couponUse() {
         if (Cache.ins().getUserInfo() != null) {
+            if (Cache.ins().getSystemType() != 3 && Cache.ins().getSystemType() != 4 && "散客".equals(Cache.ins().getUserInfo().getCustomerName())) {
+                Toast.show("散客无法使用优惠券");
+                return;
+            }
 //            if (canCreateOrderOrPayment(3)) {
             CouponSelect.ins()
                     .bind(this)

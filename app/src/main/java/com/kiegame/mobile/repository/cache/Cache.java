@@ -41,6 +41,8 @@ public class Cache extends BaseObservable {
     private UserInfoEntity tempInfo;
     // token
     private String token;
+    // 系统类型
+    private int systemType;
     // 网费
     private MutableLiveData<Integer> netFee;
     // 商品
@@ -116,6 +118,14 @@ public class Cache extends BaseObservable {
             Cache.INS = new Cache();
         }
         return Cache.INS;
+    }
+
+    public int getSystemType() {
+        return systemType;
+    }
+
+    public void setSystemType(int systemType) {
+        this.systemType = systemType;
     }
 
     public String getProtectService() {

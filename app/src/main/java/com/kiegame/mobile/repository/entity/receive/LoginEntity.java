@@ -54,7 +54,16 @@ public class LoginEntity {
     private Object isDelete;
     private Object deleteDate;
     private String loginToken;
+    private int systemType;
     private List<MenuEntry> menuList;
+
+    public int getSystemType() {
+        return systemType;
+    }
+
+    public void setSystemType(int systemType) {
+        this.systemType = systemType;
+    }
 
     public String getEmpId() {
         return empId;
