@@ -19,6 +19,7 @@ import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ViewCouponUseBinding;
 import com.kiegame.mobile.model.CouponModel;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.ui.base.BaseActivity;
 
@@ -171,9 +172,18 @@ public class CouponSelect {
         if (!service.hasObservers()) {
             service.observe(owner, this::serviceResult);
         }
-        LiveData<List<ActivityEntity>> customer = model.queryCustomerCoupons(customerId, productId);
-        if (!customer.hasObservers()) {
-            customer.observe(owner, this::customerResult);
+        // systemType 大于 2 不调用此接口
+        if (Cache.ins().getSystemType() != 3 && Cache.ins().getSystemType() != 4) {
+            LiveData<List<ActivityEntity>> customer = model.queryCustomerCoupons(customerId, productId);
+            if (!customer.hasObservers()) {
+                customer.observe(owner, this::customerResult);
+            }
+        } else {
+            if (isSuccess) {
+                binding.clLoading.setVisibility(View.GONE);
+            } else {
+                isSuccess = true;
+            }
         }
     }
 
