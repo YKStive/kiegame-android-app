@@ -712,6 +712,9 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 // 下单
                 Toast.show("下单成功");
                 resetShopData();
+                // 界面处理
+                Cache.ins().getMainPageObserver().setValue(2);
+                Cache.ins().getOrderObserver().setValue(1);
                 this.finish();
             } else {
                 // 结算
@@ -721,7 +724,12 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     if (Cache.ins().getPayment() == Payment.PAY_TYPE_ONLINE) {
                         queryPayResult(order.getPaymentPayId());
                     } else {
-                        PaySuccess.ins().confirm(this::finish).order(order.getPaymentPayId()).show();
+                        PaySuccess.ins().confirm(() -> {
+                            // 界面处理
+                            Cache.ins().getMainPageObserver().setValue(2);
+                            Cache.ins().getOrderObserver().setValue(1);
+                            this.finish();
+                        }).order(order.getPaymentPayId()).show();
                     }
                 } else {
                     // 结算

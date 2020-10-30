@@ -88,7 +88,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
 
         Cache.ins().getMainPageObserver().observe(this, page -> {
             if (page != null) {
-                binding.vpViews.setCurrentItem(page);
+                if (page < views.size()) {
+                    binding.vpViews.setCurrentItem(page);
+                }
             }
         });
 
