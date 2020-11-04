@@ -99,7 +99,13 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             String item;
             if ("散客".equals(userInfo.getCustomerName())) {
                 item = userInfo.getCustomerName();
+                // 切换为在线支付
+                Cache.ins().setPayment(Payment.PAY_TYPE_ONLINE);
+                // 禁用卡扣
+                binding.rbSnap.setEnabled(false);
             } else {
+                // 启用卡扣
+                binding.rbSnap.setEnabled(true);
                 if (Text.empty(userInfo.getSeatNumber())) {
                     item = String.format("%s | %s", Text.formatIdCardNum(userInfo.getIdCard()), Text.formatCustomName(userInfo.getCustomerName()));
                 } else {
