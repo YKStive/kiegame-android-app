@@ -19,6 +19,7 @@ import com.kiegame.mobile.adapter.ViewAdapter;
 import com.kiegame.mobile.databinding.ActivityMainBinding;
 import com.kiegame.mobile.model.MainModel;
 import com.kiegame.mobile.repository.cache.Cache;
+import com.kiegame.mobile.repository.entity.receive.UserInfoEntity;
 import com.kiegame.mobile.repository.entity.receive.VersionEntity;
 import com.kiegame.mobile.ui.base.BaseActivity;
 import com.kiegame.mobile.utils.Access;
@@ -121,6 +122,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
             binding.tvBtnOrder.setVisibility(View.VISIBLE);
             pageName.add("order");
         }
+
+        // 没有充值权限但是有商品权限,默认使用散客
+        if (!Access.canRecharge()) {
+            if (Access.canProduct()) {
+                Cache.ins().setUserInfo(new UserInfoEntity("散客"));
+            }
+        }
+
         ViewAdapter adapter = new ViewAdapter(views);
         binding.vpViews.setAdapter(adapter);
         binding.vpViews.setOffscreenPageLimit(views.size());
