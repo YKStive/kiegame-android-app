@@ -551,19 +551,21 @@ public class AllOrderFragment extends BaseFragment<FragmentAllOrderBinding> {
                 .subscribe(new Subs<List<BuyOrderEntity>>(false) {
                     @Override
                     public void onSuccess(List<BuyOrderEntity> data, int total, int length) {
-                        if (currentPage == 0) {
-                            orders.clear();
+                        if (orders != null) {
+                            if (currentPage == 0) {
+                                orders.clear();
+                            }
+                            if (data != null && !data.isEmpty()) {
+                                orders.addAll(data);
+                            }
+                            if (adapter != null) {
+                                adapter.notifyDataSetChanged();
+                                updateMoney();
+                            }
+                            fragment.finishRefresh();
+                            binding.srlAllPay.finishLoadMore();
+                            binding.srlAllPay.setNoMoreData(orders.size() >= total);
                         }
-                        if (data != null && !data.isEmpty()) {
-                            orders.addAll(data);
-                        }
-                        if (adapter != null) {
-                            adapter.notifyDataSetChanged();
-                            updateMoney();
-                        }
-                        fragment.finishRefresh();
-                        binding.srlAllPay.finishLoadMore();
-                        binding.srlAllPay.setNoMoreData(orders.size() >= total);
                     }
 
                     @Override

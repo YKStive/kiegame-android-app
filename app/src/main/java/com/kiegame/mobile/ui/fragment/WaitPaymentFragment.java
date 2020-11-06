@@ -550,25 +550,27 @@ public class WaitPaymentFragment extends BaseFragment<FragmentWaitPaymentBinding
                 .subscribe(new Subs<List<BuyOrderEntity>>(false) {
                     @Override
                     public void onSuccess(List<BuyOrderEntity> data, int total, int length) {
-                        if (currentPage == 0) {
-                            orders.clear();
-                        }
-                        if (data != null && !data.isEmpty()) {
+                        if (orders != null) {
+                            if (currentPage == 0) {
+                                orders.clear();
+                            }
+                            if (data != null && !data.isEmpty()) {
 //                            for (BuyOrderEntity datum : data) {
 //                                // 筛选待支付
 //                                if (datum.getOrderState() == 1) {
 //                                    orders.add(datum);
 //                                }
 //                            }
-                            orders.addAll(data);
+                                orders.addAll(data);
+                            }
+                            if (adapter != null) {
+                                adapter.notifyDataSetChanged();
+                                updateMoney();
+                            }
+                            fragment.finishRefresh();
+                            binding.srlWaitPay.finishLoadMore();
+                            binding.srlWaitPay.setNoMoreData(orders.size() >= total);
                         }
-                        if (adapter != null) {
-                            adapter.notifyDataSetChanged();
-                            updateMoney();
-                        }
-                        fragment.finishRefresh();
-                        binding.srlWaitPay.finishLoadMore();
-                        binding.srlWaitPay.setNoMoreData(orders.size() >= total);
                     }
 
                     @Override

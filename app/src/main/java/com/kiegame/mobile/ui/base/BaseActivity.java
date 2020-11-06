@@ -19,6 +19,7 @@ import androidx.databinding.ViewDataBinding;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.ui.base.config.SystemUIVisibility;
 import com.kiegame.mobile.ui.base.listener.OnPermissionRequestListener;
+import com.kiegame.mobile.utils.Loading;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -252,6 +253,12 @@ public abstract class BaseActivity<T extends ViewDataBinding> extends AppCompatA
      * 初始化数据
      */
     protected abstract void onData();
+
+    @Override
+    protected void onPause() {
+        Loading.hide();
+        super.onPause();
+    }
 
     @Override
     protected void onDestroy() {

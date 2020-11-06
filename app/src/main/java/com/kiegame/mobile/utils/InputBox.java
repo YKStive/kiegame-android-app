@@ -93,6 +93,10 @@ public class InputBox {
                 Toast.show("请输入正确的充值金额");
                 return -1;
             }
+            if (money > 100000) {
+                Toast.show("最大金额不能超过100000元");
+                return -1;
+            }
         } catch (NumberFormatException e) {
             e.printStackTrace();
             Toast.show("请输入正确的金钱数值");

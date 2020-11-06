@@ -103,9 +103,11 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 Cache.ins().setPayment(Payment.PAY_TYPE_ONLINE);
                 // 禁用卡扣
                 binding.rbSnap.setEnabled(false);
+                binding.rbSnap.setTextColor(getResources().getColor(R.color.gray_white));
             } else {
                 // 启用卡扣
                 binding.rbSnap.setEnabled(true);
+                binding.rbSnap.setTextColor(getResources().getColor(R.color.black_text));
                 if (Text.empty(userInfo.getSeatNumber())) {
                     item = String.format("%s | %s", Text.formatIdCardNum(userInfo.getIdCard()), Text.formatCustomName(userInfo.getCustomerName()));
                 } else {

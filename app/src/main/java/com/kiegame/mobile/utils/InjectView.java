@@ -55,7 +55,7 @@ public class InjectView {
      *
      * @param view 视图 {@link View} 对象
      */
-    public synchronized void inject(View view) {
+    public void inject(View view) {
         ViewGroup group = decorView();
         if (view != null) {
             clean(view);
@@ -71,7 +71,7 @@ public class InjectView {
      *
      * @param view 视图 {@link View} 对象
      */
-    public synchronized void clean(View view) {
+    public void clean(View view) {
         ViewGroup group = decorView();
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
