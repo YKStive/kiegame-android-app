@@ -103,11 +103,11 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                 Cache.ins().setPayment(Payment.PAY_TYPE_ONLINE);
                 // 禁用卡扣
                 binding.rbSnap.setEnabled(false);
-                binding.rbSnap.setTextColor(getResources().getColor(R.color.gray_white));
+                binding.rbSnap.setAlpha(0.3f);
             } else {
                 // 启用卡扣
                 binding.rbSnap.setEnabled(true);
-                binding.rbSnap.setTextColor(getResources().getColor(R.color.black_text));
+                binding.rbSnap.setAlpha(1.0f);
                 if (Text.empty(userInfo.getSeatNumber())) {
                     item = String.format("%s | %s", Text.formatIdCardNum(userInfo.getIdCard()), Text.formatCustomName(userInfo.getCustomerName()));
                 } else {
@@ -335,12 +335,14 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                     Cache.ins().setTempInfo(this.userInfo);
                     Cache.ins().setProductCoupon(null, null);
                     model.userName.setValue(name);
+                    check(entity);
                 } else {
                     // #785 确认商品订单页面，删除已有会员，重新选择会员，系统闪退
                     if (userInfo == null) {
                         this.userInfo = entity;
                         Cache.ins().setTempInfo(this.userInfo);
                         model.userName.setValue(name);
+                        check(entity);
                     } else {
                         if (!userInfo.getCustomerId().equals(entity.getCustomerId())) {
                             DialogBox.ins().text(String.format("你想将会员账号切换为 %s 吗?", Text.formatCustomName(entity.getCustomerName()))).confirm(() -> {
@@ -348,6 +350,7 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
                                 Cache.ins().setTempInfo(this.userInfo);
                                 model.userName.setValue(name);
                                 Cache.ins().setProductCoupon(null, null);
+                                check(entity);
                             }).cancel(null).show();
                         }
 //                            if (!entity.getCustomerId().equals(Cache.ins().getUserInfo().getCustomerId())) {
@@ -383,6 +386,21 @@ public class ShopCarActivity extends BaseActivity<ActivityShopCarBinding> {
             pw.dismiss();
         }
         pw.showAsDropDown(binding.llSearch);
+    }
+
+    /**
+     * 散客检查
+     */
+    private void check(UserInfoEntity entity) {
+        if ("散客".equals(entity.getCustomerName())) {
+            // 禁用卡扣
+            binding.rbSnap.setAlpha(0.3f);
+            binding.rbSnap.setEnabled(false);
+        } else {
+            // 启用卡扣
+            binding.rbSnap.setAlpha(1.0f);
+            binding.rbSnap.setEnabled(true);
+        }
     }
 
     /**
