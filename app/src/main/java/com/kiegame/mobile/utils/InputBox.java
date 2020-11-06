@@ -30,7 +30,7 @@ public class InputBox {
     private InputBox() {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(Game.ins().activity()), R.layout.view_input_box, null, false);
         binding.tvDialogBtnCancel.setOnClickListener(v -> this.hide());
-        binding.tvInputContent.setFilters(new InputFilter[]{new MoneyFilter(), new InputFilter.LengthFilter(8)});
+        binding.tvInputContent.setFilters(new InputFilter[]{new MoneyFilter(), new InputFilter.LengthFilter(6)});
     }
 
     /**
