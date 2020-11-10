@@ -76,13 +76,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
 
         this.press = new int[]{
                 R.drawable.ic_net_fee_press,
-                R.drawable.ic_net_fee_press,
+                R.mipmap.ic_notifications_press,
                 R.drawable.ic_commodity_press,
                 R.drawable.ic_order_press,
         };
         this.none = new int[]{
                 R.drawable.ic_net_fee_none,
-                R.drawable.ic_net_fee_none,
+                R.mipmap.ic_notifications_none,
                 R.drawable.ic_commodity_none,
                 R.drawable.ic_order_none,
         };
