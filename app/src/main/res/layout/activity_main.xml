@@ -55,7 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_ripple_background"
-                android:drawableTop="@drawable/ic_net_fee_none"
+                android:drawableTop="@mipmap/ic_notifications_none"
                 android:drawablePadding="@dimen/main_nav_btn_padding_top_bottom"
                 android:gravity="center"
                 android:onClick="@{()->activity.setCurrentPage(1)}"
