@@ -70,15 +70,18 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
         this.pageConst = new ArrayList<>();
 
         this.pageConst.add("recharge"); // index 0
-        this.pageConst.add("product"); // index 1
-        this.pageConst.add("order"); // index 2
+        this.pageConst.add("notice"); // index 1
+        this.pageConst.add("product"); // index 2
+        this.pageConst.add("order"); // index 3
 
         this.press = new int[]{
+                R.drawable.ic_net_fee_press,
                 R.drawable.ic_net_fee_press,
                 R.drawable.ic_commodity_press,
                 R.drawable.ic_order_press,
         };
         this.none = new int[]{
+                R.drawable.ic_net_fee_none,
                 R.drawable.ic_net_fee_none,
                 R.drawable.ic_commodity_none,
                 R.drawable.ic_order_none,
@@ -104,24 +107,30 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements V
     @Override
     protected void onView() {
         LayoutInflater inflater = LayoutInflater.from(this);
-        if (Access.canRecharge()) {
-            // 网费充值
-            views.add(inflater.inflate(R.layout.view_net_fee, null));
-            binding.tvBtnNetFee.setVisibility(View.VISIBLE);
-            pageName.add("recharge");
-        }
-        if (Access.canProduct()) {
-            // 商品
-            views.add(inflater.inflate(R.layout.view_commodity, null));
-            binding.tvBtnCommodity.setVisibility(View.VISIBLE);
-            pageName.add("product");
-        }
-        if (Access.canOrder()) {
-            // 订单
-            views.add(inflater.inflate(R.layout.view_order, null));
-            binding.tvBtnOrder.setVisibility(View.VISIBLE);
-            pageName.add("order");
-        }
+//        if (Access.canRecharge()) {
+        // 网费充值
+        views.add(inflater.inflate(R.layout.view_net_fee, null));
+        binding.tvBtnNetFee.setVisibility(View.VISIBLE);
+        pageName.add("recharge");
+//        }
+//        if (Access.canNotice()) {
+        // 服务
+        views.add(inflater.inflate(R.layout.view_service, null));
+        binding.tvBtnService.setVisibility(View.VISIBLE);
+        pageName.add("notice");
+//        }
+//        if (Access.canProduct()) {
+        // 商品
+        views.add(inflater.inflate(R.layout.view_commodity, null));
+        binding.tvBtnCommodity.setVisibility(View.VISIBLE);
+        pageName.add("product");
+//        }
+//        if (Access.canOrder()) {
+        // 订单
+        views.add(inflater.inflate(R.layout.view_order, null));
+        binding.tvBtnOrder.setVisibility(View.VISIBLE);
+        pageName.add("order");
+//        }
 
         // 没有充值权限但是有商品权限,默认使用散客
         if (!Access.canRecharge()) {

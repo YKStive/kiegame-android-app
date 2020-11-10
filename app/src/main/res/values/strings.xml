@@ -19,6 +19,7 @@
 
     <!-- 主界面-导航按钮 -->
     <string name="main_nav_btn_net_fee_recharge">网费充值</string>
+    <string name="main_nav_btn_service">服务</string>
     <string name="main_nav_btn_commodity">商品</string>
     <string name="main_nav_btn_order">订单</string>
 

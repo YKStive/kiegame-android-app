@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class Access {
 
-    // 权限控制,分别对应 充值,商品,订单,为0则表示无权限,为1则表示有权限
-    private static int[] permission = {0, 0, 0};
+    // 权限控制,分别对应 充值,通知,商品,订单,为0则表示无权限,为1则表示有权限
+    private static int[] permission = {0, 0, 0, 0};
 
     /**
      * 权限转化
@@ -34,13 +34,17 @@ public class Access {
                             case "app-recharge":
                                 permission[0] = 1;
                                 break;
+                            // 服务通知
+                            case "app-notice":
+                                permission[1] = 1;
+                                break;
                             // 商品下单
                             case "app-product":
-                                permission[1] = 1;
+                                permission[2] = 1;
                                 break;
                             // 订单管理
                             case "app-order":
-                                permission[2] = 1;
+                                permission[3] = 1;
                                 break;
                         }
                     }
@@ -59,12 +63,21 @@ public class Access {
     }
 
     /**
+     * 是否允许访问服务通知
+     *
+     * @return true:允许 false:不允许
+     */
+    public static boolean canNotice() {
+        return permission[1] == 1;
+    }
+
+    /**
      * 是否允许访问商品管理
      *
      * @return true:允许 false:不允许
      */
     public static boolean canProduct() {
-        return permission[1] == 1;
+        return permission[2] == 1;
     }
 
     /**
@@ -73,6 +86,6 @@ public class Access {
      * @return true:允许 false:不允许
      */
     public static boolean canOrder() {
-        return permission[2] == 1;
+        return permission[3] == 1;
     }
 }

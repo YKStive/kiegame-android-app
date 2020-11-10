@@ -47,6 +47,26 @@
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_btn_service"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_btn_service"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_ripple_background"
+                android:drawableTop="@drawable/ic_net_fee_none"
+                android:drawablePadding="@dimen/main_nav_btn_padding_top_bottom"
+                android:gravity="center"
+                android:onClick="@{()->activity.setCurrentPage(1)}"
+                android:paddingTop="@dimen/main_nav_btn_padding_top_bottom"
+                android:paddingBottom="@dimen/main_nav_btn_padding_top_bottom"
+                android:text="@string/main_nav_btn_service"
+                android:textColor="@color/main_nav_btn_none"
+                android:textSize="@dimen/main_nav_btn"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tv_btn_net_fee"
                 app:layout_constraintRight_toLeftOf="@id/tv_btn_commodity"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,7 +78,7 @@
                 android:drawableTop="@drawable/ic_commodity_none"
                 android:drawablePadding="@dimen/main_nav_btn_padding_top_bottom"
                 android:gravity="center"
-                android:onClick="@{()->activity.setCurrentPage(1)}"
+                android:onClick="@{()->activity.setCurrentPage(2)}"
                 android:paddingTop="@dimen/main_nav_btn_padding_top_bottom"
                 android:paddingBottom="@dimen/main_nav_btn_padding_top_bottom"
                 android:text="@string/main_nav_btn_commodity"
@@ -66,7 +86,7 @@
                 android:textSize="@dimen/main_nav_btn"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/tv_btn_net_fee"
+                app:layout_constraintLeft_toRightOf="@id/tv_btn_service"
                 app:layout_constraintRight_toLeftOf="@id/tv_btn_order"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -78,7 +98,7 @@
                 android:drawableTop="@drawable/ic_order_none"
                 android:drawablePadding="@dimen/main_nav_btn_padding_top_bottom"
                 android:gravity="center"
-                android:onClick="@{()->activity.setCurrentPage(2)}"
+                android:onClick="@{()->activity.setCurrentPage(3)}"
                 android:paddingTop="@dimen/main_nav_btn_padding_top_bottom"
                 android:paddingBottom="@dimen/main_nav_btn_padding_top_bottom"
                 android:text="@string/main_nav_btn_order"
