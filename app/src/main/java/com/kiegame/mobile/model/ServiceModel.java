@@ -126,6 +126,7 @@ public class ServiceModel extends ViewModel {
             goodsOrderEntity.setSingleOrderEntityList(singleOrderEntityList);
             goodsOrderEntityList.add(goodsOrderEntity);
         }
+        goodsOrderEntityList.addAll(0,goodsOrderData.getValue());
         goodsOrderData.postValue(goodsOrderEntityList);
     }
 }
