@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <View
+            android:id="@+id/view_space"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#f2f2f2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_user_info"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="5dp"
+            android:textColor="#1a1a1a"
+            android:textSize="13sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/iv_expand"
+            app:layout_constraintTop_toBottomOf="@id/view_space"
+            tools:text="B135|7780|吧台-李四" />
+
+        <ImageView
+            android:id="@+id/iv_expand"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:padding="12dp"
+            android:rotation="270"
+            android:src="@drawable/ic_back_btn"
+            app:layout_constraintBottom_toBottomOf="@id/tv_user_info"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_user_info" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0.6dp"
+            android:background="#dadada"
+            app:layout_constraintBottom_toTopOf="@id/rv_data"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_user_info" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_user_info" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0.6dp"
+            android:background="#dadada"
+            app:layout_constraintBottom_toTopOf="@id/tv_expand_message"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_data" />
+
+        <TextView
+            android:id="@+id/tv_expand_message"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="5dp"
+            android:textColor="#1a1a1a"
+            android:textSize="13sp"
+            android:visibility="visible"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_data"
+            tools:text="展开查看金桔柠檬、乐事薯片等x件商品" />
+
+        <TextView
+            android:id="@+id/tv_pay_type"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:drawableStart="@drawable/ic_pay"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="5dp"
+            android:textColor="#1a1a1a"
+            android:textSize="13sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_expand_message"
+            tools:text="在线支付" />
+
+        <TextView
+            android:id="@+id/tv_pay_time"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="#999999"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_pay_type"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintLeft_toRightOf="@id/tv_pay_type"
+            app:layout_constraintRight_toLeftOf="@id/iv_user_head"
+            app:layout_constraintTop_toTopOf="@id/tv_pay_type"
+            tools:text="2020年11月11日09:19:43" />
+
+        <ImageView
+            android:id="@+id/iv_user_head"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/ic_launcher"
+            app:layout_constraintBottom_toBottomOf="@id/tv_pay_type"
+            app:layout_constraintRight_toLeftOf="@id/tv_user_name"
+            app:layout_constraintTop_toTopOf="@id/tv_pay_type" />
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:paddingStart="4dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="5dp"
+            android:textColor="#1a1a1a"
+            android:textSize="13sp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/iv_user_head"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_user_head"
+            tools:text="张三的分享" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

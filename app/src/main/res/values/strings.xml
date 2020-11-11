@@ -90,4 +90,16 @@
     <string name="net_fee_select_or_input_money">选择或输入金额</string>
     <string name="app_input_recharge_monet_title">输入充值金额</string>
     <string name="app_tv_input_name">充值金额(元) :</string>
+
+    <!--主界面Service-->
+    <string name="service_state">接单中</string>
+    <string name="service_tab_call_service">呼叫服务</string>
+    <string name="service_tab_goods_order">商品接单</string>
+    <string name="service_action_transfer">转接</string>
+    <string name="service_action_order_rob">抢单</string>
+    <string name="service_action_order_produced">出品</string>
+    <string name="service_action_order_receive">接单</string>
+    <string name="service_action_cancel">取消</string>
+
+    <!--主界面Service-->
 </resources>

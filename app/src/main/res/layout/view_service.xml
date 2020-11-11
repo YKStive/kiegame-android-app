@@ -7,12 +7,13 @@
 
     <fragment
         android:id="@+id/fg_service"
-        class="com.kiegame.mobile.ui.fragment.CommodityFragment"
+        class="com.kiegame.mobile.ui.fragment.ServiceFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_commodity" />
+        tools:layout="@layout/fragment_service" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
