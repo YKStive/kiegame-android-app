@@ -3,8 +3,9 @@ package com.kiegame.mobile.repository.entity.receive;
 import java.util.List;
 
 /**
- * 服务->商品接单
- * 商品订单实体类
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 商品订单
  */
 public class GoodsOrderEntity {
 
@@ -36,9 +37,10 @@ public class GoodsOrderEntity {
         //状态 1:待接单 2：待出品 3：配送中 4：已超时 5：已完成 6:抢单
         private int state;
 
-        public SingleOrderEntity(){}
+        public SingleOrderEntity() {
+        }
 
-        public SingleOrderEntity(int state){
+        public SingleOrderEntity(int state) {
             this.state = state;
         }
 

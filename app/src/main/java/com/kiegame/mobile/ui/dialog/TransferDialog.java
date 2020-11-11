@@ -10,7 +10,9 @@ import com.kiegame.mobile.repository.entity.receive.ServiceCallEntity;
 import com.kiegame.mobile.utils.Toast;
 
 /**
- * 转接Dialog
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 转接
  */
 public class TransferDialog extends BaseDialogFragment {
 

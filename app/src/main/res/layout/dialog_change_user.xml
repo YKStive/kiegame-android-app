@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -9,24 +10,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_data"
-                android:background="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:background="@color/white" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:textColor="#1a1a1a"
-                android:gravity="center"
-                android:background="@color/white"
                 android:layout_marginTop="15dp"
+                android:background="@color/white"
+                android:gravity="center"
                 android:text="@string/app_btn_cancel"
-                android:textSize="16sp"
-                />
+                android:textColor="#1a1a1a"
+                android:textSize="16sp" />
         </LinearLayout>
     </FrameLayout>
 </layout>

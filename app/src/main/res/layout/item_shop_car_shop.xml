@@ -104,7 +104,6 @@
         app:layout_constraintTop_toBottomOf="@id/tv_shop_name"
         tools:text="大/加冰/不加糖" />
 
-
     <TextView
         android:id="@+id/tv_shop_price"
         android:layout_width="0dp"

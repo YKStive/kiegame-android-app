@@ -49,7 +49,6 @@
             android:background="#dadada"
             app:layout_constraintTop_toBottomOf="@id/tv_name" />
 
-
         <TextView
             android:id="@+id/tv_time_end"
             android:layout_width="wrap_content"
@@ -66,9 +65,9 @@
             android:id="@+id/tv_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/radius_yellow_10dp"
             android:paddingStart="20dp"
             android:paddingTop="5dp"
-            android:background="@drawable/radius_yellow_10dp"
             android:paddingEnd="20dp"
             android:paddingBottom="5dp"
             android:textColor="#131313"
@@ -77,6 +76,5 @@
             app:layout_constraintRight_toRightOf="@id/tv_time_call"
             app:layout_constraintTop_toTopOf="@id/tv_time_end"
             tools:text="已完成" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

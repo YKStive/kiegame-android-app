@@ -7,14 +7,15 @@ import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.DialogSuccessBinding;
 
 /**
- * 通用成功dialog
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 成功
  */
 public class SuccessDialog extends BaseDialogFragment {
 
-    private DialogSuccessBinding binding;
     private String message;
 
-    public static SuccessDialog getInstance(String message){
+    public static SuccessDialog getInstance(String message) {
         SuccessDialog dialog = new SuccessDialog();
         dialog.message = message;
         return dialog;
@@ -27,7 +28,7 @@ public class SuccessDialog extends BaseDialogFragment {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        binding = (DialogSuccessBinding) rootBinding;
+        DialogSuccessBinding binding = (DialogSuccessBinding) rootBinding;
         binding.tvMessage.setText(message);
     }
 

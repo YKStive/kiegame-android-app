@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 服务界面的viewMode
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 服务
  */
 public class ServiceModel extends ViewModel {
 
@@ -92,7 +94,7 @@ public class ServiceModel extends ViewModel {
     }
 
     //加载更多服务
-    public void loadMoreServiceData(){
+    public void loadMoreServiceData() {
         // TODO: 2020/11/11 调用接口查询服务列表
         List<ServiceCallEntity> serviceCallEntityList = new ArrayList<>();
         serviceCallEntityList.add(new ServiceCallEntity(1));
@@ -106,12 +108,12 @@ public class ServiceModel extends ViewModel {
         serviceCallEntityList.add(new ServiceCallEntity(1));
         serviceCallEntityList.add(new ServiceCallEntity(2));
         serviceCallEntityList.add(new ServiceCallEntity(1));
-        serviceCallEntityList.addAll(0,serviceCallListData.getValue());
+        serviceCallEntityList.addAll(0, serviceCallListData.getValue());
         serviceCallListData.postValue(serviceCallEntityList);
     }
 
     //加载跟多商品订单
-    public void loadMoreGoodsOrderData(){
+    public void loadMoreGoodsOrderData() {
         // TODO: 2020/11/11 调用接口查询商品订单列表
         List<GoodsOrderEntity> goodsOrderEntityList = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
@@ -126,7 +128,7 @@ public class ServiceModel extends ViewModel {
             goodsOrderEntity.setSingleOrderEntityList(singleOrderEntityList);
             goodsOrderEntityList.add(goodsOrderEntity);
         }
-        goodsOrderEntityList.addAll(0,goodsOrderData.getValue());
+        goodsOrderEntityList.addAll(0, goodsOrderData.getValue());
         goodsOrderData.postValue(goodsOrderEntityList);
     }
 }

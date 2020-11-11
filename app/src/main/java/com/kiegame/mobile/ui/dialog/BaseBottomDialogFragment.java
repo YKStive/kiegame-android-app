@@ -13,9 +13,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.kiegame.mobile.R;
 
 /**
- * Created by ts_xiaoA on 2019/9/24 10:29
- * E-Mail Address：443502578@qq.com
- * Desc:
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 底部对话框父类
  */
 public abstract class BaseBottomDialogFragment extends BaseDialogFragment {
 

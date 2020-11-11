@@ -16,7 +16,9 @@ import com.kiegame.mobile.ui.dialog.TransferDialog;
 import java.util.Objects;
 
 /**
- * 服务fragment->呼叫服务
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 呼叫服务
  */
 public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding> {
 
@@ -32,7 +34,7 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
     @Override
     protected void onObject() {
         serviceModel = new ViewModelProvider(Objects.requireNonNull(getParentFragment())).get(ServiceModel.class);
-        serviceModel.getServiceCallListData().observe(this,serviceCallEntities -> {
+        serviceModel.getServiceCallListData().observe(this, serviceCallEntities -> {
             adapter.setNewData(serviceCallEntities);
             binding.smartRefreshLayout.finishLoadMore();
         });
@@ -71,7 +73,6 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
 
     @Override
     protected void onData() {
+
     }
-
-
 }

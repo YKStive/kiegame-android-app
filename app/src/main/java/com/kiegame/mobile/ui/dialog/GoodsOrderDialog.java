@@ -10,7 +10,9 @@ import com.kiegame.mobile.repository.entity.receive.GoodsOrderEntity;
 import com.kiegame.mobile.utils.Toast;
 
 /**
- * 商品接单dialog
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 商品接单
  */
 public class GoodsOrderDialog extends BaseDialogFragment {
 
@@ -89,7 +91,7 @@ public class GoodsOrderDialog extends BaseDialogFragment {
             dismiss();
         });
         binding.tvOrderProduced.setOnClickListener(v -> {
-            if (onOrderProducedClickListener!=null){
+            if (onOrderProducedClickListener != null) {
                 onOrderProducedClickListener.onPositiveClick();
             }
             dismiss();
@@ -97,7 +99,7 @@ public class GoodsOrderDialog extends BaseDialogFragment {
     }
 
 
-    public interface OnPositiveClickListener{
+    public interface OnPositiveClickListener {
         void onPositiveClick();
     }
 

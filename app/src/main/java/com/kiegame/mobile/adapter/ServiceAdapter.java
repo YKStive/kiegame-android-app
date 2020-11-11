@@ -8,10 +8,16 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.List;
 
+/**
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: ViewPager适配器
+ */
 public class ServiceAdapter extends FragmentPagerAdapter {
+
     // 页面
-    private List<Fragment> views;
-    private String[] titles;
+    private final List<Fragment> views;
+    private final String[] titles;
 
     /**
      * 构造方法

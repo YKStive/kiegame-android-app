@@ -21,7 +21,9 @@ import com.kiegame.mobile.ui.dialog.SuccessDialog;
 import java.util.Objects;
 
 /**
- * 服务fragment->商品接单
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 商品接单
  */
 public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoodsOrderBinding> {
 
@@ -51,7 +53,7 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
                 helper.setText(R.id.tv_user_info, "B135|7780|吧台-李四");
                 helper.setText(R.id.tv_pay_type, "在线支付");
                 helper.setText(R.id.tv_pay_time, "2020-11-11 12:48");
-                helper.setText(R.id.tv_user_name,"张三的分享");
+                helper.setText(R.id.tv_user_name, "张三的分享");
                 helper.setText(R.id.tv_expand_message, "展开查看金桔柠檬、乐事薯片等x件商品");
                 helper.setGone(R.id.tv_expand_message, !item.isExpand());
                 helper.getView(R.id.iv_expand).setRotation(item.isExpand() ? 270 : 90);

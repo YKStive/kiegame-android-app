@@ -1,7 +1,9 @@
 package com.kiegame.mobile.repository.entity.receive;
 
 /**
- * 呼叫服务列表实体类
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 呼叫服务列表
  */
 public class ServiceCallEntity {
 

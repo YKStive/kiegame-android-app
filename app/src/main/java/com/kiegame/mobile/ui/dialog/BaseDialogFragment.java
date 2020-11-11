@@ -25,9 +25,9 @@ import com.kiegame.mobile.R;
 import java.lang.reflect.Field;
 
 /**
- * create by ts_xiaoA on 2020-01-19 15:02
- * email：443502578@qq.com
- * desc：DialogFragment 基类
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 对话父类
  */
 public abstract class BaseDialogFragment extends DialogFragment {
 
@@ -83,8 +83,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
     /**
      * 设置布局文件
-     *
-     * @return
      */
     @LayoutRes
     public abstract int getLayoutId();

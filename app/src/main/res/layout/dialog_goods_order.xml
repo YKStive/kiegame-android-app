@@ -66,11 +66,11 @@
                 android:layout_width="65dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="5dp"
+                android:contentDescription="@string/app_name"
                 android:src="@mipmap/ic_launcher"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_user_info" />
-
 
             <TextView
                 android:id="@+id/tv_goods_name"
@@ -130,7 +130,6 @@
                 app:layout_constraintTop_toBottomOf="@id/iv_goods"
                 tools:text="金桔柠檬、乐事薯片等3件商品" />
 
-
             <LinearLayout
                 android:id="@+id/ll_action"
                 android:layout_width="match_parent"
@@ -151,12 +150,12 @@
                     android:background="@drawable/shape_shop_cancel_btn_background"
                     android:paddingStart="28dp"
                     android:paddingTop="10dp"
-                    android:visibility="gone"
                     android:paddingEnd="28dp"
                     android:paddingBottom="10dp"
                     android:text="@string/app_btn_cancel"
                     android:textColor="#282828"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_order_rob"
@@ -166,12 +165,12 @@
                     android:background="@drawable/radius_yellow_10dp"
                     android:paddingStart="28dp"
                     android:paddingTop="10dp"
-                    android:visibility="gone"
                     android:paddingEnd="28dp"
                     android:paddingBottom="10dp"
                     android:text="@string/service_action_order_rob"
                     android:textColor="#282828"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_order_produced"
@@ -181,13 +180,12 @@
                     android:background="@drawable/radius_yellow_10dp"
                     android:paddingStart="28dp"
                     android:paddingTop="10dp"
-                    android:visibility="gone"
                     android:paddingEnd="28dp"
                     android:paddingBottom="10dp"
                     android:text="@string/service_action_order_produced"
                     android:textColor="#282828"
-                    android:textSize="12sp" />
-
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_order_receive_small"
@@ -197,21 +195,21 @@
                     android:background="@drawable/radius_pink_10dp"
                     android:paddingStart="28dp"
                     android:paddingTop="10dp"
-                    android:visibility="gone"
                     android:paddingEnd="28dp"
                     android:paddingBottom="10dp"
                     android:text="@string/service_action_order_receive"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_confirm"
                     android:layout_width="200dp"
                     android:layout_height="34dp"
                     android:background="@drawable/radius_black_10dp"
+                    android:gravity="center"
                     android:text="@string/app_btn_ok"
                     android:textColor="@color/white"
-                    android:gravity="center"
                     android:textSize="13sp"
                     android:visibility="gone" />
 
@@ -220,15 +218,12 @@
                     android:layout_width="200dp"
                     android:layout_height="34dp"
                     android:background="@drawable/radius_pink_10dp"
+                    android:gravity="center"
                     android:text="@string/service_action_order_receive"
                     android:textColor="@color/white"
-                    android:gravity="center"
                     android:textSize="13sp"
                     android:visibility="visible" />
-
             </LinearLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </FrameLayout>
 </layout>

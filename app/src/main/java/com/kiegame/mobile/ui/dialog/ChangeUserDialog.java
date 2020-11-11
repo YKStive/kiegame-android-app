@@ -13,14 +13,15 @@ import com.kiegame.mobile.databinding.DialogChangeUserBinding;
 import java.util.Arrays;
 
 /**
- * 改变店员
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 改变店员
  */
 public class ChangeUserDialog extends BaseBottomDialogFragment {
 
-    private DialogChangeUserBinding binding;
     private OnSelectedCallback onSelectedCallback;
 
-    public static ChangeUserDialog getInstance(OnSelectedCallback onSelectedCallback){
+    public static ChangeUserDialog getInstance(OnSelectedCallback onSelectedCallback) {
         ChangeUserDialog dialog = new ChangeUserDialog();
         dialog.onSelectedCallback = onSelectedCallback;
         return dialog;
@@ -33,17 +34,17 @@ public class ChangeUserDialog extends BaseBottomDialogFragment {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        binding = (DialogChangeUserBinding) rootBinding;
+        DialogChangeUserBinding binding = (DialogChangeUserBinding) rootBinding;
         String[] userList = {
-                "张三","李四","王二麻子"
+                "张三", "李四", "王二麻子"
         };
         binding.rvData.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.rvData.setAdapter(new BaseQuickAdapter<String,BaseViewHolder>(R.layout.item_change_user, Arrays.asList(userList)) {
+        binding.rvData.setAdapter(new BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_change_user, Arrays.asList(userList)) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, String item) {
-                helper.setText(R.id.tv_name,item);
+                helper.setText(R.id.tv_name, item);
                 helper.itemView.setOnClickListener(v -> {
-                    if (onSelectedCallback!=null){
+                    if (onSelectedCallback != null) {
                         onSelectedCallback.onSelected(item);
                     }
                     dismiss();
@@ -52,8 +53,7 @@ public class ChangeUserDialog extends BaseBottomDialogFragment {
         });
     }
 
-    public interface OnSelectedCallback{
+    public interface OnSelectedCallback {
         void onSelected(String user);
     }
-
 }

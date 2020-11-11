@@ -18,21 +18,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
- * 服务Fragment
+ * Created by: var_rain.
+ * Created date: 2020/11/11.
+ * Description: 服务
  */
 public class ServiceFragment extends BaseFragment<FragmentServiceBinding> {
 
     private ServiceModel model;
-    private List<Fragment> views;
-    private String[] titles;
     private String date;
     private Calendar cal;
     private SimpleDateFormat format;
-    private ServiceCallFragment serviceCallFragment;
-    private ServiceGoodsOrderFragment goodsOrderFragment;
 
 
     @Override
@@ -46,21 +45,21 @@ public class ServiceFragment extends BaseFragment<FragmentServiceBinding> {
         binding.setModel(model);
         binding.setFragment(this);
         cal = Calendar.getInstance();
-        format = new SimpleDateFormat("yyyy-MM-dd");
+        format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         toDay();
     }
 
     @SuppressLint("SimpleDateFormat")
     @Override
     protected void onView() {
-        this.views = new ArrayList<>();
+        List<Fragment> views = new ArrayList<>();
         //呼叫服务
-        serviceCallFragment = new ServiceCallFragment();
-        this.views.add(serviceCallFragment);
+        ServiceCallFragment serviceCallFragment = new ServiceCallFragment();
+        views.add(serviceCallFragment);
         //商品订单
-        goodsOrderFragment = new ServiceGoodsOrderFragment();
-        this.views.add(goodsOrderFragment);
-        this.titles = new String[]{
+        ServiceGoodsOrderFragment goodsOrderFragment = new ServiceGoodsOrderFragment();
+        views.add(goodsOrderFragment);
+        String[] titles = new String[]{
                 getString(R.string.service_tab_call_service),
                 getString(R.string.service_tab_goods_order),
         };
@@ -72,8 +71,8 @@ public class ServiceFragment extends BaseFragment<FragmentServiceBinding> {
         //刷新事件
         binding.srlLayout.setOnRefreshListener(refreshLayout -> model.refresh());
         //刷新完成
-        model.getIsRefreshFinish().observe(this,isRefreshFinish -> {
-            if (isRefreshFinish){
+        model.getIsRefreshFinish().observe(this, isRefreshFinish -> {
+            if (isRefreshFinish) {
                 binding.srlLayout.finishRefresh();
             }
         });
@@ -85,7 +84,7 @@ public class ServiceFragment extends BaseFragment<FragmentServiceBinding> {
     }
 
 
-    private void refresh(){
+    private void refresh() {
         model.refresh();
     }
 
@@ -93,9 +92,9 @@ public class ServiceFragment extends BaseFragment<FragmentServiceBinding> {
      * 显示菜单
      */
     public void showMenu() {
-         ChangeUserDialog.getInstance(user -> {
-             binding.tvServiceId.setText(String.format("%s / %s", model.getLogin().getServiceName(), user));
-         }).show(getChildFragmentManager());
+        ChangeUserDialog.getInstance(user -> {
+            binding.tvServiceId.setText(String.format("%s / %s", model.getLogin().getServiceName(), user));
+        }).show(getChildFragmentManager());
     }
 
 

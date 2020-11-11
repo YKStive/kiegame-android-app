@@ -3,11 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <LinearLayout
             android:layout_width="300dp"
@@ -15,8 +13,8 @@
             android:layout_gravity="center"
             android:background="@drawable/radius_white_2dp"
             android:gravity="center"
-            android:orientation="vertical">
-
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
 
             <TextView
                 android:id="@+id/tv_time_end"
@@ -80,7 +78,6 @@
                     android:text="@string/service_action_transfer"
                     android:textColor="#282828"
                     android:textSize="12sp" />
-
             </LinearLayout>
 
             <TextView
@@ -90,13 +87,11 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/radius_black_10dp"
+                android:gravity="center"
                 android:text="@string/app_btn_ok"
                 android:textColor="@color/white"
-                android:gravity="center"
                 android:textSize="13sp"
                 android:visibility="gone" />
-
         </LinearLayout>
-
     </FrameLayout>
 </layout>
