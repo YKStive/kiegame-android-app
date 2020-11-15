@@ -1,11 +1,11 @@
 package com.kiegame.mobile.model;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.kiegame.mobile.logger.Log;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
@@ -112,36 +112,11 @@ public class ServiceModel extends ViewModel {
         currentProductOrderPage = 0;
         requestCallServices();
 
-//        List<ServiceCallEntity> serviceCallEntityList = new ArrayList<>();
-//        serviceCallEntityList.add(new ServiceCallEntity(1));
-//        serviceCallEntityList.add(new ServiceCallEntity(1));
-//        serviceCallEntityList.add(new ServiceCallEntity(2));
-//        serviceCallEntityList.add(new ServiceCallEntity(1));
-//        serviceCallEntityList.add(new ServiceCallEntity(1));
-//        serviceCallEntityList.add(new ServiceCallEntity(2));
-//        serviceCallEntityList.add(new ServiceCallEntity(1));
-//        serviceCallEntityList.add(new ServiceCallEntity(1));
-//        serviceCallEntityList.add(new ServiceCallEntity(1));
-//        serviceCallEntityList.add(new ServiceCallEntity(2));
-//        serviceCallEntityList.add(new ServiceCallEntity(1));
-//        serviceCallListData.postValue(serviceCallEntityList);
         // TODO: 2020/11/11 调用接口查询商品订单列表
         requestProductOrders();
-//        List<GoodsOrderEntity> goodsOrderEntityList = new ArrayList<>();
-//        for (int i = 0; i < 3; i++) {
-//            GoodsOrderEntity goodsOrderEntity = new GoodsOrderEntity();
-//            List<GoodsOrderEntity.SingleOrderEntity> singleOrderEntityList = new ArrayList<>();
-//            singleOrderEntityList.add(new GoodsOrderEntity.SingleOrderEntity(1));
-//            singleOrderEntityList.add(new GoodsOrderEntity.SingleOrderEntity(2));
-//            singleOrderEntityList.add(new GoodsOrderEntity.SingleOrderEntity(4));
-//            singleOrderEntityList.add(new GoodsOrderEntity.SingleOrderEntity(6));
-//            singleOrderEntityList.add(new GoodsOrderEntity.SingleOrderEntity(3));
-//            singleOrderEntityList.add(new GoodsOrderEntity.SingleOrderEntity(5));
-//            goodsOrderEntity.setSingleOrderEntityList(singleOrderEntityList);
-//            goodsOrderEntityList.add(goodsOrderEntity);
-//        }
-//        goodsOrderData.postValue(goodsOrderEntityList);
-        //刷新完成
+
+        isRefreshFinish.postValue(true);
+//
 
     }
 
@@ -175,6 +150,8 @@ public class ServiceModel extends ViewModel {
         CallServiceRequest callServiceRequest = new CallServiceRequest();
         callServiceRequest.setPage(currentCallServicePage);
         callServiceRequest.setServiceId(Cache.ins().getLoginInfo().getServiceId());
+        Log.d("parapm",callServiceRequest.toString());
+
         Network.api().getCallServices(callServiceRequest)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<ServiceCallEntity>>() {

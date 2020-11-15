@@ -18,9 +18,13 @@ import androidx.camera.camera2.Camera2Config;
 import androidx.camera.core.CameraXConfig;
 import androidx.multidex.MultiDexApplication;
 
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SpeechUtility;
 import com.kiegame.mobile.exceptions.crash.GlobalCrashCapture;
+import com.kiegame.mobile.logger.Log;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.ui.activity.LoginActivity;
 import com.kiegame.mobile.utils.DialogBox;
@@ -56,10 +60,23 @@ public class Game extends MultiDexApplication implements Application.ActivityLif
         this.registerActivityLifecycleCallbacks(this);
         Game.INS = this;
         Network.init();
-        SpeechUtility.createUtility(this, SpeechConstant.APPID + "=5fabb780");
-        JPushInterface.setDebugMode(true);
-        JPushInterface.init(this);
+
+
+        Worker.newSingleThreadExecutor().execute(this::initThirdLib);
+
     }
+
+    private void initThirdLib() {
+        Worker.newSingleThreadExecutor().execute(() -> {
+            SpeechUtility.createUtility(Game.this, SpeechConstant.APPID + "=5fabb780"+"," + SpeechConstant.NET_CHECK + "=false");
+            JPushInterface.setDebugMode(true);
+            JPushInterface.init(Game.this);
+        });
+
+
+    }
+
+
 
     /**
      * 获取静态实例

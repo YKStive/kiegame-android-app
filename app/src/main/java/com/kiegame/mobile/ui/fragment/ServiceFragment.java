@@ -2,15 +2,24 @@ package com.kiegame.mobile.ui.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.InitListener;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechSynthesizer;
+import com.iflytek.cloud.SynthesizerListener;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.adapter.ServiceAdapter;
 import com.kiegame.mobile.databinding.FragmentServiceBinding;
+import com.kiegame.mobile.logger.Log;
 import com.kiegame.mobile.model.ServiceModel;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.ui.dialog.ChangeUserDialog;
@@ -37,6 +46,7 @@ public class ServiceFragment extends BaseFragment<FragmentServiceBinding> {
     private Calendar cal;
     private SimpleDateFormat format;
     private CountDownTimer refresTimer;
+    private SpeechSynthesizer mTts;
 
 
     @Override
@@ -105,6 +115,75 @@ public class ServiceFragment extends BaseFragment<FragmentServiceBinding> {
                 binding.srlLayout.finishRefresh();
             }
         });
+
+        binding.tvOrderCreateTime.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                initTts();
+                return true;
+            }
+        });
+    }
+
+
+    private void initTts() {
+        mTts = SpeechSynthesizer.createSynthesizer(getContext(), new InitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i != ErrorCode.SUCCESS) {
+                    Log.i("TTS", "语音初始化失败,错误码：" + i);
+                } else {
+                    Log.i("TTS", "语言初始化成功");
+//                    //设置发音人
+//                    mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaoqi");
+//                    //设置语速,值范围：[0, 100],默认值：50
+//                    mTts.setParameter(SpeechConstant.SPEED, "49");
+//                    //设置音量
+//                    mTts.setParameter(SpeechConstant.VOLUME, "100");
+//                    //设置语调
+//
+//                    mTts.setParameter(SpeechConstant.PITCH, "50");
+
+                    mTts.startSpeaking("今天提琴器不错", new SynthesizerListener() {
+                        @Override
+                        public void onSpeakBegin() {
+                            Log.i("TTS", "语言初始化成功");
+                        }
+
+                        @Override
+                        public void onBufferProgress(int i, int i1, int i2, String s) {
+                            Log.i("TTS", "语言初始化成功");
+                        }
+
+                        @Override
+                        public void onSpeakPaused() {
+                            Log.i("TTS", "语言初始化成功");
+                        }
+
+                        @Override
+                        public void onSpeakResumed() {
+                            Log.i("TTS", "语言初始化成功");
+                        }
+
+                        @Override
+                        public void onSpeakProgress(int i, int i1, int i2) {
+                            Log.i("TTS", "语言初始化成功");
+                        }
+
+                        @Override
+                        public void onCompleted(SpeechError speechError) {
+                            Log.i("TTS", "播放失败--"+speechError.getErrorDescription());
+                        }
+
+                        @Override
+                        public void onEvent(int i, int i1, int i2, Bundle bundle) {
+                            Log.i("TTS", "播放失败--"+i);
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
     @Override

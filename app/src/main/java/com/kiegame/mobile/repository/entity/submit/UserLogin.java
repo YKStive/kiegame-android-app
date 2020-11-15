@@ -47,4 +47,15 @@ public class UserLogin {
     public void setLoginNote(String loginNote) {
         this.loginNote = loginNote;
     }
+
+
+    @Override
+    public String toString() {
+        return "UserLogin{" +
+                "loginCode='" + loginCode + '\'' +
+                ", loginPass='" + loginPass + '\'' +
+                ", loginType=" + loginType +
+                ", loginNote='" + loginNote + '\'' +
+                '}';
+    }
 }

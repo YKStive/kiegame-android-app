@@ -47,7 +47,7 @@ import retrofit2.http.POST;
 public interface ApiServiceV2 {
 
     // 服务器地址
-    String BASE_URL = BuildConfig.SERVER_BASE;
+    String BASE_URL = BuildConfig.SERVER_TEST;
     // 超时 (秒)
     int TIME_OUT = 15;
 
@@ -151,13 +151,13 @@ public interface ApiServiceV2 {
     /**
      * 获取呼叫服务
      */
-    @POST("app/v2/call/process/services")
+    @POST("call/process/services")
     Observable<Result<List<ServiceCallEntity>>> getCallServices(@Body CallServiceRequest body);
 
     /**
      * 呼叫服务转接
      */
-    @POST("app/v2/call/process/transfer")
+    @POST("app/call/process/transfer")
     Observable<Result<Object>> transferCallServices(@Body JSONObject body);
 
 

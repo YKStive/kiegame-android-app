@@ -25,4 +25,11 @@ public class CallServiceRequest {
         this.page = page;
     }
 
+    @Override
+    public String toString() {
+        return "CallServiceRequest{" +
+                "serviceId='" + serviceId + '\'' +
+                ", page=" + page +
+                '}';
+    }
 }

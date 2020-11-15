@@ -8,9 +8,15 @@ import android.view.View;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.InitListener;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechSynthesizer;
 import com.kiegame.mobile.BuildConfig;
+import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityLoginBinding;
+import com.kiegame.mobile.logger.Log;
 import com.kiegame.mobile.model.LoginModel;
 import com.kiegame.mobile.repository.ApiServiceV2;
 import com.kiegame.mobile.repository.Network;
@@ -34,6 +40,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
     private LoginModel model;
     private ValueAnimator switchShow;
     private long touchTime;
+    private SpeechSynthesizer mTts;
 
     @Override
     protected int onLayout() {
@@ -101,10 +108,36 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
         });
     }
 
+    private void initTts() {
+        mTts = SpeechSynthesizer.createSynthesizer(this, new InitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i != ErrorCode.SUCCESS) {
+                    Log.i("TTS", "语音初始化失败,错误码：" + i);
+                } else {
+                    Log.i("TTS", "语言初始化成功");
+                    //设置发音人
+                    mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaoqi");
+                    //设置语速,值范围：[0, 100],默认值：50
+                    mTts.setParameter(SpeechConstant.SPEED, "49");
+                    //设置音量
+                    mTts.setParameter(SpeechConstant.VOLUME, "tts_volume");
+                    //设置语调
+
+                    mTts.setParameter(SpeechConstant.PITCH, "tts_pitch");
+
+                    mTts.startSpeaking("今天提琴器不错",null);
+                }
+            }
+        });
+
+    }
+
     /**
      * 登录事件处理
      */
     public void login() {
+        initTts();
         String account = model.username.getValue();
         String password = model.password.getValue();
         if (binding.switchTestMode.isChecked()) {

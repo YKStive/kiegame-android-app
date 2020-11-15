@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.kiegame.mobile.logger.Log;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
@@ -46,7 +47,9 @@ public class LoginModel extends ViewModel {
             bean.setLoginPass(MD5.encrypt(pass, 16, false));
         }
         bean.setLoginType(1);
+        Log.d(bean.toString());
         Network.api().userLogin(bean)
+
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<LoginEntity>>() {
                     @Override
