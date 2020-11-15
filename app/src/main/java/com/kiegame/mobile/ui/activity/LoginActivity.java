@@ -43,7 +43,6 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
     private LoginModel model;
     private ValueAnimator switchShow;
     private long touchTime;
-    private SpeechSynthesizer mTts;
 
     @Override
     protected int onLayout() {
@@ -111,62 +110,12 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
         });
     }
 
-    private void initTts() {
-        mTts = SpeechSynthesizer.createSynthesizer(this, new InitListener() {
-            @Override
-            public void onInit(int i) {
-                if (i != ErrorCode.SUCCESS) {
-                    android.util.Log.i("TTS", "语音初始化失败,错误码：" + i);
-                } else {
-                    android.util.Log.i("TTS", "语言初始化成功");
 
-                    mTts.startSpeaking("今天提琴器不错", new SynthesizerListener() {
-                        @Override
-                        public void onSpeakBegin() {
-                            android.util.Log.i("TTS", "语言初始化成功");
-                        }
-
-                        @Override
-                        public void onBufferProgress(int i, int i1, int i2, String s) {
-                            android.util.Log.i("TTS", "语言初始化成功");
-                        }
-
-                        @Override
-                        public void onSpeakPaused() {
-                            android.util.Log.i("TTS", "语言初始化成功");
-                        }
-
-                        @Override
-                        public void onSpeakResumed() {
-                            android.util.Log.i("TTS", "语言初始化成功");
-                        }
-
-                        @Override
-                        public void onSpeakProgress(int i, int i1, int i2) {
-                            android.util.Log.i("TTS", "语言初始化成功");
-                        }
-
-                        @Override
-                        public void onCompleted(SpeechError speechError) {
-                            android.util.Log.i("TTS", "播放失败--"+speechError.getErrorDescription());
-                        }
-
-                        @Override
-                        public void onEvent(int i, int i1, int i2, Bundle bundle) {
-                            Log.i("TTS", "播放失败--"+i);
-                        }
-                    });
-                }
-            }
-        });
-
-    }
 
     /**
      * 登录事件处理
      */
     public void login() {
-        initTts();
         String account = model.username.getValue();
         String password = model.password.getValue();
         if (binding.switchTestMode.isChecked()) {

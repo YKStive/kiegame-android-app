@@ -7,6 +7,13 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.InitListener;
+import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechSynthesizer;
+import com.iflytek.cloud.SynthesizerListener;
+import com.kiegame.mobile.Game;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,11 +30,15 @@ import cn.jpush.android.api.JPushInterface;
  */
 public class MyReceiver extends BroadcastReceiver {
 	private static final String TAG = "MyPush";
+	private SpeechSynthesizer mTts;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		try {
+
+
 			Bundle bundle = intent.getExtras();
+			ttsPlay("新订单来了");
 			Logger.d(TAG, "[MyReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
 
 			if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
@@ -100,5 +111,66 @@ public class MyReceiver extends BroadcastReceiver {
 		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
 		String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
 		Log.e(TAG,"[processCustomMessage] "+message+"-----"+extras);
+	}
+
+
+
+	private void ttsPlay(String tts) {
+		if(mTts==null){
+			mTts = SpeechSynthesizer.createSynthesizer(Game.ins(), new InitListener() {
+				@Override
+				public void onInit(int i) {
+					if (i != ErrorCode.SUCCESS) {
+						android.util.Log.i("TTS", "语音初始化失败,错误码：" + i);
+					} else {
+						android.util.Log.i("TTS", "语言初始化成功");
+						mTts.startSpeaking(tts,playListener);
+					}
+				}
+
+			});
+		}else {
+			mTts.startSpeaking(tts,playListener);
+		}
+
+	}
+
+
+	private PlayListener playListener  = new PlayListener();
+	class PlayListener implements SynthesizerListener {
+		@Override
+		public void onSpeakBegin() {
+			android.util.Log.i("TTS", "语言初始化成功");
+		}
+
+		@Override
+		public void onBufferProgress(int i, int i1, int i2, String s) {
+			android.util.Log.i("TTS", "语言初始化成功");
+		}
+
+		@Override
+		public void onSpeakPaused() {
+			android.util.Log.i("TTS", "语言初始化成功");
+		}
+
+		@Override
+		public void onSpeakResumed() {
+			android.util.Log.i("TTS", "语言初始化成功");
+		}
+
+		@Override
+		public void onSpeakProgress(int i, int i1, int i2) {
+			android.util.Log.i("TTS", "语言初始化成功");
+		}
+
+		@Override
+		public void onCompleted(SpeechError speechError) {
+			android.util.Log.i("TTS", "播放失败--"+speechError.getErrorDescription());
+		}
+
+		@Override
+		public void onEvent(int i, int i1, int i2, Bundle bundle) {
+			Log.i("TTS", "播放失败--"+i);
+		}
 	}
 }
