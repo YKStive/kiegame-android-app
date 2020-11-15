@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.lifecycle.ViewModelProvider;
@@ -11,12 +13,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
+import com.iflytek.cloud.SynthesizerListener;
 import com.kiegame.mobile.BuildConfig;
 import com.kiegame.mobile.Game;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.ActivityLoginBinding;
-import com.kiegame.mobile.logger.Log;
 import com.kiegame.mobile.model.LoginModel;
 import com.kiegame.mobile.repository.ApiServiceV2;
 import com.kiegame.mobile.repository.Network;
@@ -113,20 +116,46 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding> {
             @Override
             public void onInit(int i) {
                 if (i != ErrorCode.SUCCESS) {
-                    Log.i("TTS", "语音初始化失败,错误码：" + i);
+                    android.util.Log.i("TTS", "语音初始化失败,错误码：" + i);
                 } else {
-                    Log.i("TTS", "语言初始化成功");
-                    //设置发音人
-                    mTts.setParameter(SpeechConstant.VOICE_NAME, "xiaoqi");
-                    //设置语速,值范围：[0, 100],默认值：50
-                    mTts.setParameter(SpeechConstant.SPEED, "49");
-                    //设置音量
-                    mTts.setParameter(SpeechConstant.VOLUME, "tts_volume");
-                    //设置语调
+                    android.util.Log.i("TTS", "语言初始化成功");
 
-                    mTts.setParameter(SpeechConstant.PITCH, "tts_pitch");
+                    mTts.startSpeaking("今天提琴器不错", new SynthesizerListener() {
+                        @Override
+                        public void onSpeakBegin() {
+                            android.util.Log.i("TTS", "语言初始化成功");
+                        }
 
-                    mTts.startSpeaking("今天提琴器不错",null);
+                        @Override
+                        public void onBufferProgress(int i, int i1, int i2, String s) {
+                            android.util.Log.i("TTS", "语言初始化成功");
+                        }
+
+                        @Override
+                        public void onSpeakPaused() {
+                            android.util.Log.i("TTS", "语言初始化成功");
+                        }
+
+                        @Override
+                        public void onSpeakResumed() {
+                            android.util.Log.i("TTS", "语言初始化成功");
+                        }
+
+                        @Override
+                        public void onSpeakProgress(int i, int i1, int i2) {
+                            android.util.Log.i("TTS", "语言初始化成功");
+                        }
+
+                        @Override
+                        public void onCompleted(SpeechError speechError) {
+                            android.util.Log.i("TTS", "播放失败--"+speechError.getErrorDescription());
+                        }
+
+                        @Override
+                        public void onEvent(int i, int i1, int i2, Bundle bundle) {
+                            Log.i("TTS", "播放失败--"+i);
+                        }
+                    });
                 }
             }
         });
