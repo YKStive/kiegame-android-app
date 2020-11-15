@@ -14,6 +14,7 @@ import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentServiceGoodsOrderBinding;
 import com.kiegame.mobile.model.ServiceModel;
 import com.kiegame.mobile.repository.entity.receive.GoodsOrderEntity;
+import com.kiegame.mobile.repository.entity.receive.ServiceCallEntity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.ui.dialog.GoodsOrderDialog;
 import com.kiegame.mobile.ui.dialog.SuccessDialog;
@@ -22,6 +23,8 @@ import com.kiegame.mobile.utils.Toast;
 
 import java.util.List;
 import java.util.Objects;
+
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 /**
  * Created by: var_rain.
@@ -42,6 +45,8 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
     public static final int DO_ORDER_TYPE_PRODUCE = 2;
     //商品订单抢单
     public static final int DO_ORDER_TYPE_GRAB = 3;
+    private List<GoodsOrderEntity> productOrderData;
+    private int mCurrentRvState;
 
     @Override
     protected int onLayout() {
@@ -52,6 +57,7 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
     protected void onObject() {
         serviceModel = new ViewModelProvider(Objects.requireNonNull(getParentFragment())).get(ServiceModel.class);
         serviceModel.getGoodsOrderData().observe(this, goodsOrderEntities -> {
+            this.productOrderData = goodsOrderEntities;
             adapter.setNewData(goodsOrderEntities);
             binding.smartRefreshLayout.finishLoadMore();
         });
@@ -65,6 +71,27 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
                 Toast.show("商品" + msg + "失败，请稍后重试");
             }
         });
+
+
+        //全局计时器，每次回调item的倒计时-1
+        serviceModel.counter.observe(this, left -> {
+            dealItemCounter();
+        });
+    }
+
+    private void dealItemCounter() {
+        if (productOrderData != null && !productOrderData.isEmpty()) {
+            for (GoodsOrderEntity goodsOrderEntity : productOrderData) {
+                for (GoodsOrderEntity.ProductsEntity product : goodsOrderEntity.getProducts()) {
+                    GoodsOrderEntity.ProductsEntity.ProcessEntity process = product.getProcess();
+                    process.setTimeLeft(process.getTimeLeft() - 1);
+                }
+            }
+
+            if(mCurrentRvState==SCROLL_STATE_IDLE){
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 
 
@@ -144,9 +171,23 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
         };
         binding.rvData.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvData.setAdapter(adapter);
+        binding.rvData.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                mCurrentRvState =  newState;
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
         //加载更多
         binding.smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> serviceModel.loadMoreGoodsOrderData());
+
+
     }
 
     @Override
@@ -170,7 +211,7 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
             helper.setText(R.id.tv_goods_name, item.getProductName());
             helper.setText(R.id.tv_goods_price, "￥" + item.getSellPrice());
             helper.setText(R.id.tv_goods_info, item.getProductFlavorName());
-            helper.setText(R.id.tv_time_end, item.getProcess().getTimeLeft());
+            helper.setText(R.id.tv_time_end, CustomUtils.convertTimeCounter(item.getProcess().getTimeLeft()));
             //状态 1:待接单 2：待出品 3：配送中 4：已超时 5：已完成
             TextView tvState = helper.getView(R.id.tv_state);
             TextView tvAction = helper.getView(R.id.tv_action);
@@ -229,16 +270,16 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
                 dialog.setOnOrderDoSomethingClickListener((type, orderId, productId) -> {
                     switch (type) {
                         case DO_ORDER_TYPE_COMPLETE:
-                            completeProductOrder(orderId,productId);
+                            completeProductOrder(orderId, productId);
                             break;
                         case DO_ORDER_TYPE_TAKE:
-                            takeProductOrder(orderId,productId);
+                            takeProductOrder(orderId, productId);
                             break;
                         case DO_ORDER_TYPE_PRODUCE:
-                            produceProductOrder(orderId,productId);
+                            produceProductOrder(orderId, productId);
                             break;
                         case DO_ORDER_TYPE_GRAB:
-                            grabProductOrder(orderId,productId);
+                            grabProductOrder(orderId, productId);
                             break;
                         default:
                             break;

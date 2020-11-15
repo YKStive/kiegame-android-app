@@ -57,7 +57,7 @@ public class ServiceModel extends ViewModel {
     private MutableLiveData<List<GoodsOrderEntity>> goodsOrderData;
 
     //商品订单操作是否成功
-    public MutableLiveData<ProductOrderOperateState> goodsOrderOperateSuccess;
+    public MutableLiveData<ProductOrderOperateState> goodsOrderOperateSuccess = new MutableLiveData<>();
 
 
     public ServiceModel() {

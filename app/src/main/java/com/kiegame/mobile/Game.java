@@ -18,6 +18,8 @@ import androidx.camera.camera2.Camera2Config;
 import androidx.camera.core.CameraXConfig;
 import androidx.multidex.MultiDexApplication;
 
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
 import com.kiegame.mobile.exceptions.crash.GlobalCrashCapture;
 import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.ui.activity.LoginActivity;
@@ -27,6 +29,8 @@ import com.kiegame.mobile.worker.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.jpush.android.api.JPushInterface;
 
 /**
  * Created by: var_rain.
@@ -52,6 +56,9 @@ public class Game extends MultiDexApplication implements Application.ActivityLif
         this.registerActivityLifecycleCallbacks(this);
         Game.INS = this;
         Network.init();
+        SpeechUtility.createUtility(this, SpeechConstant.APPID + "=5fabb780");
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
     }
 
     /**

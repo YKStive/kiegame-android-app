@@ -5,6 +5,7 @@ import android.database.DatabaseUtils;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.load.model.DataUrlLoader;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -21,6 +22,8 @@ import com.kiegame.mobile.utils.Toast;
 import java.util.List;
 import java.util.Objects;
 
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
+
 /**
  * Created by: var_rain.
  * Created date: 2020/11/11.
@@ -32,6 +35,7 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
     private BaseQuickAdapter<ServiceCallEntity, BaseViewHolder> adapter;
     private ServiceModel serviceModel;
     private List<ServiceCallEntity> callServicesData;
+    private int mCurrentRvState;
 
     @Override
     protected int onLayout() {
@@ -52,17 +56,20 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
         });
 
         //全局计时器，每次回调item的倒计时-1
-        serviceModel.counter.observe(this,left ->{
+        serviceModel.counter.observe(this, left -> {
             dealItemCounter();
         });
     }
 
     private void dealItemCounter() {
-        if(callServicesData!=null && !callServicesData.isEmpty()){
-            for(ServiceCallEntity callEntity:callServicesData){
-                callEntity.setTimeLeft(callEntity.getTimeLeft()-1);
+        if (callServicesData != null && !callServicesData.isEmpty()) {
+            for (ServiceCallEntity callEntity : callServicesData) {
+                callEntity.setTimeLeft(callEntity.getTimeLeft() - 1);
             }
-            adapter.notifyDataSetChanged();
+
+            if (mCurrentRvState == SCROLL_STATE_IDLE) {
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -89,7 +96,7 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
                 }
                 //点击事件
                 helper.getView(R.id.tv_state).setOnClickListener(v -> {
-                    if(item.getState()==1){
+                    if (item.getState() == 1) {
                         TransferDialog.getInstance(item, (cancelOperatorId, cpId) -> {
 
                             serviceModel.callServiceTransfer(cancelOperatorId, cpId);
@@ -100,6 +107,18 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
         };
         binding.rvData.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvData.setAdapter(adapter);
+        binding.rvData.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                mCurrentRvState = newState;
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
         //加载更多
         binding.smartRefreshLayout.setOnLoadMoreListener(refreshLayout -> {
             serviceModel.loadMoreServiceData();

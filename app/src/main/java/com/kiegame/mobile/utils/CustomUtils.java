@@ -61,4 +61,10 @@ public class CustomUtils {
         return result;
     }
 
+
+    public static String convertTimeCounter(int left){
+        String[] strings = DateUtil.second2MS(left);
+        return strings[0]+":"+strings[1]+"s";
+
+    }
 }

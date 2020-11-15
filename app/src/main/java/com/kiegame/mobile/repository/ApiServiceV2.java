@@ -151,7 +151,7 @@ public interface ApiServiceV2 {
     /**
      * 获取呼叫服务
      */
-    @POST("app/call/process/services")
+    @POST("app/v2/call/process/services")
     Observable<Result<List<ServiceCallEntity>>> getCallServices(@Body CallServiceRequest body);
 
     /**
