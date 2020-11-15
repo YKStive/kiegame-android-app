@@ -2,12 +2,17 @@ package com.kiegame.mobile.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.DialogGoodsOrderBinding;
 import com.kiegame.mobile.repository.entity.receive.GoodsOrderEntity;
+import com.kiegame.mobile.utils.DateUtil;
 import com.kiegame.mobile.utils.Toast;
+
+import static com.kiegame.mobile.ui.fragment.ServiceGoodsOrderFragment.DO_ORDER_TYPE_PRODUCE;
+import static com.kiegame.mobile.ui.fragment.ServiceGoodsOrderFragment.DO_ORDER_TYPE_TAKE;
 
 /**
  * Created by: var_rain.
@@ -17,14 +22,15 @@ import com.kiegame.mobile.utils.Toast;
 public class GoodsOrderDialog extends BaseDialogFragment {
 
     private DialogGoodsOrderBinding binding;
-    private GoodsOrderEntity.SingleOrderEntity orderEntity;
-    //出品点击回调（如果其他需要在界面中处理逻辑，可用同样的方法处理）
-    private OnPositiveClickListener onOrderProducedClickListener;
+    private GoodsOrderEntity.ProductsEntity product;
+
+    //操作回调
+    private OnOperateClickListener onOrderProducedClickListener;
 
 
-    public static GoodsOrderDialog getInstance(GoodsOrderEntity.SingleOrderEntity orderEntity) {
+    public static GoodsOrderDialog getInstance(GoodsOrderEntity.ProductsEntity product) {
         GoodsOrderDialog dialog = new GoodsOrderDialog();
-        dialog.orderEntity = orderEntity;
+        dialog.product = product;
         return dialog;
     }
 
@@ -36,19 +42,28 @@ public class GoodsOrderDialog extends BaseDialogFragment {
     @SuppressLint("SetTextI18n")
     @Override
     protected void initView(Bundle savedInstanceState) {
+
+
+
+
         binding = (DialogGoodsOrderBinding) rootBinding;
-        binding.tvTitle.setText("即将超时：剩余00:26s");
-        binding.tvUserInfo.setText("B135|7780|吧台-李四");
-        binding.tvTime.setText("09-03 11:11");
-        binding.tvGoodsName.setText("香草拿铁");
-        binding.tvGoodsInfo.setText("大/加冰/不加糖");
-        binding.tvGoodsPrice.setText("￥9.99");
-        binding.tvOther.setText("金桔柠檬、乐事薯片等3件商品");
+        GoodsOrderEntity.ProductsEntity.ProcessEntity process = product.getProcess();
+        int timeLeft = process.getTimeLeft();
+        initTimerCounter(timeLeft);
+
+
+
+        binding.tvUserInfo.setText(product.getUserInfo());
+        binding.tvTime.setText(product.getCreateDate());
+        binding.tvGoodsName.setText(product.getProductName());
+        binding.tvGoodsInfo.setText(product.getProductFlavorName());
+        binding.tvGoodsPrice.setText("￥"+product.getSellPrice());
+        binding.tvOther.setText(product.getExpandInfo());
         ////状态 1:待接单 2：待出品 3：配送中 4：已超时 5：已完成 6:抢单
         for (int i = 0; i < binding.llAction.getChildCount(); i++) {
             binding.llAction.getChildAt(i).setVisibility(View.GONE);
         }
-        switch (orderEntity.getState()) {
+        switch (product.getState()) {
             case 1:
                 binding.tvCancel.setVisibility(View.VISIBLE);
                 binding.tvOrderReceiveSmall.setVisibility(View.VISIBLE);
@@ -69,41 +84,63 @@ public class GoodsOrderDialog extends BaseDialogFragment {
         }
     }
 
+    private void initTimerCounter(int timeLeft) {
+        String[] result = DateUtil.second2MS(timeLeft);
+        binding.tvTitle.setText("即将超时：剩余"+result[0]+":"+result[1]+"s");
+        new CountDownTimer(timeLeft, 2000) {
+            @Override
+            public void onTick(long left) {
+                String[] result = DateUtil.second2MS((int) left);
+                binding.tvTitle.setText("即将超时：剩余"+result[0]+":"+result[1]+"s");
+            }
+
+            @Override
+            public void onFinish() {
+            }
+        }.start();
+    }
+
     @Override
     protected void initEvent(Bundle savedInstanceState) {
         binding.tvOrderReceive.setOnClickListener(v -> {
-            Toast.show("接单");
+            if (onOrderProducedClickListener != null) {
+                onOrderProducedClickListener.doSomething(DO_ORDER_TYPE_TAKE,product.getOrderId(),product.getProductId());
+            }
             dismiss();
         });
         binding.tvOrderReceiveSmall.setOnClickListener(v -> {
-            Toast.show("接单");
+            if (onOrderProducedClickListener != null) {
+                onOrderProducedClickListener.doSomething(DO_ORDER_TYPE_TAKE,product.getOrderId(),product.getProductId());
+            }
             dismiss();
         });
         binding.tvCancel.setOnClickListener(v -> {
             dismiss();
         });
         binding.tvConfirm.setOnClickListener(v -> {
-            Toast.show("确定");
             dismiss();
         });
         binding.tvOrderRob.setOnClickListener(v -> {
-            Toast.show("抢单");
+            if (onOrderProducedClickListener != null) {
+                onOrderProducedClickListener.doSomething(DO_ORDER_TYPE_TAKE,product.getOrderId(),product.getProductId());
+            }
             dismiss();
         });
         binding.tvOrderProduced.setOnClickListener(v -> {
             if (onOrderProducedClickListener != null) {
-                onOrderProducedClickListener.onPositiveClick();
+                onOrderProducedClickListener.doSomething(DO_ORDER_TYPE_PRODUCE,product.getOrderId(),product.getProductId());
             }
             dismiss();
         });
     }
 
 
-    public interface OnPositiveClickListener {
-        void onPositiveClick();
+    public interface OnOperateClickListener {
+
+        void doSomething(int type,String orderId,String productId);
     }
 
-    public void setOnOrderProducedClickListener(OnPositiveClickListener onOrderProducedClickListener) {
+    public void setOnOrderDoSomethingClickListener(OnOperateClickListener onOrderProducedClickListener) {
         this.onOrderProducedClickListener = onOrderProducedClickListener;
     }
 }

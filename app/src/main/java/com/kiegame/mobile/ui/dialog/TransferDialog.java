@@ -2,11 +2,13 @@ package com.kiegame.mobile.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.DialogTransferBinding;
 import com.kiegame.mobile.repository.entity.receive.ServiceCallEntity;
+import com.kiegame.mobile.utils.DateUtil;
 import com.kiegame.mobile.utils.Toast;
 
 /**
@@ -19,12 +21,18 @@ public class TransferDialog extends BaseDialogFragment {
     private DialogTransferBinding binding;
 
     private ServiceCallEntity callEntity;
+    private OnSureListener listener;
 
-    public static TransferDialog getInstance(ServiceCallEntity callEntity) {
+    public static TransferDialog getInstance(ServiceCallEntity callEntity,OnSureListener listener) {
         TransferDialog dialog = new TransferDialog();
         dialog.callEntity = callEntity;
+        dialog.listener = listener;
         return dialog;
     }
+
+
+
+
 
     @Override
     public int getLayoutId() {
@@ -34,10 +42,12 @@ public class TransferDialog extends BaseDialogFragment {
     @SuppressLint("SetTextI18n")
     @Override
     protected void initView(Bundle savedInstanceState) {
+        initCounter();
         binding = (DialogTransferBinding) rootBinding;
         // TODO: 2020/11/10 修改为正常的字段数据
-        binding.tvTimeEnd.setText("即将超时：剩余00:26s");
-        binding.tvMessage.setText("B135机呼叫已超时，请立即\n前往服务");
+
+
+        binding.tvMessage.setText("B135机呼叫即将超时，请立即\n前往服务");
 
         if (callEntity.getState() == 1) {
             binding.llTransfer.setVisibility(View.VISIBLE);
@@ -48,6 +58,23 @@ public class TransferDialog extends BaseDialogFragment {
         }
     }
 
+    private void initCounter() {
+        CountDownTimer timer = new CountDownTimer(callEntity.getTimeLeft()*1000, 1000) {
+            @Override
+            public void onTick(long left) {
+                String[] result = DateUtil.second2MS((int) left/1000);
+                binding.tvTimeEnd.setText("即将超时：剩余"+result[0]+":"+result[1]+"s");
+            }
+
+            @Override
+            public void onFinish() {
+                binding.tvTimeEnd.setText("已经超时");
+                binding.tvMessage.setText("B135机呼叫已超时，请立即\n前往服务");
+
+            }
+        }.start();
+    }
+
     @Override
     protected void initEvent(Bundle savedInstanceState) {
         //确定点击事件
@@ -56,9 +83,18 @@ public class TransferDialog extends BaseDialogFragment {
         binding.tvCancel.setOnClickListener(v -> dismiss());
         //转接
         binding.tvTransfer.setOnClickListener(v -> {
-            // TODO: 2020/11/10 转接，如果需要在界面上实现，可通过接口回调方法实现
-            Toast.show("转接");
+            if(listener!=null){
+                listener.onSure(callEntity.getCancelOperationId(),callEntity.getCpId());
+            }
             dismiss();
         });
     }
+
+   public interface OnSureListener{
+        void onSure(String cancelOperatorId,String cpId);
+   }
+
+   public void setOnSureListener(OnSureListener listener){
+        this.listener = listener;
+   }
 }

@@ -19,6 +19,8 @@ import java.util.Arrays;
  */
 public class ChangeUserDialog extends BaseBottomDialogFragment {
 
+
+
     private OnSelectedCallback onSelectedCallback;
 
     public static ChangeUserDialog getInstance(OnSelectedCallback onSelectedCallback) {

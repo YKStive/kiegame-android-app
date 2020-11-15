@@ -17,7 +17,10 @@ import com.kiegame.mobile.repository.entity.receive.GoodsOrderEntity;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.ui.dialog.GoodsOrderDialog;
 import com.kiegame.mobile.ui.dialog.SuccessDialog;
+import com.kiegame.mobile.utils.CustomUtils;
+import com.kiegame.mobile.utils.Toast;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -31,6 +34,15 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
     private BaseQuickAdapter<GoodsOrderEntity, BaseViewHolder> adapter;
     private ServiceModel serviceModel;
 
+    //商品订单完成
+    public static final int DO_ORDER_TYPE_COMPLETE = 0;
+    //商品订单接单
+    public static final int DO_ORDER_TYPE_TAKE = 1;
+    //商品订单出品
+    public static final int DO_ORDER_TYPE_PRODUCE = 2;
+    //商品订单抢单
+    public static final int DO_ORDER_TYPE_GRAB = 3;
+
     @Override
     protected int onLayout() {
         return R.layout.fragment_service_goods_order;
@@ -43,34 +55,61 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
             adapter.setNewData(goodsOrderEntities);
             binding.smartRefreshLayout.finishLoadMore();
         });
+
+        //订单商品操作回调事件
+        serviceModel.goodsOrderOperateSuccess.observe(this, productOrderOperateState -> {
+            String msg = CustomUtils.convertOperateType(productOrderOperateState.type);
+            if (productOrderOperateState.isSuccess) {
+                SuccessDialog.getInstance("商品" + msg + "成功").show(getChildFragmentManager());
+            } else {
+                Toast.show("商品" + msg + "失败，请稍后重试");
+            }
+        });
     }
+
 
     @Override
     protected void onView() {
         adapter = new BaseQuickAdapter<GoodsOrderEntity, BaseViewHolder>(R.layout.item_service_goods_order) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, GoodsOrderEntity item) {
-                helper.setText(R.id.tv_user_info, "B135|7780|吧台-李四");
-                helper.setText(R.id.tv_pay_type, "在线支付");
-                helper.setText(R.id.tv_pay_time, "2020-11-11 12:48");
-                helper.setText(R.id.tv_user_name, "张三的分享");
-                helper.setText(R.id.tv_expand_message, "展开查看金桔柠檬、乐事薯片等x件商品");
-                helper.setGone(R.id.tv_expand_message, !item.isExpand());
-                helper.getView(R.id.iv_expand).setRotation(item.isExpand() ? 270 : 90);
-                RecyclerView rvChild = helper.getView(R.id.rv_data);
-                SingleGoodsAdapter childAdapter;
-                if (rvChild.getLayoutManager() == null) {
-                    rvChild.setLayoutManager(new LinearLayoutManager(getContext()));
-                }
-                if (rvChild.getAdapter() == null) {
-                    childAdapter = new SingleGoodsAdapter(item.isExpand());
-                    rvChild.setAdapter(childAdapter);
+                //用户信息
+                String userInfo = item.getSeatNumber() + "|" + CustomUtils.splitIdCard(item.getIdCard()) + "|" + item.getCustomerName();
+                helper.setText(R.id.tv_user_info, userInfo);
 
-                } else {
-                    childAdapter = (SingleGoodsAdapter) rvChild.getAdapter();
+
+                //支付方式
+                helper.setText(R.id.tv_pay_type, CustomUtils.convertPayType(item.getPayType()));
+
+
+                //todo 用户信息？
+                helper.setText(R.id.tv_user_name, item.getCustomerName());
+
+                //订单时间和展开title
+                List<GoodsOrderEntity.ProductsEntity> products = item.getProducts();
+                if (!products.isEmpty()) {
+                    String createDate = products.get(0).getCreateDate();
+                    helper.setText(R.id.tv_pay_time, createDate);
+
+                    helper.setText(R.id.tv_expand_message, generateProductExpandTitle(products));
+                    helper.setGone(R.id.tv_expand_message, !item.isExpand());
+                    helper.getView(R.id.iv_expand).setRotation(item.isExpand() ? 270 : 90);
+                    RecyclerView rvChild = helper.getView(R.id.rv_data);
+                    SingleGoodsAdapter childAdapter;
+                    if (rvChild.getLayoutManager() == null) {
+                        rvChild.setLayoutManager(new LinearLayoutManager(getContext()));
+                    }
+                    if (rvChild.getAdapter() == null) {
+                        childAdapter = new SingleGoodsAdapter(item.isExpand());
+                        rvChild.setAdapter(childAdapter);
+
+                    } else {
+                        childAdapter = (SingleGoodsAdapter) rvChild.getAdapter();
+                    }
+                    childAdapter.setExpand(item.isExpand());
+                    childAdapter.setNewData(products);
                 }
-                childAdapter.setExpand(item.isExpand());
-                childAdapter.setNewData(item.getSingleOrderEntityList());
+
 
                 //事件
                 helper.getView(R.id.tv_expand_message).setOnClickListener(v -> {
@@ -86,6 +125,22 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
                     refreshNotifyItemChanged(helper.getLayoutPosition());
                 });
             }
+
+            /**
+             * 展开title
+             * @param products 商品列表
+             * @return title
+             */
+            private String generateProductExpandTitle(List<GoodsOrderEntity.ProductsEntity> products) {
+                if (!products.isEmpty() && products.size() >= 2) {
+                    return products.get(0).getProductName() +
+                            "、" +
+                            products.get(1).getProductName() +
+                            "等" + products.size() + "件商品";
+                }
+
+                return null;
+            }
         };
         binding.rvData.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvData.setAdapter(adapter);
@@ -100,7 +155,7 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
     }
 
 
-    class SingleGoodsAdapter extends BaseQuickAdapter<GoodsOrderEntity.SingleOrderEntity, BaseViewHolder> {
+    class SingleGoodsAdapter extends BaseQuickAdapter<GoodsOrderEntity.ProductsEntity, BaseViewHolder> {
 
 
         private boolean isExpand;
@@ -111,11 +166,11 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
         }
 
         @Override
-        protected void convert(@NonNull BaseViewHolder helper, GoodsOrderEntity.SingleOrderEntity item) {
-            helper.setText(R.id.tv_goods_name, "香草拿铁");
-            helper.setText(R.id.tv_goods_price, "￥9.99");
-            helper.setText(R.id.tv_goods_info, "大/加冰/不加糖");
-            helper.setText(R.id.tv_time_end, "05:38s");
+        protected void convert(@NonNull BaseViewHolder helper, GoodsOrderEntity.ProductsEntity item) {
+            helper.setText(R.id.tv_goods_name, item.getProductName());
+            helper.setText(R.id.tv_goods_price, "￥" + item.getSellPrice());
+            helper.setText(R.id.tv_goods_info, item.getProductFlavorName());
+            helper.setText(R.id.tv_time_end, item.getProcess().getTimeLeft());
             //状态 1:待接单 2：待出品 3：配送中 4：已超时 5：已完成
             TextView tvState = helper.getView(R.id.tv_state);
             TextView tvAction = helper.getView(R.id.tv_action);
@@ -171,8 +226,24 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
             //事件
             helper.getView(R.id.tv_action).setOnClickListener(v -> {
                 GoodsOrderDialog dialog = GoodsOrderDialog.getInstance(item);
-                dialog.setOnOrderProducedClickListener(() -> {
-                    SuccessDialog.getInstance("出品成功,待配送").show(getChildFragmentManager());
+                dialog.setOnOrderDoSomethingClickListener((type, orderId, productId) -> {
+                    switch (type) {
+                        case DO_ORDER_TYPE_COMPLETE:
+                            completeProductOrder(orderId,productId);
+                            break;
+                        case DO_ORDER_TYPE_TAKE:
+                            takeProductOrder(orderId,productId);
+                            break;
+                        case DO_ORDER_TYPE_PRODUCE:
+                            produceProductOrder(orderId,productId);
+                            break;
+                        case DO_ORDER_TYPE_GRAB:
+                            grabProductOrder(orderId,productId);
+                            break;
+                        default:
+                            break;
+                    }
+
                 });
                 dialog.show(getChildFragmentManager());
             });
@@ -190,5 +261,33 @@ public class ServiceGoodsOrderFragment extends BaseFragment<FragmentServiceGoods
         public void setExpand(boolean expand) {
             isExpand = expand;
         }
+    }
+
+    /**
+     * 抢单
+     */
+    private void grabProductOrder(String orderId, String productId) {
+        serviceModel.grabProductOrder(orderId, productId);
+    }
+
+    /**
+     * 出品
+     */
+    private void produceProductOrder(String orderId, String productId) {
+        serviceModel.produceProductOrder(orderId, productId);
+    }
+
+    /**
+     * 接单
+     */
+    private void takeProductOrder(String orderId, String productId) {
+        serviceModel.takeProductOrder(orderId, productId);
+    }
+
+    /**
+     * 完成
+     */
+    private void completeProductOrder(String orderId, String productId) {
+        serviceModel.completeProductOrder(orderId, productId);
     }
 }

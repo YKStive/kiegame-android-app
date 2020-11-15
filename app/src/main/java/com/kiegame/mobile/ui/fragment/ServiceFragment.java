@@ -1,7 +1,10 @@
 package com.kiegame.mobile.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.CountDownTimer;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -11,6 +14,7 @@ import com.kiegame.mobile.databinding.FragmentServiceBinding;
 import com.kiegame.mobile.model.ServiceModel;
 import com.kiegame.mobile.ui.base.BaseFragment;
 import com.kiegame.mobile.ui.dialog.ChangeUserDialog;
+import com.kiegame.mobile.utils.DateUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +36,7 @@ public class ServiceFragment extends BaseFragment<FragmentServiceBinding> {
     private String date;
     private Calendar cal;
     private SimpleDateFormat format;
+    private CountDownTimer refresTimer;
 
 
     @Override
@@ -47,6 +52,30 @@ public class ServiceFragment extends BaseFragment<FragmentServiceBinding> {
         cal = Calendar.getInstance();
         format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         toDay();
+
+
+
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        refresTimer = new CountDownTimer(Integer.MAX_VALUE, 2000) {
+            @Override
+            public void onTick(long left) {
+//                model.refresh();
+            }
+
+            @Override
+            public void onFinish() {
+            }
+        }.start();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        refresTimer.cancel();
     }
 
     @SuppressLint("SimpleDateFormat")
