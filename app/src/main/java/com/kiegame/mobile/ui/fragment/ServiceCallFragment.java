@@ -94,7 +94,7 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
         adapter = new BaseQuickAdapter<ServiceCallEntity, BaseViewHolder>(R.layout.item_service_call, serviceModel.getServiceCallListData().getValue()) {
             @Override
             protected void convert(@NonNull BaseViewHolder helper, ServiceCallEntity item) {
-                String nameDesc = item.getCustomId() + "|" + item.getSeatNumber() + "|" + item.getCustomerName();
+                String nameDesc = item.getSeatNumber() + "|" + item.getIdCard().substring(item.getIdCard().length()-4) + "|" + item.getCustomerName();
                 helper.setText(R.id.tv_name, nameDesc);
 
 
