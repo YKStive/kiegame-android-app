@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.DialogTransferBinding;
+import com.kiegame.mobile.repository.cache.Cache;
 import com.kiegame.mobile.repository.entity.receive.ServiceCallEntity;
 import com.kiegame.mobile.utils.DateUtil;
 import com.kiegame.mobile.utils.Toast;
@@ -42,12 +43,10 @@ public class TransferDialog extends BaseDialogFragment {
     @SuppressLint("SetTextI18n")
     @Override
     protected void initView(Bundle savedInstanceState) {
-        initCounter();
         binding = (DialogTransferBinding) rootBinding;
-        // TODO: 2020/11/10 修改为正常的字段数据
+        initCounter();
 
 
-        binding.tvMessage.setText("B135机呼叫即将超时，请立即\n前往服务");
 
         if (callEntity.getState() == 1) {
             binding.llTransfer.setVisibility(View.VISIBLE);
@@ -64,6 +63,7 @@ public class TransferDialog extends BaseDialogFragment {
             public void onTick(long left) {
                 String[] result = DateUtil.second2MS((int) left/1000);
                 binding.tvTimeEnd.setText("即将超时：剩余"+result[0]+":"+result[1]+"s");
+                binding.tvMessage.setText("B135机呼叫即将超时，请立即\n前往服务");
             }
 
             @Override
@@ -84,7 +84,7 @@ public class TransferDialog extends BaseDialogFragment {
         //转接
         binding.tvTransfer.setOnClickListener(v -> {
             if(listener!=null){
-                listener.onSure(callEntity.getCancelOperationId(),callEntity.getCpId());
+                listener.onSure(Cache.ins().getLoginInfo().getEmpId(),callEntity.getCpId());
             }
             dismiss();
         });

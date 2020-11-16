@@ -5,6 +5,7 @@ import com.kiegame.mobile.repository.entity.receive.ActivityEntity;
 import com.kiegame.mobile.repository.entity.receive.AddOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.BannerEntity;
 import com.kiegame.mobile.repository.entity.receive.BuyOrderEntity;
+import com.kiegame.mobile.repository.entity.receive.Employee;
 import com.kiegame.mobile.repository.entity.receive.GoodsOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.PayResultEntity;
@@ -28,6 +29,8 @@ import com.kiegame.mobile.repository.entity.submit.QueryAppVersion;
 import com.kiegame.mobile.repository.entity.submit.QueryBanner;
 import com.kiegame.mobile.repository.entity.submit.QueryProductStock;
 import com.kiegame.mobile.repository.entity.submit.QueryShops;
+import com.kiegame.mobile.repository.entity.submit.RequestCallTransfer;
+import com.kiegame.mobile.repository.entity.submit.RequestOtherEmployee;
 import com.kiegame.mobile.repository.entity.submit.UserInfo;
 import com.kiegame.mobile.repository.entity.submit.UserLogin;
 
@@ -157,38 +160,44 @@ public interface ApiServiceV2 {
     /**
      * 呼叫服务转接
      */
-    @POST("app/call/process/transfer")
-    Observable<Result<Object>> transferCallServices(@Body JSONObject body);
+    @POST("call/process/transfer")
+    Observable<Result<Object>> transferCallServices(@Body RequestCallTransfer body);
+
+    /**
+     * 员工
+     */
+    @POST("call/employees/others")
+    Observable<Result<List<Employee>>> otherEmployee(@Body RequestOtherEmployee body);
 
 
     /**
      * 获取商品订单
      */
-    @POST("app/call/orders/products/process")
+    @POST("call/orders/products/process")
     Observable<Result<List<GoodsOrderEntity>>> getProductGoodsOrders(@Body CallServiceRequest body);
 
     /**
      * 商品订单完成
      */
-    @POST("app/call/orders/products/process/complete")
+    @POST("call/orders/products/process/complete")
     Observable<Result<Object>> productOrderComplete(@Body ProduceOrderOperate body);
 
     /**
      * 商品订单抢单
      */
-    @POST("app/call/orders/products/process/complete")
+    @POST("call/orders/products/process/complete")
     Observable<Result<Object>> productOrderGrab(@Body ProduceOrderOperate body);
 
     /**
      * 商品订单接单
      */
-    @POST("app/call/orders/products/process/orders")
+    @POST("call/orders/products/process/orders")
     Observable<Result<Object>> productOrderTake(@Body ProduceOrderOperate body);
 
     /**
      * 商品订单出品
      */
-    @POST("app/call/orders/products/process/produced")
+    @POST("call/orders/products/process/produced")
     Observable<Result<Object>> productOrderProduce(@Body ProduceOrderOperate body);
 
 

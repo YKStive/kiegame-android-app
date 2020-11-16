@@ -526,11 +526,13 @@ public class DateUtil {
     public static String[] second2MS(int timeLeft) {
         String[] result =new String[2];
         String minutesStr;
+        String secondStr;
         int minutes = timeLeft / 60;
         minutesStr=minutes<10?"0"+minutes:String.valueOf(minutes);
         int remainingSeconds = timeLeft % 60;
+        secondStr=remainingSeconds<10?"0"+remainingSeconds:String.valueOf(remainingSeconds);
         result[0]=  minutesStr;
-        result[1]=  String.valueOf(remainingSeconds);
+        result[1]=  secondStr;
         return result;
     }
 }

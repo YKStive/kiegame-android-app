@@ -7,7 +7,25 @@ package com.kiegame.mobile.repository.entity.submit;
  */
 public class CallServiceRequest {
     private String serviceId;
-    private int page ;
+    private String localDate;
+    private int page=1;
+    private int size = 50;
+
+    public String getLocalDate() {
+        return localDate;
+    }
+
+    public void setLocalDate(String localDate) {
+        this.localDate = localDate;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
 
     public String getServiceId() {
         return serviceId;
@@ -29,7 +47,9 @@ public class CallServiceRequest {
     public String toString() {
         return "CallServiceRequest{" +
                 "serviceId='" + serviceId + '\'' +
+                ", localDate='" + localDate + '\'' +
                 ", page=" + page +
+                ", size=" + size +
                 '}';
     }
 }

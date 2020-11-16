@@ -10,19 +10,24 @@ import com.kiegame.mobile.repository.Network;
 import com.kiegame.mobile.repository.Scheduler;
 import com.kiegame.mobile.repository.Subs;
 import com.kiegame.mobile.repository.cache.Cache;
+import com.kiegame.mobile.repository.entity.receive.Employee;
 import com.kiegame.mobile.repository.entity.receive.GoodsOrderEntity;
 import com.kiegame.mobile.repository.entity.receive.LoginEntity;
 import com.kiegame.mobile.repository.entity.receive.ServiceCallEntity;
 import com.kiegame.mobile.repository.entity.submit.CallServiceRequest;
 import com.kiegame.mobile.repository.entity.submit.ProduceOrderOperate;
 import com.kiegame.mobile.repository.entity.submit.ProductOrderOperateState;
+import com.kiegame.mobile.repository.entity.submit.RequestCallTransfer;
+import com.kiegame.mobile.repository.entity.submit.RequestOtherEmployee;
 import com.kiegame.mobile.utils.DateUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static com.kiegame.mobile.ui.fragment.ServiceGoodsOrderFragment.DO_ORDER_TYPE_COMPLETE;
 import static com.kiegame.mobile.ui.fragment.ServiceGoodsOrderFragment.DO_ORDER_TYPE_GRAB;
@@ -36,9 +41,11 @@ import static com.kiegame.mobile.ui.fragment.ServiceGoodsOrderFragment.DO_ORDER_
  */
 public class ServiceModel extends ViewModel {
 
+    private static final String TAG = "ServiceModel";
     private LoginEntity login;
-    private int currentCallServicePage = 0;
-    private int currentProductOrderPage = 0;
+    private static final int INIT_PAGE = 1;
+    private int currentCallServicePage = INIT_PAGE;
+    private int currentProductOrderPage = INIT_PAGE;
 
 
     //用于记录多个请求是否都已经结束
@@ -108,8 +115,8 @@ public class ServiceModel extends ViewModel {
         // TODO: 2020/11/11 调用借口更新用户数据
 
         // TODO: 2020/11/11 调用接口查询服务列表
-        currentCallServicePage = 0;
-        currentProductOrderPage = 0;
+        currentCallServicePage = INIT_PAGE;
+        currentProductOrderPage = INIT_PAGE;
         requestCallServices();
 
         // TODO: 2020/11/11 调用接口查询商品订单列表
@@ -126,15 +133,20 @@ public class ServiceModel extends ViewModel {
     private void requestProductOrders() {
         CallServiceRequest callServiceRequest = new CallServiceRequest();
         callServiceRequest.setPage(currentProductOrderPage);
+        callServiceRequest.setLocalDate(DateUtil.getCurDateStr(DateUtil.FORMAT_YMD));
         callServiceRequest.setServiceId(Cache.ins().getLoginInfo().getServiceId());
+        Log.d(TAG, "requestProductOrders param===" + callServiceRequest.toString());
         Network.api().getProductGoodsOrders(callServiceRequest)
                 .compose(Scheduler.apply())
                 .subscribe(new Subs<List<GoodsOrderEntity>>() {
 
                     @Override
                     public void onSuccess(List<GoodsOrderEntity> data, int total, int length) {
-                        if (currentProductOrderPage > 0) {
-                            data.add(0, (GoodsOrderEntity) goodsOrderData.getValue());
+                        if (currentProductOrderPage > 1) {
+                            data.addAll(0, Objects.requireNonNull(goodsOrderData.getValue()));
+                            if (data.size() == 0) {
+                                currentProductOrderPage--;
+                            }
                         } else {
                             isRefreshFinish.postValue(true);
                         }
@@ -150,7 +162,7 @@ public class ServiceModel extends ViewModel {
         CallServiceRequest callServiceRequest = new CallServiceRequest();
         callServiceRequest.setPage(currentCallServicePage);
         callServiceRequest.setServiceId(Cache.ins().getLoginInfo().getServiceId());
-        Log.d("parapm",callServiceRequest.toString());
+        Log.d(TAG, "requestCallServices param===" + callServiceRequest.toString());
 
         Network.api().getCallServices(callServiceRequest)
                 .compose(Scheduler.apply())
@@ -158,8 +170,11 @@ public class ServiceModel extends ViewModel {
 
                     @Override
                     public void onSuccess(List<ServiceCallEntity> data, int total, int length) {
-                        if (currentCallServicePage > 0) {
-                            data.add(0, (ServiceCallEntity) serviceCallListData.getValue());
+                        if (currentCallServicePage > 1) {
+                            data.addAll(0, Objects.requireNonNull(serviceCallListData.getValue()));
+                            if (data.size() == 0) {
+                                currentCallServicePage--;
+                            }
                         } else {
                             isRefreshFinish.postValue(true);
                         }
@@ -176,11 +191,11 @@ public class ServiceModel extends ViewModel {
      * @param cpId             服务id
      */
     public void callServiceTransfer(String cancelOperatorId, String cpId) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("cancelOperatorId", cancelOperatorId);
-            jsonObject.put("cpId", cpId);
-            Network.api().transferCallServices(jsonObject)
+        RequestCallTransfer requestCallTransfer = new RequestCallTransfer();
+        requestCallTransfer.setCpId(cpId);
+        requestCallTransfer.setTransferToEmpId(cancelOperatorId);
+        Log.d(TAG,"callServiceTransfer param ===="+requestCallTransfer.toString());
+            Network.api().transferCallServices(requestCallTransfer)
                     .compose(Scheduler.apply())
                     .subscribe(new Subs<Object>() {
 
@@ -190,11 +205,14 @@ public class ServiceModel extends ViewModel {
                                    }
                                }
                     );
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
     }
+
+    /**
+     * 员工
+     */
+
+
 
     //加载更多服务
     public void loadMoreServiceData() {

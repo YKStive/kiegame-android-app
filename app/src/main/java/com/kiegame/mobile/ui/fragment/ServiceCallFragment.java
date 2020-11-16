@@ -1,6 +1,9 @@
 package com.kiegame.mobile.ui.fragment;
 
 import android.database.DatabaseUtils;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,8 +16,15 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.kiegame.mobile.R;
 import com.kiegame.mobile.databinding.FragmentServiceCallBinding;
 import com.kiegame.mobile.model.ServiceModel;
+import com.kiegame.mobile.repository.Network;
+import com.kiegame.mobile.repository.Scheduler;
+import com.kiegame.mobile.repository.Subs;
+import com.kiegame.mobile.repository.cache.Cache;
+import com.kiegame.mobile.repository.entity.receive.Employee;
 import com.kiegame.mobile.repository.entity.receive.ServiceCallEntity;
+import com.kiegame.mobile.repository.entity.submit.RequestOtherEmployee;
 import com.kiegame.mobile.ui.base.BaseFragment;
+import com.kiegame.mobile.ui.dialog.ChoiceOtherEmployeeDialog;
 import com.kiegame.mobile.ui.dialog.TransferDialog;
 import com.kiegame.mobile.utils.DateUtil;
 import com.kiegame.mobile.utils.Toast;
@@ -22,6 +32,7 @@ import com.kiegame.mobile.utils.Toast;
 import java.util.List;
 import java.util.Objects;
 
+import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 /**
@@ -36,6 +47,7 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
     private ServiceModel serviceModel;
     private List<ServiceCallEntity> callServicesData;
     private int mCurrentRvState;
+    private static final String tg="ServiceCallFragment";
 
     @Override
     protected int onLayout() {
@@ -64,7 +76,11 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
     private void dealItemCounter() {
         if (callServicesData != null && !callServicesData.isEmpty()) {
             for (ServiceCallEntity callEntity : callServicesData) {
-                callEntity.setTimeLeft(callEntity.getTimeLeft() - 1);
+                if(callEntity.getState()==1){
+                    int result  = callEntity.getTimeLeft() - 1>=0?callEntity.getTimeLeft():0;
+                    callEntity.setTimeout(result==0);
+                    callEntity.setTimeLeft(result);
+                }
             }
 
             if (mCurrentRvState == SCROLL_STATE_IDLE) {
@@ -82,14 +98,24 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
                 helper.setText(R.id.tv_name, nameDesc);
 
 
-                helper.setText(R.id.tv_time_call, item.getStartTime());
+                helper.setText(R.id.tv_time_call, DateUtil.date2Str(DateUtil.str2Date(item.getStartTime(),DateUtil.FORMAT_YMDHMS),DateUtil.FORMAT_YMDHM));
 
-                helper.setText(R.id.tv_time_end, timeLeft2Counter(item.getTimeLeft()));
+                Log.d(tg,item.getTimeLeft()+"");
+
                 if (item.getState() == 1) {
+                    helper.setVisible(R.id.tv_time_end, true);
+                    if(item.isTimeout()){
+                        helper.setText(R.id.tv_time_end, "已经超时");
+                        helper.setTextColor(R.id.tv_time_end, 0XFFE02E2C);
+                    }else {
+                        helper.setText(R.id.tv_time_end, timeLeft2Counter(Math.abs(item.getTimeLeft())));
+                        helper.setTextColor(R.id.tv_time_end, Color.BLACK);
+                    }
                     helper.setTextColor(R.id.tv_time_end, 0XFFE02E2C);
                     helper.setBackgroundRes(R.id.tv_state, R.drawable.radius_yellow_10dp);
                     helper.setText(R.id.tv_state, "转接");
                 } else {
+                    helper.setText(R.id.tv_time_end, "已经完成");
                     helper.setTextColor(R.id.tv_time_end, 0XFFCBCBCB);
                     helper.getView(R.id.tv_state).setBackground(null);
                     helper.setText(R.id.tv_state, "已完成");
@@ -97,9 +123,8 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
                 //点击事件
                 helper.getView(R.id.tv_state).setOnClickListener(v -> {
                     if (item.getState() == 1) {
-                        TransferDialog.getInstance(item, (cancelOperatorId, cpId) -> {
-
-                            serviceModel.callServiceTransfer(cancelOperatorId, cpId);
+                        TransferDialog.getInstance(item, (ownId, cpId) -> {
+                            queryOtherEmployees(ownId,cpId);
                         }).show(getChildFragmentManager());
                     }
                 });
@@ -132,6 +157,27 @@ public class ServiceCallFragment extends BaseFragment<FragmentServiceCallBinding
 
     @Override
     protected void onData() {
+
+    }
+
+
+    public void queryOtherEmployees(String excludeEmpId,String  cpId) {
+        RequestOtherEmployee requestOtherEmployee = new RequestOtherEmployee();
+        requestOtherEmployee.setExcludeEmpId(excludeEmpId);
+        requestOtherEmployee.setServiceId(Cache.ins().getLoginInfo().getServiceId());
+        Log.d(tg,"queryOtherEmployees param=="+requestOtherEmployee.toString());
+        Network.api().otherEmployee(requestOtherEmployee)
+                .compose(Scheduler.apply())
+                .subscribe(new Subs<List<Employee>>() {
+                               @Override
+                               public void onSuccess(List<Employee> data, int total, int length) {
+                                   ChoiceOtherEmployeeDialog.getInstance(data, employeeId -> {
+                                        serviceModel.callServiceTransfer(employeeId,cpId);
+                                   }).show(getChildFragmentManager());
+                               }
+                           }
+                );
+
 
     }
 }
